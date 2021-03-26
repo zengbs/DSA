@@ -3,6 +3,7 @@
 #include<stdint.h> // The maximum size of size_t is provided via SIZE_MAX
 
 #define MAX_STRING_SIZE 1e2
+#define MAX_STACKS_SIZE 3
 
 
 int top = -1; /*the index of the last element in stack*/
@@ -17,7 +18,7 @@ int main(){
   char *input, *stack;
   
   input = (char*)malloc((size_t)(MAX_STRING_SIZE)*sizeof(char));
-  stack = (char*)malloc((size_t)(MAX_STRING_SIZE)*sizeof(char));
+  stack = (char*)malloc((size_t)(MAX_STACKS_SIZE)*sizeof(char));
   if (input == NULL) { printf("input is NULL at %d!\n", __LINE__); exit(0); }
   
   scanf( "%s", input);
@@ -28,9 +29,9 @@ int main(){
   push( stack, input[2], __LINE__ );
   push( stack, input[3], __LINE__ );
   push( stack, input[4], __LINE__ );
+  push( stack, input[5], __LINE__ );
 
     
-  //printf("stack[%d]=%c\n", top, peek(stack, __LINE__));
   
   display(stack, __LINE__); 
 
@@ -40,13 +41,14 @@ int main(){
   
   if (input == NULL) { printf("input is NULL at %d!\n", __LINE__); exit(0); }
   free(input);
+  free(stack);
 
   return 0;
 }
 
 void push(char str[], char data, int line)
 {
-   if (top == MAX_STRING_SIZE-1 ){
+   if (top == MAX_STACKS_SIZE-1 ){
        printf("stack overflow at %d!\n", line); exit(0);
    }
    else{
