@@ -112,16 +112,14 @@ void Infix2Postfix(char inFix[], char postFix[])
 
    for(long int i=0;inFix[i] != '\0';i++){
       if (isdigit(inFix[i])){
-         push(inFix[i]-'0', inFix[i], __LINE__);
+         push(inFix[i]-'0', numberStack[i], __LINE__);
          lengthNumber++;
       }
       else{
-         if (lengthNumber > 0) push(NAN, inFix[i], __LINE__);
-         push(inFix[i], inFix[i], __LINE__);
+         if (lengthNumber > 0) push(NAN, numberStack[i], __LINE__);
+         push(inFix[i], expressionStack[i], __LINE__);
          lengthNumber = 0;
       }
-   
-
    }
 
 
