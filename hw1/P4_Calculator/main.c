@@ -5,16 +5,15 @@
 #define MAX_STRING (1e2)
 
 
-void push(char [], char data);
-char pop(char []);
-char peek(char []);
-void display(char []);
+int top = -1; /*the index of the last element in stack*/
 
+void push(char str[], char data, int line);
+char pop(char str[], int line);
+void display(char str[], int line);
 
 int main(){
 
   char *input;
-  int top = -1; /*the index of the last element in stack*/
   
   input = (char*)malloc((size_t)(MAX_STRING)*sizeof(char));
   if (input == NULL) printf("input is NULL at %d!\n", __LINE__); exit(0);
@@ -44,7 +43,7 @@ void push(char str[], char data, int line)
    }
 }
 
-int pop(char str[], int line)
+char pop(char str[], int line)
 {
    if (top == -1 ){
        printf("stack underflow at %d!\n", line); return -1;
@@ -53,4 +52,38 @@ int pop(char str[], int line)
        return str[top];
        top--;
    }
+}
+
+void display(char str[], int line)
+{
+   if (top == -1 ){
+       printf("stack is empty at %d!\n", line);
+   }
+   else{
+      while (top != 0){
+        printf("%s", str[top]);
+        top--;
+      }
+      printf("\n");
+   }
+
+}
+
+int peek(char str[])
+{
+   if (top == -1 ){
+       printf("stack is empty at %d!\n", line);
+   }
+   else{
+i      return  str(top);
+   }
+
+
+
+
+
+
+
+
+
 }
