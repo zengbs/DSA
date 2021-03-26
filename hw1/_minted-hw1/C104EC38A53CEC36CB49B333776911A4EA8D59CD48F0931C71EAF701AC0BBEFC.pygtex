@@ -1,0 +1,47 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{p}{[}
+\PYG{n}{frame}\PYG{o}{=}\PYG{n}{lines}\PYG{p}{,}
+\PYG{n}{framesep}\PYG{o}{=}\PYG{l+m+mi}{2}\PYG{n}{mm}\PYG{p}{,}
+\PYG{n}{baselinestretch}\PYG{o}{=}\PYG{l+m+mf}{1.2}\PYG{p}{,}
+\PYG{n}{bgcolor}\PYG{o}{=}\PYG{n}{LightGray}\PYG{p}{,}
+\PYG{n}{fontsize}\PYG{o}{=}\PYG{err}{\PYGZbs{}}\PYG{n}{footnotesize}\PYG{p}{,}
+\PYG{n}{linenos}
+\PYG{p}{]}
+\PYG{c+cm}{/* Step 1: Get the length of list */}
+\PYG{c+cm}{/*========================================*/}
+\PYG{n}{Ptr} \PYG{o}{=} \PYG{n}{Head}\PYG{p}{;}
+\PYG{n}{Length} \PYG{o}{=} \PYG{l+m+mi}{1}
+
+\PYG{k}{while}\PYG{p}{(} \PYG{n}{Ptr}\PYG{o}{\PYGZhy{}\PYGZgt{}}\PYG{n}{Next} \PYG{o}{!=} \PYG{n}{Head} \PYG{p}{)}
+\PYG{p}{\PYGZob{}}
+   \PYG{n}{Ptr} \PYG{o}{=} \PYG{n}{Ptr}\PYG{o}{\PYGZhy{}\PYGZgt{}}\PYG{n}{Next}\PYG{p}{;}
+   \PYG{n}{Length}\PYG{o}{++}\PYG{p}{;}
+\PYG{p}{\PYGZcb{}}
+
+\PYG{c+cm}{/* Step 2: Sorting list with bubble sort */}
+\PYG{c+cm}{/*========================================*/}
+\PYG{n}{itr\PYGZus{}out} \PYG{o}{=} \PYG{l+m+mi}{0}\PYG{p}{;} \PYG{c+cm}{/*iteration number of the outer loop*/}
+\PYG{n}{Swap} \PYG{o}{=} \PYG{n+nb}{true}\PYG{p}{;} \PYG{c+cm}{/**/}
+\PYG{n}{Ptr} \PYG{o}{=} \PYG{n}{Head}\PYG{p}{;}
+
+\PYG{k}{while}\PYG{p}{(} \PYG{n}{Ptr}\PYG{o}{\PYGZhy{}\PYGZgt{}}\PYG{n}{Next} \PYG{o}{!=} \PYG{n}{Head} \PYG{o}{\PYGZam{}\PYGZam{}} \PYG{n}{Swap} \PYG{p}{)}
+\PYG{p}{\PYGZob{}}
+   \PYG{n}{Ptr\PYGZus{}in} \PYG{o}{=} \PYG{n}{Head}\PYG{p}{;}
+   \PYG{n}{Swap} \PYG{o}{=} \PYG{n+nb}{false}\PYG{p}{;}
+   \PYG{n}{itr\PYGZus{}in} \PYG{o}{=} \PYG{l+m+mi}{0}\PYG{p}{;}  \PYG{c+cm}{/*iteration number of the inner loop*/}
+
+   \PYG{k}{while}\PYG{p}{(} \PYG{n}{Ptr\PYGZus{}in}\PYG{o}{\PYGZhy{}\PYGZgt{}}\PYG{n}{Next} \PYG{o}{!=} \PYG{n}{Head} \PYG{o}{\PYGZam{}\PYGZam{}} \PYG{n}{itr\PYGZus{}in} \PYG{o}{\PYGZlt{}} \PYG{n}{Length} \PYG{o}{\PYGZhy{}} \PYG{n}{itr\PYGZus{}out} \PYG{o}{\PYGZhy{}} \PYG{l+m+mi}{1} \PYG{p}{)}
+   \PYG{p}{\PYGZob{}}
+      \PYG{k}{if} \PYG{p}{(} \PYG{n}{Ptr\PYGZus{}in}\PYG{o}{\PYGZhy{}\PYGZgt{}}\PYG{n}{Next}\PYG{o}{\PYGZhy{}\PYGZgt{}}\PYG{n}{Data}  \PYG{o}{\PYGZlt{}}  \PYG{n}{Ptr\PYGZus{}in}\PYG{o}{\PYGZhy{}\PYGZgt{}}\PYG{n}{Data} \PYG{p}{)}
+      \PYG{p}{\PYGZob{}}
+         \PYG{n}{swap}\PYG{p}{(} \PYG{n}{Ptr\PYGZus{}in}\PYG{o}{\PYGZhy{}\PYGZgt{}}\PYG{n}{Next}\PYG{o}{\PYGZhy{}\PYGZgt{}}\PYG{n}{Data}\PYG{p}{,} \PYG{n}{Ptr\PYGZus{}in}\PYG{o}{\PYGZhy{}\PYGZgt{}}\PYG{n}{Data} \PYG{p}{);}
+         \PYG{n}{Swap} \PYG{o}{=} \PYG{n+nb}{true}\PYG{p}{;}
+      \PYG{p}{\PYGZcb{}}
+      \PYG{n}{Ptr\PYGZus{}in} \PYG{o}{=} \PYG{n}{Ptr\PYGZus{}in} \PYG{o}{\PYGZhy{}\PYGZgt{}} \PYG{n}{Next}\PYG{p}{;}
+
+      \PYG{n}{itr\PYGZus{}in}\PYG{o}{++}\PYG{p}{;}
+   \PYG{p}{\PYGZcb{}}
+   \PYG{n}{Ptr} \PYG{o}{=} \PYG{n}{Ptr}\PYG{o}{\PYGZhy{}\PYGZgt{}}\PYG{n}{Next}\PYG{p}{;}
+   \PYG{n}{itr\PYGZus{}out}\PYG{o}{++}\PYG{p}{;}
+\PYG{p}{\PYGZcb{}}
+\end{Verbatim}
