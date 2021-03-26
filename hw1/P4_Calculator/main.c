@@ -1,4 +1,5 @@
 #include<stdlib.h>
+#include<float.h>
 #include<stdio.h>
 #include<string.h>
 #include<stdint.h> // The maximum size of size_t is provided via SIZE_MAX
@@ -10,10 +11,10 @@
 
 int top = -1; /*the index of the last element in stack*/
 
-void push(char str[], char data, int line);
-char pop(char str[], int line);
-void display(char str[], int line);
-char peek(char str[], int line);
+void push(char stack[], char data, int line);
+char pop(char stack[], int line);
+void display(char stack[], int line);
+char peek(char stack[], int line);
 void Infix2Postfix(char src[], char tar[]);
 
 int main(){
@@ -35,7 +36,7 @@ int main(){
   Infix2Postfix(inFix, postFix);
 
  
-  //for (int i=0;i<strlen(inFix);i++){
+  //for (int i=0;i<stacklen(inFix);i++){
   //  if ( inFix[i] == "+" || inFix[i] == "-" ||
   //       inFix[i] == "*" || inFix[i] == "/" ||
   //       inFix[i] == "(" || inFix[i] == ")"    ){ /* operators */
@@ -58,36 +59,36 @@ int main(){
   return 0;
 }
 
-void push(char str[], char data, int line)
+void push(char stack[], char data, int line)
 {
    if (top == MAX_STACKS_SIZE-1 ){
        printf("stack overflow at %d!\n", line); exit(0);
    }
    else{
        top++;
-       str[top] = data;
+       stack[top] = data;
    }
 }
 
-char pop(char str[], int line)
+char pop(char stack[], int line)
 {
    if (top == -1 ){
        printf("stack underflow at %d!\n", line); return -1; 
    }
    else{
-       return str[top];
+       return stack[top];
        top--;
    }
 }
 
-void display(char str[], int line)
+void display(char stack[], int line)
 {
    if (top == -1 ){
        printf("stack is empty at %d!\n", line);
    }
    else{
       while (top != -1){
-        printf("%c", str[top]);
+        printf("%c", stack[top]);
         top--;
       }
       printf("\n");
@@ -95,25 +96,31 @@ void display(char str[], int line)
 
 }
 
-char peek(char str[], int line)
+char peek(char stack[], int line)
 {
    if (top == -1 ){
        printf("stack is empty at %d!\n", line); return '\0'; exit(0);
    }
    else{
-      return  str[top];
+      return  stack[top];
    }
 }
 
 void Infix2Postfix(char inFix[], char postFix[])
 {
+   long int lengthNumber = 0;
+
    for(long int i=0;inFix[i] != '\0';i++){
       if (isdigit(inFix[i])){
-
+         push(inFix[i]-'0', inFix[i], __LINE__);
+         lengthNumber++;
       }
       else{
-
+         if (lengthNumber > 0) push(NAN, inFix[i], __LINE__);
+         push(inFix[i], inFix[i], __LINE__);
+         lengthNumber = 0;
       }
+   
 
    }
 
