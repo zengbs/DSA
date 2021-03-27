@@ -167,9 +167,9 @@ void Infix2Postfix(char inFix[], char postFix[])
       }
     }
   }
-
-  while(stack->top > -1){
-    postFix[j++] = pop(stack);
+  while(stack->top > -1 ){
+     if (peek(stack, __LINE__) != '(') postFix[j++] = pop(stack);
+     else                              pop(stack);
   }
 }
 
@@ -208,8 +208,8 @@ int getPriority(char operatorStack, char operator)
     }
   }
 
-  if ( operatorStack == '\0' ){
-    return 0; /*push*/
+  if ( operatorStack == '\0' || operatorStack == '(' ){
+    return 0;
   } 
 
   return -1;
