@@ -1,5 +1,8 @@
 #include<stdlib.h>
+#include<stdbool.h>
 #include<float.h>
+#include<math.h>
+#include<ctype.h>
 #include<stdio.h>
 #include<string.h>
 #include<stdint.h> // The maximum size of size_t is provided via SIZE_MAX
@@ -15,25 +18,28 @@ void push(char stack[], char data, int line);
 char pop(char stack[], int line);
 void display(char stack[], int line);
 char peek(char stack[], int line);
-void Infix2Postfix(char src[], char tar[]);
+void Infix2Postfix(char inFix[], char numberStack[], char expressionStack[]);
+void strsplit(char inFix[]);
 
 int main(){
 
-  char *inFix, *postFix, *stack;
+  char *inFix, *numberStack, *expressionStack;
   
   if ((inFix = (char*)malloc((size_t)(MAX_STACKS_SIZE)*sizeof(char))) == NULL)
-      { printf("inFix is NULL at %d!\n", __LINE__); exit(0); }
+      { printf("is NULL at %d!\n", __LINE__); exit(0); }
 
-  if ((postFix = (char*)malloc((size_t)(MAX_STACKS_SIZE)*sizeof(char))) == NULL)
-      { printf("postFix is NULL at %d!\n", __LINE__); exit(0); }
+  if ((expressionStack = (char*)malloc((size_t)(MAX_STACKS_SIZE)*sizeof(char))) == NULL)
+      { printf("NULL at %d!\n", __LINE__); exit(0); }
 
-  if ((stack = (char*)malloc((size_t)(MAX_STACKS_SIZE)*sizeof(char))) == NULL)
-      { printf("inFix is NULL at %d!\n", __LINE__); exit(0); }
+  if ((numberStack = (char*)malloc((size_t)(MAX_STACKS_SIZE)*sizeof(char))) == NULL)
+      { printf("NULL at %d!\n", __LINE__); exit(0); }
+
  
  
   scanf("%s", inFix);
-
-  Infix2Postfix(inFix, postFix);
+  
+  strsplit(inFix);
+  //Infix2Postfix(inFix, numberStack, expressionStack);
 
  
   //for (int i=0;i<stacklen(inFix);i++){
@@ -54,7 +60,8 @@ int main(){
   
   if (inFix == NULL) { printf("inFix is NULL at %d!\n", __LINE__); exit(0); }
   free(inFix);
-  free(stack);
+  free(expressionStack);
+  free(numberStack);
 
   return 0;
 }
@@ -106,21 +113,19 @@ char peek(char stack[], int line)
    }
 }
 
-void Infix2Postfix(char inFix[], char postFix[])
+void Infix2Postfix(char inFix[], char numberStack[], char expressionStack[])
 {
-   long int lengthNumber = 0;
 
-   for(long int i=0;inFix[i] != '\0';i++){
-      if (isdigit(inFix[i])){
-         push(inFix[i]-'0', numberStack[i], __LINE__);
-         lengthNumber++;
-      }
-      else{
-         if (lengthNumber > 0) push(NAN, numberStack[i], __LINE__);
-         push(inFix[i], expressionStack[i], __LINE__);
-         lengthNumber = 0;
-      }
-   }
 
+}
+
+void strsplit(char inFix[])
+{
+  char *token = strtok(inFix, "+-*/()");
+
+  while(token != NULL){
+    printf("%f\n", strtod(token, NULL));
+    token = strtok(NULL, "+-*/()");
+  }
 
 }
