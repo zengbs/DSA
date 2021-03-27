@@ -31,7 +31,7 @@ struct Stack* createStack(unsigned long int capacity)
 
 void displayString(char str[]);
 void displayStack(struct Stack *stack);
-char peek(struct Stack *stack);
+char peek(struct Stack *stack, int line);
 char pop(struct Stack *stack);
 void push(struct Stack *stack, char item);
 void Infix2Postfix(char inFix[], char postFix[]);
@@ -54,7 +54,6 @@ int main(){
   
   Infix2Postfix(inFix, postFix);
 
-  displayString(inFix);
   displayString(postFix);
 
   //push(stack, '1');
@@ -62,7 +61,6 @@ int main(){
   //push(stack, '3');
   //push(stack, '4');
  
-  //displayStack(stack); 
 
 
 
@@ -96,11 +94,10 @@ char pop(struct Stack *stack)
   }
 }
 
-char peek(struct Stack *stack)
+char peek(struct Stack *stack, int line)
 {
   if (stack->top == - 1){
-    printf("stack is empty!\n");
-    exit(0);
+    return '\0';
   }
   else{
     return stack->stackPtr[stack->top];
@@ -144,20 +141,29 @@ void Infix2Postfix(char inFix[], char postFix[])
       postFix[j++] = inFix[i];
     }
     else if (inFix[i] == '+' || inFix[i] == '*' ||inFix[i] == '-' || inFix[i] == '/' ){
-      int getOut = getPriority(peek(stack), inFix[i]);
+
+      int getOut = getPriority(peek(stack, __LINE__), inFix[i]);
+
       if (getOut == 1){
         postFix[j++] = pop(stack);
       }
-      else if  (getOut == -1){
+      else if (getOut == 0){
+        push(stack, inFix[i]); 
+      }
+      else{
         printf("error!\n");
         exit(0);
       }
     }
     else if (inFix[i] == ')'){
-      while(peek(stack) != '('){
+      while(peek(stack, __LINE__) != '('){
         postFix[j++] = pop(stack);
       }
     }
+  }
+
+  while(stack->top > -1){
+    postFix[j++] = pop(stack);
   }
 }
 
@@ -180,7 +186,7 @@ int getPriority(char operatorStack, char operator)
       return 0;
     }
     else if (operator == '+' || operator == '-'){
-      return 1;
+      return 1; /*push*/
     }
     else{
       return 0;
@@ -189,11 +195,16 @@ int getPriority(char operatorStack, char operator)
 
   if (operatorStack == '*' ||  operatorStack == '/'){
     if (operator == '+' || operator == '-' || operator == '*' || operator == '/'){
-      return 1;
+      return 1; /*push*/
     }
     else{
       return 0;
     }
   }
+
+  if ( operatorStack == '\0' ){
+    return 0; /*push*/
+  } 
+
   return -1;
 }
