@@ -165,6 +165,13 @@ void Infix2Postfix(char inFix[], char postFix[])
       while(peek(stack, __LINE__) != '('){
         postFix[j++] = pop(stack);
       }
+      if (peek(stack, __LINE__) == '('){
+        pop(stack);
+      }
+      else{
+        printf("Parentheses is not balance!\n");
+        exit(0);
+      }
     }
   }
   while(stack->top > -1 ){
@@ -189,27 +196,27 @@ int getPriority(char operatorStack, char operator)
 {
   if (operatorStack == '+' ||  operatorStack == '-'){
     if (operator == '*' || operator == '/'){
-      return 0;
+      return 0; /*push*/
     }
     else if (operator == '+' || operator == '-'){
-      return 1; /*push*/
+      return 1; /*append to postFix*/
     }
     else{
-      return 0;
+      return 0; /*push*/
     }
   }
 
   if (operatorStack == '*' ||  operatorStack == '/'){
     if (operator == '+' || operator == '-' || operator == '*' || operator == '/'){
-      return 1; /*push*/
+      return 1; /*append to postFix*/
     }
     else{
-      return 0;
+      return 0; /*push*/
     }
   }
 
   if ( operatorStack == '\0' || operatorStack == '(' ){
-    return 0;
+    return 0; /*push*/ 
   } 
 
   return -1;
