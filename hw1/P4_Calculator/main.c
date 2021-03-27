@@ -145,7 +145,13 @@ void Infix2Postfix(char inFix[], char postFix[])
       int getOut = getPriority(peek(stack, __LINE__), inFix[i]);
 
       if (getOut == 1){
-        postFix[j++] = pop(stack);
+
+        while(getOut){
+          postFix[j++] = pop(stack);
+          getOut = getPriority(peek(stack, __LINE__), inFix[i]);
+        }
+
+        push(stack, inFix[i]); 
       }
       else if (getOut == 0){
         push(stack, inFix[i]); 
