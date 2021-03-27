@@ -29,35 +29,40 @@ struct Stack* createStack(unsigned long int capacity)
     return stack;
 }
 
-void display(struct Stack *stack);
+void displayString(char str[]);
+void displayStack(struct Stack *stack);
 char peek(struct Stack *stack);
 char pop(struct Stack *stack);
 void push(struct Stack *stack, char item);
 void Infix2Postfix(char inFix[], char postFix[]);
 void strsplit(char inFix[]);
+int getPriority(char operatorStack, char operator);
 
 int main(){
 
-  char *inFix;
+  char *inFix, *postFix;
   
   if ((inFix = (char*)malloc((size_t)(MAX_STACKS_SIZE)*sizeof(char))) == NULL)
       { printf("is NULL at %d!\n", __LINE__); exit(0); }
+  if ((postFix = (char*)malloc((size_t)(MAX_STACKS_SIZE)*sizeof(char))) == NULL)
+      { printf("is NULL at %d!\n", __LINE__); exit(0); }
 
-  struct Stack *stack = createStack((unsigned long int)MAX_STACKS_SIZE);
 
   
  
-  //scanf("%s", inFix);
+  scanf("%s", inFix);
   
-  //strsplit(inFix);
-  //Infix2Postfix(inFix, numberStack, expressionStack);
+  Infix2Postfix(inFix, postFix);
 
-  push(stack, '1');
-  push(stack, '2');
-  push(stack, '3');
-  push(stack, '4');
+  displayString(inFix);
+  displayString(postFix);
+
+  //push(stack, '1');
+  //push(stack, '2');
+  //push(stack, '3');
+  //push(stack, '4');
  
-  display(stack); 
+  //displayStack(stack); 
 
 
 
@@ -103,7 +108,7 @@ char peek(struct Stack *stack)
 
 }
 
-void display(struct Stack *stack)
+void displayStack(struct Stack *stack)
 {
   if (stack->top == - 1){
     printf("stack is empty!\n");
@@ -117,10 +122,43 @@ void display(struct Stack *stack)
   }
 }
 
+void displayString(char str[])
+{
+  for (int i=0;str[i] != '\0';i++){
+     printf("%c", str[i]); 
+  }
+  printf("\n");
+}
+
 void Infix2Postfix(char inFix[], char postFix[])
 {
+  int j = 0;
+  struct Stack *stack = createStack((unsigned long int)MAX_STACKS_SIZE);
 
+  for(int i=0;inFix[i] != '\0';i++){
 
+    if (inFix[i] == '('){
+      push(stack, '(');
+    }
+    else if (isdigit(inFix[i]) || isalpha(inFix[i]) ){
+      postFix[j++] = inFix[i];
+    }
+    else if (inFix[i] == '+' || inFix[i] == '*' ||inFix[i] == '-' || inFix[i] == '/' ){
+      int getOut = getPriority(peek(stack), inFix[i]);
+      if (getOut == 1){
+        postFix[j++] = pop(stack);
+      }
+      else if  (getOut == -1){
+        printf("error!\n");
+        exit(0);
+      }
+    }
+    else if (inFix[i] == ')'){
+      while(peek(stack) != '('){
+        postFix[j++] = pop(stack);
+      }
+    }
+  }
 }
 
 void strsplit(char inFix[])
@@ -135,9 +173,27 @@ void strsplit(char inFix[])
 }
 
 
-int getPriority(char operator)
+int getPriority(char operatorStack, char operator)
 {
-  if      (operator == '+' || operator == '-') return 0;
-  else if (operator == '*' || operator == '/') return 1;
-  else     return -1;
+  if (operatorStack == '+' ||  operatorStack == '-'){
+    if (operator == '*' || operator == '/'){
+      return 0;
+    }
+    else if (operator == '+' || operator == '-'){
+      return 1;
+    }
+    else{
+      return 0;
+    }
+  }
+
+  if (operatorStack == '*' ||  operatorStack == '/'){
+    if (operator == '+' || operator == '-' || operator == '*' || operator == '/'){
+      return 1;
+    }
+    else{
+      return 0;
+    }
+  }
+  return -1;
 }
