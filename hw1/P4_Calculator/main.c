@@ -14,45 +14,50 @@
 
 int top = -1; /*the index of the last element in stack*/
 
-void push(char stack[], char data, int line);
-char pop(char stack[], int line);
-void display(char stack[], int line);
-char peek(char stack[], int line);
-void Infix2Postfix(char inFix[], char numberStack[], char expressionStack[]);
+struct Stack{
+  int capacity;
+  int top;
+  char *stackPtr; 
+};
+
+struct Stack* createStack(unsigned long int capacity)
+{
+    struct Stack* stack = (struct Stack*)malloc(sizeof(struct Stack));
+    stack->capacity = capacity;
+    stack->top = -1;
+    stack->stackPtr = (char*)malloc((size_t)(stack->capacity) * sizeof(char));
+    return stack;
+}
+
+void display(struct Stack *stack);
+char peek(struct Stack *stack);
+char pop(struct Stack *stack);
+void push(struct Stack *stack, char item);
+void Infix2Postfix(char inFix[], char postFix[]);
 void strsplit(char inFix[]);
 
 int main(){
 
-  char *inFix, *numberStack, *expressionStack;
+  char *inFix;
   
   if ((inFix = (char*)malloc((size_t)(MAX_STACKS_SIZE)*sizeof(char))) == NULL)
       { printf("is NULL at %d!\n", __LINE__); exit(0); }
 
-  if ((expressionStack = (char*)malloc((size_t)(MAX_STACKS_SIZE)*sizeof(char))) == NULL)
-      { printf("NULL at %d!\n", __LINE__); exit(0); }
+  struct Stack *stack = createStack((unsigned long int)MAX_STACKS_SIZE);
 
-  if ((numberStack = (char*)malloc((size_t)(MAX_STACKS_SIZE)*sizeof(char))) == NULL)
-      { printf("NULL at %d!\n", __LINE__); exit(0); }
-
- 
- 
-  scanf("%s", inFix);
   
-  strsplit(inFix);
+ 
+  //scanf("%s", inFix);
+  
+  //strsplit(inFix);
   //Infix2Postfix(inFix, numberStack, expressionStack);
 
+  push(stack, '1');
+  push(stack, '2');
+  push(stack, '3');
+  push(stack, '4');
  
-  //for (int i=0;i<stacklen(inFix);i++){
-  //  if ( inFix[i] == "+" || inFix[i] == "-" ||
-  //       inFix[i] == "*" || inFix[i] == "/" ||
-  //       inFix[i] == "(" || inFix[i] == ")"    ){ /* operators */
-  //  }
-  //  else{  /* number */
-  //        push( stack, inFix[i], __LINE__ );
-  //  }
-  //}
-  
-  //display(stack, __LINE__); 
+  display(stack); 
 
 
 
@@ -60,60 +65,59 @@ int main(){
   
   if (inFix == NULL) { printf("inFix is NULL at %d!\n", __LINE__); exit(0); }
   free(inFix);
-  free(expressionStack);
-  free(numberStack);
 
   return 0;
 }
 
-void push(char stack[], char data, int line)
+void push(struct Stack *stack, char item)
 {
-   if (top == MAX_STACKS_SIZE-1 ){
-       printf("stack overflow at %d!\n", line); exit(0);
-   }
-   else{
-       top++;
-       stack[top] = data;
-   }
+  if (stack->top == stack->capacity - 1){
+    printf("stack overflow!\n");
+    exit(0);
+  }
+  else{
+    stack->stackPtr[++stack->top] = item;
+  }
 }
 
-char pop(char stack[], int line)
+char pop(struct Stack *stack)
 {
-   if (top == -1 ){
-       printf("stack underflow at %d!\n", line); return -1; 
-   }
-   else{
-       return stack[top];
-       top--;
-   }
+  if (stack->top == - 1){
+    printf("stack underflow!\n");
+    exit(0);
+  }
+  else{
+    return stack->stackPtr[stack->top--];
+  }
 }
 
-void display(char stack[], int line)
+char peek(struct Stack *stack)
 {
-   if (top == -1 ){
-       printf("stack is empty at %d!\n", line);
-   }
-   else{
-      while (top != -1){
-        printf("%c", stack[top]);
-        top--;
+  if (stack->top == - 1){
+    printf("stack is empty!\n");
+    exit(0);
+  }
+  else{
+    return stack->stackPtr[stack->top];
+  }
+
+}
+
+void display(struct Stack *stack)
+{
+  if (stack->top == - 1){
+    printf("stack is empty!\n");
+    exit(0);
+  }
+  else{
+      for(int i=stack->top; i > -1; i--){
+        printf("%c", stack->stackPtr[i]);
       }
       printf("\n");
-   }
-
+  }
 }
 
-char peek(char stack[], int line)
-{
-   if (top == -1 ){
-       printf("stack is empty at %d!\n", line); return '\0'; exit(0);
-   }
-   else{
-      return  stack[top];
-   }
-}
-
-void Infix2Postfix(char inFix[], char numberStack[], char expressionStack[])
+void Infix2Postfix(char inFix[], char postFix[])
 {
 
 
@@ -124,8 +128,16 @@ void strsplit(char inFix[])
   char *token = strtok(inFix, "+-*/()");
 
   while(token != NULL){
-    printf("%f\n", strtod(token, NULL));
+    printf("%s\n", token);
     token = strtok(NULL, "+-*/()");
   }
 
+}
+
+
+int getPriority(char operator)
+{
+  if      (operator == '+' || operator == '-') return 0;
+  else if (operator == '*' || operator == '/') return 1;
+  else     return -1;
 }
