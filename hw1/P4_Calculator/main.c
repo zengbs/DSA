@@ -1,4 +1,5 @@
 #include<stdlib.h>
+#include<limits.h>
 #include<stdbool.h>
 #include<float.h>
 #include<math.h>
@@ -20,16 +21,27 @@ struct Stack{
   char *stackPtr; 
 };
 
+struct StackDouble{
+  int capacity;
+  int top;
+  double *stackPtr; 
+};
+
 void displayString(char str[]);
 void displayStack(struct Stack *stack);
 char peek(struct Stack *stack, int line);
+double peekDouble(struct StackDouble *stack, int line);
 char pop(struct Stack *stack);
+double popDouble(struct StackDouble *stack);
 void push(struct Stack *stack, char item);
+void pushDouble(struct StackDouble *stack, double item);
 void Infix2Postfix(char inFix[], char postFix[]);
 void strsplit(char inFix[]);
 int getPriority(char operatorStack, char operator);
 void freeStack(struct Stack *stack);
+void freeStackDouble(struct StackDouble *stack);
 double postfixEvaluation(char postFix[]);
+int reverse(int x);
 
 int main(){
 
@@ -68,13 +80,39 @@ struct Stack* createStack(unsigned long int capacity, size_t sizePerItem)
     return stack;
 }
 
+struct StackDouble* createStackDouble(unsigned long int capacity, size_t sizePerItem)
+{
+    struct StackDouble* stack = (struct StackDouble*)malloc(sizeof(struct StackDouble));
+    stack->capacity = capacity;
+    stack->top = -1;
+    stack->stackPtr = malloc((size_t)(stack->capacity) * sizePerItem);
+    return stack;
+}
+
 void freeStack(struct Stack *stack)
 {
   free(stack->stackPtr);
   free(stack);
 }
 
+void freeStackDouble(struct StackDouble *stack)
+{
+  free(stack->stackPtr);
+  free(stack);
+}
+
 void push(struct Stack *stack, char item)
+{
+  if (stack->top == stack->capacity - 1){
+    printf("stack overflow!\n");
+    exit(0);
+  }
+  else{
+    stack->stackPtr[++stack->top] = item;
+  }
+}
+
+void pushDouble(struct StackDouble *stack, double item)
 {
   if (stack->top == stack->capacity - 1){
     printf("stack overflow!\n");
@@ -96,6 +134,17 @@ char pop(struct Stack *stack)
   }
 }
 
+double popDouble(struct StackDouble *stack)
+{
+  if (stack->top == - 1){
+    printf("stack underflow!\n");
+    exit(0);
+  }
+  else{
+    return stack->stackPtr[stack->top--];
+  }
+}
+
 char peek(struct Stack *stack, int line)
 {
   if (stack->top == - 1){
@@ -104,7 +153,16 @@ char peek(struct Stack *stack, int line)
   else{
     return stack->stackPtr[stack->top];
   }
+}
 
+double peekDouble(struct StackDouble *stack, int line)
+{
+  if (stack->top == - 1){
+    return '\0';
+  }
+  else{
+    return stack->stackPtr[stack->top];
+  }
 }
 
 void displayStack(struct Stack *stack)
@@ -190,38 +248,33 @@ void Infix2Postfix(char inFix[], char postFix[])
 
 double postfixEvaluation(char postFix[])
 {
-  struct Stack *stackResult = createStack((unsigned long int)MAX_STACKS_SIZE, sizeof(double));
-  double prev, next, top, answer;
+  struct StackDouble *stackResult = createStackDouble((unsigned long int)MAX_STACKS_SIZE, sizeof(double));
 
   for (int i=0;postFix[i] != '\0';i++){
 
     if ( isdigit(postFix[i]) ){
 
-      long int numDigit;
+      /* get the reversed integer in decimal */
+      int value = 0;
+      int base10 = 1;
+      for (int d=0; isdigit(postFix[i+d]); d++){
 
-      for (int i=0;postFix[i] != ' ';i++) numDigit++;
-
-      double 
-
-      for (int i=0;postFix[i] != ' ';i++){
-        
+        for (int p=0;p<d;p++) base10 *= 10;
+        char digit = postFix[i];
+        value += atoi(&digit)*base10;
       }
 
-      
-
-      push(stackResult, postFix[i++]);
+      /* reverse integer */
+      value = reverse(value);  
+      //printf("%d\n", value);
+ 
+      /* push the value to the stack */
+      pushDouble(stackResult, (double)value);
     }
-    else if( postFix[i] == ' '){
-      push(stackResult, ' ');
-    }
-    else{ /* encounter operators */
-      pop(stackResult);
-      top = pop(stackResult);
-      prev = strtod(, NULL);
-
-      pop(stackResult);
-      pop(stackResult);
-      next = strtod(, NULL);
+    else if( postFix[i] != ' ' ) { /* encounter operators */
+      double result;
+      double next = popDouble(stackResult);
+      double prev = popDouble(stackResult);
 
       if (postFix[i] == '+'){
         result = prev + next;
@@ -233,19 +286,19 @@ double postfixEvaluation(char postFix[])
         result = prev * next;
       }
       else if (postFix[i] == '/'){
-        result = prevNum / nextNum;
+        result = prev / next;
+        //printf("%20.16e\n", result);
       }
 
-      push(stackResult, result);
-      push(stackResult, ' ');
+      //printf("%20.16e\n", result);
+      pushDouble(stackResult, result);
+      //printf("%20.16e\n", peekDouble(stackResult, __LINE__));
     }
   }
 
-  pop(stackResult);
+  double answer = peekDouble(stackResult, __LINE__);
 
-  answer = pop(stackResult);
-
-  freeStack(stackResult);
+  freeStackDouble(stackResult);
 
   return answer;
 }
@@ -289,4 +342,17 @@ int getPriority(char operatorStack, char operator)
   } 
 
   return -1;
+}
+
+ int reverse(int x){
+    int y=0;
+    while(x!=0){
+        if(y>INT_MAX/10||y<INT_MIN/10)return 0;
+        else if(y==INT_MAX/10||y==INT_MIN/10){
+            if(x%10>7||x%10<-8)return 0;
+        }
+        y=y*10+x%10;
+        x/=10;
+    }
+    return y;
 }
