@@ -7,7 +7,7 @@ void show_bytes(byte_pointer start, size_t len);
 
 int main()
 {
-char str[] = {'0','1','\0','3','4','\0'};
+char str[] = {'0'};
 //printf("%f\n", (float)(str[0]-'0')); //5
 //printf("%c\n", '0');   // 48
 //printf("%c\n", "0"[0]);   // 48
@@ -17,9 +17,9 @@ char str[] = {'0','1','\0','3','4','\0'};
 
 
 
-for (int i=0;i<5;i++){
-  printf("%c\n", str[i]);
-}
+//for (int i=0;i<5;i++){
+//  printf("%c\n", str[i]);
+//}
 
 //int i = 0;
 //while(i<strlen(str)){
@@ -27,7 +27,7 @@ for (int i=0;i<5;i++){
 //  i++;
 //}
 //printf("\n");
-//printf("%f\n", strtod(str, NULL));
+printf("%f\n", strtod(str, NULL));
 
 //char *pch;
 //pch = strtok (str,"+-*/()");

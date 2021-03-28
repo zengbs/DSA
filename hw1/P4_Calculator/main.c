@@ -20,15 +20,6 @@ struct Stack{
   char *stackPtr; 
 };
 
-struct Stack* createStack(unsigned long int capacity)
-{
-    struct Stack* stack = (struct Stack*)malloc(sizeof(struct Stack));
-    stack->capacity = capacity;
-    stack->top = -1;
-    stack->stackPtr = (char*)malloc((size_t)(stack->capacity) * sizeof(char));
-    return stack;
-}
-
 void displayString(char str[]);
 void displayStack(struct Stack *stack);
 char peek(struct Stack *stack, int line);
@@ -37,10 +28,13 @@ void push(struct Stack *stack, char item);
 void Infix2Postfix(char inFix[], char postFix[]);
 void strsplit(char inFix[]);
 int getPriority(char operatorStack, char operator);
+void freeStack(struct Stack *stack);
+//double postfixEvaluation(char postFix[]);
 
 int main(){
 
   char *inFix, *postFix;
+  //double answer;
   
   if ((inFix = (char*)malloc((size_t)(MAX_STACKS_SIZE)*sizeof(char))) == NULL)
       { printf("is NULL at %d!\n", __LINE__); exit(0); }
@@ -53,10 +47,31 @@ int main(){
 
   displayString(postFix);
 
+  //answer = postfixEvaluation(postFix);
+
+  //printf("%20.16e\n", answer);
+
   if (inFix == NULL) { printf("inFix is NULL at %d!\n", __LINE__); exit(0); }
   free(inFix);
+  if (postFix == NULL) { printf("postFix is NULL at %d!\n", __LINE__); exit(0); }
+  free(postFix);
 
   return 0;
+}
+
+struct Stack* createStack(unsigned long int capacity)
+{
+    struct Stack* stack = (struct Stack*)malloc(sizeof(struct Stack));
+    stack->capacity = capacity;
+    stack->top = -1;
+    stack->stackPtr = (char*)malloc((size_t)(stack->capacity) * sizeof(char));
+    return stack;
+}
+
+void freeStack(struct Stack *stack)
+{
+  free(stack->stackPtr);
+  free(stack);
 }
 
 void push(struct Stack *stack, char item)
@@ -129,6 +144,8 @@ void Infix2Postfix(char inFix[], char postFix[])
     }
     else if (inFix[i] == '+' || inFix[i] == '*' ||inFix[i] == '-' || inFix[i] == '/' ){
 
+      if (isdigit(inFix[i-1])) postFix[j++] = ' '; /* seperate numbers by space */
+
       int getOut = getPriority(peek(stack, __LINE__), inFix[i]);
 
       if (getOut == 1){
@@ -149,6 +166,8 @@ void Infix2Postfix(char inFix[], char postFix[])
       }
     }
     else if (inFix[i] == ')'){
+      if (isdigit(inFix[i-1])) postFix[j++] = ' '; /* seperate numbers by space */
+
       while(peek(stack, __LINE__) != '('){
         postFix[j++] = pop(stack);
       }
@@ -165,7 +184,57 @@ void Infix2Postfix(char inFix[], char postFix[])
      if (peek(stack, __LINE__) != '(') postFix[j++] = pop(stack);
      else                              pop(stack);
   }
+
+  freeStack(stack);
 }
+
+//double postfixEvaluation(char postFix[])
+//{
+//  struct Stack *stackResult = createStack((unsigned long int)MAX_STACKS_SIZE);
+//  double prev, next, top, answer;
+//
+//  for (int i=0;postFix[i] != '\0';i++){
+//    if ( isdigit(postFix[i]) ){
+//      push(stackResult, postFix[i]);
+//    }
+//    else if( postFix[i] == ' '){
+//      push(stackResult, ' ');
+//    }
+//    else{ /* encounter operators */
+//      pop(stackResult);
+//      top = pop(stackResult);
+//      prev = strtod(, NULL);
+//
+//      pop(stackResult);
+//      pop(stackResult);
+//      next = strtod(, NULL);
+//
+//      if (postFix[i] == '+'){
+//        result = prev + next;
+//      }
+//      else if (postFix[i] == '-'){
+//        result = prev - next;
+//      }
+//      else if (postFix[i] == '*'){
+//        result = prev * next;
+//      }
+//      else if (postFix[i] == '/'){
+//        result = prevNum / nextNum;
+//      }
+//
+//      push(stackResult, result);
+//      push(stackResult, ' ');
+//    }
+//  }
+//
+//  pop(stackResult);
+//
+//  answer = pop(stackResult);
+//
+//  freeStack(stackResult);
+//
+//  return answer;
+//}
 
 void strsplit(char inFix[])
 {
