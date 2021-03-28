@@ -7,11 +7,19 @@ void show_bytes(byte_pointer start, size_t len);
 
 int main()
 {
-char str[] = " ";
+char str[] = {'0','1','\0','3','4','\0'};
 //printf("%f\n", (float)(str[0]-'0')); //5
-//printf("%f\n", (float)('0'));   // 48
+//printf("%c\n", '0');   // 48
+//printf("%c\n", "0"[0]);   // 48
+//printf("%c\n", '\0');   // 48
 //printf("%f\n", (float)(str[0])); //53
-show_bytes((byte_pointer)str, 1);
+//show_bytes((byte_pointer)str, 1);
+
+
+
+for (int i=0;i<5;i++){
+  printf("%c\n", str[i]);
+}
 
 //int i = 0;
 //while(i<strlen(str)){

@@ -46,9 +46,6 @@ int main(){
       { printf("is NULL at %d!\n", __LINE__); exit(0); }
   if ((postFix = (char*)malloc((size_t)(MAX_STACKS_SIZE)*sizeof(char))) == NULL)
       { printf("is NULL at %d!\n", __LINE__); exit(0); }
-
-
-  
  
   scanf("%s", inFix);
   
@@ -56,16 +53,6 @@ int main(){
 
   displayString(postFix);
 
-  //push(stack, '1');
-  //push(stack, '2');
-  //push(stack, '3');
-  //push(stack, '4');
- 
-
-
-
-
-  
   if (inFix == NULL) { printf("inFix is NULL at %d!\n", __LINE__); exit(0); }
   free(inFix);
 
@@ -188,7 +175,6 @@ void strsplit(char inFix[])
     printf("%s\n", token);
     token = strtok(NULL, "+-*/()");
   }
-
 }
 
 
