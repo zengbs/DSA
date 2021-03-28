@@ -29,12 +29,12 @@ void Infix2Postfix(char inFix[], char postFix[]);
 void strsplit(char inFix[]);
 int getPriority(char operatorStack, char operator);
 void freeStack(struct Stack *stack);
-//double postfixEvaluation(char postFix[]);
+double postfixEvaluation(char postFix[]);
 
 int main(){
 
   char *inFix, *postFix;
-  //double answer;
+  double answer;
   
   if ((inFix = (char*)malloc((size_t)(MAX_STACKS_SIZE)*sizeof(char))) == NULL)
       { printf("is NULL at %d!\n", __LINE__); exit(0); }
@@ -47,9 +47,9 @@ int main(){
 
   displayString(postFix);
 
-  //answer = postfixEvaluation(postFix);
+  answer = postfixEvaluation(postFix);
 
-  //printf("%20.16e\n", answer);
+  printf("%20.16e\n", answer);
 
   if (inFix == NULL) { printf("inFix is NULL at %d!\n", __LINE__); exit(0); }
   free(inFix);
@@ -59,12 +59,12 @@ int main(){
   return 0;
 }
 
-struct Stack* createStack(unsigned long int capacity)
+struct Stack* createStack(unsigned long int capacity, size_t sizePerItem)
 {
     struct Stack* stack = (struct Stack*)malloc(sizeof(struct Stack));
     stack->capacity = capacity;
     stack->top = -1;
-    stack->stackPtr = (char*)malloc((size_t)(stack->capacity) * sizeof(char));
+    stack->stackPtr = malloc((size_t)(stack->capacity) * sizePerItem);
     return stack;
 }
 
@@ -132,7 +132,7 @@ void displayString(char str[])
 void Infix2Postfix(char inFix[], char postFix[])
 {
   int j = 0;
-  struct Stack *stack = createStack((unsigned long int)MAX_STACKS_SIZE);
+  struct Stack *stack = createStack((unsigned long int)MAX_STACKS_SIZE, sizeof(char));
 
   for(int i=0;inFix[i] != '\0';i++){
 
@@ -144,7 +144,7 @@ void Infix2Postfix(char inFix[], char postFix[])
     }
     else if (inFix[i] == '+' || inFix[i] == '*' ||inFix[i] == '-' || inFix[i] == '/' ){
 
-      if (isdigit(inFix[i-1])) postFix[j++] = ' '; /* seperate numbers by space */
+      if (isdigit(inFix[i-1])) postFix[j++] = ' '; /* append a space to number */
 
       int getOut = getPriority(peek(stack, __LINE__), inFix[i]);
 
@@ -166,7 +166,7 @@ void Infix2Postfix(char inFix[], char postFix[])
       }
     }
     else if (inFix[i] == ')'){
-      if (isdigit(inFix[i-1])) postFix[j++] = ' '; /* seperate numbers by space */
+      if (isdigit(inFix[i-1])) postFix[j++] = ' '; /* append a space to number*/
 
       while(peek(stack, __LINE__) != '('){
         postFix[j++] = pop(stack);
@@ -188,53 +188,67 @@ void Infix2Postfix(char inFix[], char postFix[])
   freeStack(stack);
 }
 
-//double postfixEvaluation(char postFix[])
-//{
-//  struct Stack *stackResult = createStack((unsigned long int)MAX_STACKS_SIZE);
-//  double prev, next, top, answer;
-//
-//  for (int i=0;postFix[i] != '\0';i++){
-//    if ( isdigit(postFix[i]) ){
-//      push(stackResult, postFix[i]);
-//    }
-//    else if( postFix[i] == ' '){
-//      push(stackResult, ' ');
-//    }
-//    else{ /* encounter operators */
-//      pop(stackResult);
-//      top = pop(stackResult);
-//      prev = strtod(, NULL);
-//
-//      pop(stackResult);
-//      pop(stackResult);
-//      next = strtod(, NULL);
-//
-//      if (postFix[i] == '+'){
-//        result = prev + next;
-//      }
-//      else if (postFix[i] == '-'){
-//        result = prev - next;
-//      }
-//      else if (postFix[i] == '*'){
-//        result = prev * next;
-//      }
-//      else if (postFix[i] == '/'){
-//        result = prevNum / nextNum;
-//      }
-//
-//      push(stackResult, result);
-//      push(stackResult, ' ');
-//    }
-//  }
-//
-//  pop(stackResult);
-//
-//  answer = pop(stackResult);
-//
-//  freeStack(stackResult);
-//
-//  return answer;
-//}
+double postfixEvaluation(char postFix[])
+{
+  struct Stack *stackResult = createStack((unsigned long int)MAX_STACKS_SIZE, sizeof(double));
+  double prev, next, top, answer;
+
+  for (int i=0;postFix[i] != '\0';i++){
+
+    if ( isdigit(postFix[i]) ){
+
+      long int numDigit;
+
+      for (int i=0;postFix[i] != ' ';i++) numDigit++;
+
+      double 
+
+      for (int i=0;postFix[i] != ' ';i++){
+        
+      }
+
+      
+
+      push(stackResult, postFix[i++]);
+    }
+    else if( postFix[i] == ' '){
+      push(stackResult, ' ');
+    }
+    else{ /* encounter operators */
+      pop(stackResult);
+      top = pop(stackResult);
+      prev = strtod(, NULL);
+
+      pop(stackResult);
+      pop(stackResult);
+      next = strtod(, NULL);
+
+      if (postFix[i] == '+'){
+        result = prev + next;
+      }
+      else if (postFix[i] == '-'){
+        result = prev - next;
+      }
+      else if (postFix[i] == '*'){
+        result = prev * next;
+      }
+      else if (postFix[i] == '/'){
+        result = prevNum / nextNum;
+      }
+
+      push(stackResult, result);
+      push(stackResult, ' ');
+    }
+  }
+
+  pop(stackResult);
+
+  answer = pop(stackResult);
+
+  freeStack(stackResult);
+
+  return answer;
+}
 
 void strsplit(char inFix[])
 {
