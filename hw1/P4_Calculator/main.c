@@ -3,7 +3,6 @@
 #include<stdbool.h>
 #include<float.h>
 #include<math.h>
-//#include<ctype.h>
 #include<stdio.h>
 #include<string.h>
 #include<stdint.h> // The maximum size of size_t is provided via SIZE_MAX
