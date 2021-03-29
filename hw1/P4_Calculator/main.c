@@ -258,9 +258,7 @@ double postfixEvaluation(char postFix[])
   for(int i=0;postFix[i] != '\0';i++){
     if ( isdigit(postFix[i]) && inNum){
       int numDigit=0;
-      printf("i=%d\n", i);
       for(int ii=i;postFix[ii] != ' ';ii++) numDigit++;
-      printf("numDigit=%d\n", numDigit);
       double value  = 0.0;
       double base10 = 1.0;
       for(int d=0; d<numDigit;d++){
@@ -269,19 +267,14 @@ double postfixEvaluation(char postFix[])
         base10 *= 10.0;
       }
       /* push the value to the stack */
-      printf("value=%f\n", value);
       pushDouble(stackResult, value);
       inNum = false;
     }
     else if( postFix[i] == '+' || postFix[i] == '-' || postFix[i] == '*' || postFix[i] == '/' ) { /* encounter operators */
-      printf("i=%d\n", i);
       inNum = true;
       double result, next, prev;
-      printf("next=%f, prev=%f\n", next, prev);
       next = popDouble(stackResult);
-      printf("next=%f, prev=%f\n", next, prev);
       prev = popDouble(stackResult);
-      printf("next=%f, prev=%f\n", next, prev);
       if (postFix[i] == '+'){
         result = prev + next;
       }
@@ -293,12 +286,9 @@ double postfixEvaluation(char postFix[])
       }
       else if (postFix[i] == '/'){
         result = prev / next;
-        //printf("%20.16e\n", result);
       }
 
-      //printf("%20.16e\n", result);
       pushDouble(stackResult, result);
-      //printf("%20.16e\n", peekDouble(stackResult, __LINE__));
     }
     else if (postFix[i] == ' ') inNum = true; /*encounter space*/
   }
