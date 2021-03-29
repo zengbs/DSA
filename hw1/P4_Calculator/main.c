@@ -3,7 +3,7 @@
 #include<stdbool.h>
 #include<float.h>
 #include<math.h>
-#include<ctype.h>
+//#include<ctype.h>
 #include<stdio.h>
 #include<string.h>
 #include<stdint.h> // The maximum size of size_t is provided via SIZE_MAX
@@ -27,6 +27,7 @@ struct StackDouble{
 };
 
 void displayString(char str[]);
+int ismydigit(int c );
 void displayStack(struct Stack *stack);
 char peek(struct Stack *stack, int line);
 double peekDouble(struct StackDouble *stack, int line);
@@ -195,13 +196,13 @@ void Infix2Postfix(char inFix[], char postFix[])
     if (inFix[i] == '('){
       push(stack, '(');
     }
-    else if (isdigit(inFix[i]) || isalpha(inFix[i]) ){
+    else if (ismydigit(inFix[i]) ){
       postFix[j++] = inFix[i];
     }
     else if (inFix[i] == '+' || inFix[i] == '*' ||inFix[i] == '-' || inFix[i] == '/' ){
 
       /* append a space to number*/
-      if (isdigit(inFix[i-1])) postFix[j++] = ' ';
+      if (ismydigit(inFix[i-1])) postFix[j++] = ' ';
 
       int getOut = getPriority(peek(stack, __LINE__), inFix[i]);
 
@@ -224,7 +225,7 @@ void Infix2Postfix(char inFix[], char postFix[])
     }
     else if (inFix[i] == ')'){
       /* append a space to number*/
-      if (isdigit(inFix[i-1])) postFix[j++] = ' ';
+      if (ismydigit(inFix[i-1])) postFix[j++] = ' ';
 
       while(peek(stack, __LINE__) != '('){
         postFix[j++] = pop(stack);
@@ -239,7 +240,7 @@ void Infix2Postfix(char inFix[], char postFix[])
     }
 
     /* append a space to number*/
-    if (inFix[i+1] == '\0' && isdigit(inFix[i])) postFix[j++] = ' ';
+    if (inFix[i+1] == '\0' && ismydigit(inFix[i])) postFix[j++] = ' ';
 
   }
   while(stack->top > -1 ){
@@ -260,7 +261,7 @@ double postfixEvaluation(char postFix[])
   for(int i=0;postFix[i] != '\0';i++){
 
     /* the first digit of number */
-    if ( isdigit(postFix[i]) && inNum){
+    if ( ismydigit(postFix[i]) && inNum){
       int numDigit=0;
       for(int ii=i;postFix[ii] != ' ';ii++) numDigit++;
       double value  = 0.0;
@@ -347,4 +348,11 @@ int getPriority(char operatorStack, char operator)
   } 
 
   return -1;
+}
+
+int ismydigit(int c ){
+    if (c >= '0' && c <= '9')
+            return c;
+    else
+            return 0;
 }
