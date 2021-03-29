@@ -13,7 +13,6 @@
 #define MAX_STACKS_SIZE 1e6
 
 
-int top = -1; /*the index of the last element in stack*/
 
 struct Stack{
   int capacity;
@@ -47,9 +46,9 @@ int main(){
   char *inFix, *postFix;
   double answer;
   
-  if ((inFix = (char*)malloc((size_t)(MAX_STACKS_SIZE)*sizeof(char))) == NULL)
+  if ((inFix = (char*)calloc((size_t)(MAX_STACKS_SIZE),sizeof(char))) == NULL)
       { printf("is NULL at %d!\n", __LINE__); exit(0); }
-  if ((postFix = (char*)malloc((size_t)(MAX_STACKS_SIZE)*sizeof(char))) == NULL)
+  if ((postFix = (char*)calloc((size_t)(MAX_STACKS_SIZE),sizeof(char))) == NULL)
       { printf("is NULL at %d!\n", __LINE__); exit(0); }
  
   scanf("%s", inFix);
@@ -267,8 +266,8 @@ double postfixEvaluation(char postFix[])
       double value  = 0.0;
       double base10 = 1.0;
       for(int d=0; d<numDigit;d++){
-        char digitPtr = postFix[numDigit+i-1-d];
-        value += strtod(&digitPtr, NULL)*base10;
+        char digitPtr[2] = {postFix[numDigit+i-1-d], '\0'};
+        value += strtod(digitPtr, NULL)*base10;
         base10 *= 10.0;
       }
       /* push the value to the stack */
