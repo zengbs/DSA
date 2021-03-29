@@ -41,7 +41,6 @@ int getPriority(char operatorStack, char operator);
 void freeStack(struct Stack *stack);
 void freeStackDouble(struct StackDouble *stack);
 double postfixEvaluation(char postFix[]);
-int reverse(int x);
 
 int main(){
 
@@ -237,6 +236,9 @@ void Infix2Postfix(char inFix[], char postFix[])
         exit(0);
       }
     }
+
+    if (inFix[i+1] == '\0' && isdigit(inFix[i])) postFix[j++] = ' '; /* append a space to number*/
+
   }
   while(stack->top > -1 ){
      if (peek(stack, __LINE__) != '(') postFix[j++] = pop(stack);
@@ -250,32 +252,36 @@ double postfixEvaluation(char postFix[])
 {
   struct StackDouble *stackResult = createStackDouble((unsigned long int)MAX_STACKS_SIZE, sizeof(double));
 
-  for (int i=0;postFix[i] != '\0';i++){
 
-    if ( isdigit(postFix[i]) ){
+  bool inNum = true;;
 
-      /* get the reversed integer in decimal */
-      int value = 0;
-      int base10 = 1;
-      for (int d=0; isdigit(postFix[i+d]); d++){
-
-        for (int p=0;p<d;p++) base10 *= 10;
-        char digit = postFix[i];
-        value += atoi(&digit)*base10;
+  for(int i=0;postFix[i] != '\0';i++){
+    if ( isdigit(postFix[i]) && inNum){
+      int numDigit=0;
+      printf("i=%d\n", i);
+      for(int ii=i;postFix[ii] != ' ';ii++) numDigit++;
+      printf("numDigit=%d\n", numDigit);
+      double value  = 0.0;
+      double base10 = 1.0;
+      for(int d=0; d<numDigit;d++){
+        char digitPtr = postFix[numDigit+i-1-d];
+        value += strtod(&digitPtr, NULL)*base10;
+        base10 *= 10.0;
       }
-
-      /* reverse integer */
-      value = reverse(value);  
-      //printf("%d\n", value);
- 
       /* push the value to the stack */
-      pushDouble(stackResult, (double)value);
+      printf("value=%f\n", value);
+      pushDouble(stackResult, value);
+      inNum = false;
     }
-    else if( postFix[i] != ' ' ) { /* encounter operators */
-      double result;
-      double next = popDouble(stackResult);
-      double prev = popDouble(stackResult);
-
+    else if( postFix[i] == '+' || postFix[i] == '-' || postFix[i] == '*' || postFix[i] == '/' ) { /* encounter operators */
+      printf("i=%d\n", i);
+      inNum = true;
+      double result, next, prev;
+      printf("next=%f, prev=%f\n", next, prev);
+      next = popDouble(stackResult);
+      printf("next=%f, prev=%f\n", next, prev);
+      prev = popDouble(stackResult);
+      printf("next=%f, prev=%f\n", next, prev);
       if (postFix[i] == '+'){
         result = prev + next;
       }
@@ -294,6 +300,7 @@ double postfixEvaluation(char postFix[])
       pushDouble(stackResult, result);
       //printf("%20.16e\n", peekDouble(stackResult, __LINE__));
     }
+    else if (postFix[i] == ' ') inNum = true; /*encounter space*/
   }
 
   double answer = peekDouble(stackResult, __LINE__);
@@ -342,17 +349,4 @@ int getPriority(char operatorStack, char operator)
   } 
 
   return -1;
-}
-
- int reverse(int x){
-    int y=0;
-    while(x!=0){
-        if(y>INT_MAX/10||y<INT_MIN/10)return 0;
-        else if(y==INT_MAX/10||y==INT_MIN/10){
-            if(x%10>7||x%10<-8)return 0;
-        }
-        y=y*10+x%10;
-        x/=10;
-    }
-    return y;
 }
