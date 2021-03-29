@@ -9,8 +9,8 @@
 #include<stdint.h> // The maximum size of size_t is provided via SIZE_MAX
 
 
-#define MAX_STRING_SIZE 1e2
-#define MAX_STACKS_SIZE 1e2
+#define MAX_STRING_SIZE 1e6
+#define MAX_STACKS_SIZE 1e6
 
 
 int top = -1; /*the index of the last element in stack*/
@@ -201,7 +201,8 @@ void Infix2Postfix(char inFix[], char postFix[])
     }
     else if (inFix[i] == '+' || inFix[i] == '*' ||inFix[i] == '-' || inFix[i] == '/' ){
 
-      if (isdigit(inFix[i-1])) postFix[j++] = ' '; /* append a space to number */
+      /* append a space to number*/
+      if (isdigit(inFix[i-1])) postFix[j++] = ' ';
 
       int getOut = getPriority(peek(stack, __LINE__), inFix[i]);
 
@@ -223,7 +224,8 @@ void Infix2Postfix(char inFix[], char postFix[])
       }
     }
     else if (inFix[i] == ')'){
-      if (isdigit(inFix[i-1])) postFix[j++] = ' '; /* append a space to number*/
+      /* append a space to number*/
+      if (isdigit(inFix[i-1])) postFix[j++] = ' ';
 
       while(peek(stack, __LINE__) != '('){
         postFix[j++] = pop(stack);
@@ -237,7 +239,8 @@ void Infix2Postfix(char inFix[], char postFix[])
       }
     }
 
-    if (inFix[i+1] == '\0' && isdigit(inFix[i])) postFix[j++] = ' '; /* append a space to number*/
+    /* append a space to number*/
+    if (inFix[i+1] == '\0' && isdigit(inFix[i])) postFix[j++] = ' ';
 
   }
   while(stack->top > -1 ){
