@@ -256,6 +256,8 @@ double postfixEvaluation(char postFix[])
   bool inNum = true;;
 
   for(int i=0;postFix[i] != '\0';i++){
+
+    /* the first digit of number */
     if ( isdigit(postFix[i]) && inNum){
       int numDigit=0;
       for(int ii=i;postFix[ii] != ' ';ii++) numDigit++;
@@ -270,7 +272,9 @@ double postfixEvaluation(char postFix[])
       pushDouble(stackResult, value);
       inNum = false;
     }
-    else if( postFix[i] == '+' || postFix[i] == '-' || postFix[i] == '*' || postFix[i] == '/' ) { /* encounter operators */
+
+    /* encounter operators */
+    else if( postFix[i] == '+' || postFix[i] == '-' || postFix[i] == '*' || postFix[i] == '/' ) {
       inNum = true;
       double result, next, prev;
       next = popDouble(stackResult);
@@ -290,7 +294,9 @@ double postfixEvaluation(char postFix[])
 
       pushDouble(stackResult, result);
     }
-    else if (postFix[i] == ' ') inNum = true; /*encounter space*/
+
+    /*encounter space*/
+    else if (postFix[i] == ' ') inNum = true;
   }
 
   double answer = peekDouble(stackResult, __LINE__);
