@@ -351,8 +351,6 @@ int getPriority(char operatorStack, char operator)
 }
 
 int ismydigit(int c ){
-    if (c >= '0' && c <= '9')
-            return c;
-    else
-            return 0;
+    if (c >= '0' && c <= '9')  return c;
+    else                       return 0;
 }
