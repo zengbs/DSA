@@ -18,48 +18,51 @@ void displayList(struct Stack *node)
 }
 
 
-struct Stack *push(struct Stack *tailNode, int value)
+struct Stack *push(struct Stack *root, int value)
 {
-  struct Stack *NextTailNode = (struct Stack*)malloc(sizeof(struct Stack));
+  struct Stack *newNode = (struct Stack*)malloc(sizeof(struct Stack));
 
-  if ( tailNode == NULL ){
-    printf("the last node is NULL!\n");
-    exit(0);
+  root-> data = value;
+
+  if ( root == NULL ){
+    root = newNode;
+    root-> next = NULL;
   }
   else{
-    tailNode->next = NextTailNode;
-    NextTailNode->data = value;
-    NextTailNode->next = NULL;
+    root -> next = root;
   }
 
-  return NextTailNode;
+  return root;
 }
 
-int pop(struct Stack *tailNode)
+int pop(struct Stack *root)
 {
-  if (tailNode == NULL) printf("stack underflow!");
+  if (root == NULL){
+    printf("stack underflow!\n");
+    exit(0);
+  }
 
-  int popItem = tailNode->data;
+  struct Stack *thisNode = root;
 
-  struct Stack *node = tailNode->next;
+  int lastItem = root->data;
 
-  free(tailNode->next);
+  root = root->next;
 
-  tailNode = node;
+  free(thisNode);
 
-  return popItem;
+  return root;
 }
 
-int peek(struct Stack *tailNode)
+int peek(struct Stack *root)
 {
   int item;
 
-  if ( tailNode == NULL ){
-    printf("tailNode == NULL!\n");
+  if ( root == NULL ){
+    printf("root == NULL!\n");
     exit(0);
   }
   else{
-   item = tailNode->data; 
+   item = root->data; 
   }
 
   return item;
