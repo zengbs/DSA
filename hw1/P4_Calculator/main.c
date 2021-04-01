@@ -9,7 +9,7 @@
 
 
 #define MAX_STRING_SIZE 1000000 
-#define MAX_STACKS_SIZE 1000000 
+#define MAX_STACKS_SIZE 100000
 
 
 
@@ -280,8 +280,7 @@ double postfixEvaluation(char postFix[])
 {
   struct StackDouble *stackResult = createStackDouble((unsigned long int)MAX_STACKS_SIZE, sizeof(double));
 
-
-  bool inNum = true;;
+  bool inNum = true;
 
   for(long int i=0;postFix[i] != '\0';i++){
 
