@@ -39,17 +39,30 @@ int pop(struct Stack *tailNode)
 {
   if (tailNode == NULL) printf("stack underflow!");
 
-  popItem = tailNode->data;
+  int popItem = tailNode->data;
 
-  tailNode = tailNode->next;
+  struct Stack *node = tailNode->next;
+
+  free(tailNode->next);
+
+  tailNode = node;
 
   return popItem;
 }
 
-int peek()
+int peek(struct Stack *tailNode)
 {
+  int item;
 
+  if ( tailNode == NULL ){
+    printf("tailNode == NULL!\n");
+    exit(0);
+  }
+  else{
+   item = tailNode->data; 
+  }
 
+  return item;
 }
 
 
