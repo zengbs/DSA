@@ -1,7 +1,5 @@
 #include<stdio.h>
-
-struct Stack *head;
-struct Stack *tail;
+#include<stdlib.h>
 
 
 struct Stack{
@@ -35,7 +33,7 @@ struct Stack *push(struct Stack *root, int value)
   return root;
 }
 
-int pop(struct Stack *root)
+struct Stack *pop(struct Stack *root)
 {
   if (root == NULL){
     printf("stack underflow!\n");
@@ -71,7 +69,12 @@ int peek(struct Stack *root)
 
 int main(){
 
+int n; /* number of operations */
+int k; /* number of rails */
 
+
+/* what is difference between sizeof(struct Stack *) and sizeof(struct Stack) ? */
+struct Stack **roots = (struct Stack **)malloc((size_t)k*sizeof(struct Stack *));
 
 
 
