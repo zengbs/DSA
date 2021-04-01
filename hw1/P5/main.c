@@ -9,11 +9,11 @@ struct Stack{
   struct Stack *next;
 };
 
-void displayList(struct Stack *node)
+void displayList(struct Stack *root)
 {
-  while( node != NULL ){
-    printf(" %d ", node->data);
-    node = node->next;
+  while( root != NULL ){
+    printf(" %d ", root->data);
+    root = root->next;
   }
 }
 
