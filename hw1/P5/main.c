@@ -38,17 +38,16 @@ struct Stack *push(struct Stack *root, int value)
 
 struct Stack *pop(struct Stack *root)
 {
-  //if (!root){
-  //  printf("stack underflow!\n");
-  //  exit(0);
-  //}
+  if (!root){
+    printf("stack underflow!\n");
+    exit(0);
+  }
 
   struct Stack *thisNode = root;
 
   root = root->next;
 
   free(thisNode);
-
   thisNode = NULL;
 
   return root;
@@ -96,15 +95,15 @@ int op = 0;
 while( op < n ){
 
    scanf("%7s", operation);
-   if      (!strcmp(operation, "leave")){
+   if      (operation[0] == 108){
      scanf("%d"   , &r_leave);
      if (roots[r_leave] != NULL && r_leave < k) roots[r_leave] = pop(roots[r_leave]);
    }
-   else if (!strcmp(operation , "enter" )){
+   else if (operation[0] == 101 ){
      scanf("%d %d", &r_enter, &l_enter);
      if ( r_enter < k)  roots[r_enter] = push(roots[r_enter], l_enter);
    }
-   else if (!strcmp(operation , "migrate")){
+   else if (operation[0] == 109){
      scanf("%d %d", &ra, &rb);
      for(int idx = 0;roots[ra] != NULL; idx++){
        int numCabin = peek(roots[ra]);
@@ -119,7 +118,6 @@ while( op < n ){
 }
 
 /* reverse all linked lists */
-
 for (int ridx=0; ridx<k; ridx++)
   if ( roots[ridx] != NULL ) roots[ridx] = reverseLinkedList(roots[ridx]);
 
