@@ -11,9 +11,10 @@ struct Stack{
 void displayStack(struct Stack *root)
 {
   while( root != NULL ){
-    printf("%d\n", root->data);
+    printf("%d ", root->data);
     root = root->next;
   }
+  printf("\n");
 }
 
 
@@ -71,36 +72,53 @@ int peek(struct Stack *root)
 int main(){
 
 char operation[8];
-int k; /* total number of rails */
-int n; /* total number of operations */
+int k;                /* total number of rails */
+int n;                /* total number of operations */
 
 int l_enter, r_enter; /* the l-th cabin enter the r-th rail */
-int r_leave; /* the last cabin leave the r-th rail */
-int ra, rb; /* migrate all cabins from the rail ra to rb */
+int r_leave;          /* the last cabin leave the r-th rail */
+int ra, rb;           /* migrate all cabins from the rail ra to rb */
 
 scanf("%d %d", &k, &n);
 scanf("%7s", operation);
 
-if      (strcmp(operation, "leave")== 0)   scanf("%d"   , &r_leave);
-else if (strcmp(operation, "enter")== 0)   scanf("%d %d", &r_enter, &l_enter);
+if      (strcmp(operation, "leave"  )== 0) scanf("%d"   , &r_leave);
+else if (strcmp(operation, "enter"  )== 0) scanf("%d %d", &r_enter, &l_enter);
 else if (strcmp(operation, "migrate")== 0) scanf("%d %d", &ra, &rb);
 
-if (strcmp(operation, "enter")  == 0)
-if (strcmp(operation, "leave")  == 0)
-if (strcmp(operation, "migrate")== 0)
 
-/* what is difference between sizeof(struct Stack *) and sizeof(struct Stack) ? */
 struct Stack **roots = (struct Stack **)malloc((size_t)k*sizeof(struct Stack *));
 
 
 /* initialization */
 for (int ridx=0;ridx<k;ridx++){
-  roots[ridx]->data = -ridx-1;
-  roots[ridx]->next = NULL;
+  roots[ridx] = NULL;
 }
 
+/* the l-th cabin enter the r-th rail */
+if (strcmp(operation, "enter")  == 0){
+  roots[r_enter] = push(roots[r_enter], l_enter);
+}
+
+/* the last cabin leave the r-th rail */
+if (strcmp(operation, "leave")  == 0){
+  roots[r_leave] = pop(roots[r_leave]);
+}
+
+//if (strcmp(operation, "migrate")== 0){
+//  for(int idx = 0;roots[idx] != NULL; idx++){
+//
+//  }
+//}
 
 
+/* display all rails */
+for (int ridx=0; ridx<k; ridx++){
+  if (roots[ridx] != NULL){
+    displayStack(roots[ridx]);
+  }
+  else    printf(" \n");
+}
 
 /* free memory */
 //for (int r=0;r<k;r++){
