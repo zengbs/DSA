@@ -49,7 +49,6 @@ struct Stack *pop(struct Stack *root)
   root = root->next;
 
   free(thisNode);
-  thisNode = NULL;
 
   return root;
 }
