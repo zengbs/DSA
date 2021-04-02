@@ -96,14 +96,10 @@ for (int ridx=0;ridx<k;ridx++){
 }
 
 /* the l-th cabin enter the r-th rail */
-if (strcmp(operation, "enter")  == 0){
-  roots[r_enter] = push(roots[r_enter], l_enter);
-}
+if ( strcmp(operation, "enter")  == 0 && r_enter < k )           roots[r_enter] = push(roots[r_enter], l_enter);
 
 /* the last cabin leave the r-th rail */
-if (strcmp(operation, "leave")  == 0){
-  roots[r_leave] = pop(roots[r_leave]);
-}
+if (strcmp(operation, "leave")  == 0 && roots[r_leave] != NULL ) roots[r_leave] = pop(roots[r_leave]);
 
 //if (strcmp(operation, "migrate")== 0){
 //  for(int idx = 0;roots[idx] != NULL; idx++){
@@ -114,10 +110,7 @@ if (strcmp(operation, "leave")  == 0){
 
 /* display all rails */
 for (int ridx=0; ridx<k; ridx++){
-  if (roots[ridx] != NULL){
-    displayStack(roots[ridx]);
-  }
-  else    printf(" \n");
+  roots[ridx] != NULL ?  displayStack(roots[ridx]) :  printf(" \n");
 }
 
 /* free memory */
