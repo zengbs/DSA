@@ -10,7 +10,7 @@ struct Stack{
 
 void displayStack(struct Stack *root)
 {
-  while( root != NULL ){
+  while( root ){
     printf("%d ", root->data);
     root = root->next;
   }
@@ -22,13 +22,13 @@ struct Stack *push(struct Stack *root, int value)
 {
   struct Stack *newNode = (struct Stack*)malloc(sizeof(struct Stack));
 
-  if ( root == NULL ){
-    root = newNode;
-    root-> next = NULL;
-  }
-  else{
+  if ( root ){
     newNode -> next = root;
     root = newNode;
+  }
+  else {
+    root = newNode;
+    root-> next = NULL;
   }
 
   root-> data = value;
@@ -38,10 +38,10 @@ struct Stack *push(struct Stack *root, int value)
 
 struct Stack *pop(struct Stack *root)
 {
-  if (root == NULL){
-    printf("stack underflow!\n");
-    exit(0);
-  }
+  //if (!root){
+  //  printf("stack underflow!\n");
+  //  exit(0);
+  //}
 
   struct Stack *thisNode = root;
 
@@ -56,17 +56,7 @@ struct Stack *pop(struct Stack *root)
 
 int peek(struct Stack *root)
 {
-  int item;
-
-  if ( root == NULL ){
-    printf("root == NULL!\n");
-    exit(0);
-  }
-  else{
-   item = root->data; 
-  }
-
-  return item;
+  return root->data;
 }
 
 struct Stack* reverseLinkedList(struct Stack *root)
@@ -74,7 +64,7 @@ struct Stack* reverseLinkedList(struct Stack *root)
   struct Stack *temp;
   struct Stack *prev = NULL;
   
-  for (int i=0; root != NULL;i++){
+  for (int i=0; root ;i++){
     temp       = root;
     root       = root->next;
     temp->next = prev;
@@ -106,15 +96,15 @@ int op = 0;
 while( op < n ){
 
    scanf("%7s", operation);
-   if      (strcmp(operation, "leave"  )== 0){
+   if      (!strcmp(operation, "leave")){
      scanf("%d"   , &r_leave);
      if (roots[r_leave] != NULL && r_leave < k) roots[r_leave] = pop(roots[r_leave]);
    }
-   else if (strcmp(operation, "enter" )== 0){
+   else if (!strcmp(operation , "enter" )){
      scanf("%d %d", &r_enter, &l_enter);
      if ( r_enter < k)  roots[r_enter] = push(roots[r_enter], l_enter);
    }
-   else if (strcmp(operation, "migrate")== 0){
+   else if (!strcmp(operation , "migrate")){
      scanf("%d %d", &ra, &rb);
      for(int idx = 0;roots[ra] != NULL; idx++){
        int numCabin = peek(roots[ra]);
