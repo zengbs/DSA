@@ -8,6 +8,7 @@ struct Stack{
   struct Stack *next;
 };
 
+/* Is TLE due to this funcion ? */
 void displayStack(struct Stack *root)
 {
   while( root ){
@@ -58,6 +59,8 @@ int peek(struct Stack *root)
   return root->data;
 }
 
+
+/* TLE is not due to this funcion */
 struct Stack* reverseLinkedList(struct Stack *root)
 {
   struct Stack *temp;
@@ -87,7 +90,7 @@ int ra, rb;           /* migrate all cabins from the rail ra to rb */
 scanf("%d %d", &k, &n);
 struct Stack **roots = (struct Stack **)malloc((size_t)k*sizeof(struct Stack *));
 
-/* initialization */
+/* initialization */ /* Is TLE due to this loop ? */
 for (int ridx=0;ridx<k;ridx++)  roots[ridx] = NULL;
 
 int op = 0;
@@ -105,11 +108,11 @@ while( op < n ){
    }
    else if (operation[0] == 109){
      scanf("%d %d", &ra, &rb);
-     for(int idx = 0;roots[ra] != NULL; idx++){
-       int numCabin = peek(roots[ra]);
-       roots[ra]  = pop(roots[ra]);
-       roots[rb] = push(roots[rb], numCabin);
-     } 
+     int idx = 0;
+     for( idx = 0;roots[ra] != NULL; idx++){  /* Is TLE due to this loop ? */
+       roots[rb] = push(roots[rb], roots[ra]->data); /* allocate numCabin at one time? */
+       roots[ra] = roots[ra]->next;
+     }
    }
    
    
@@ -117,6 +120,7 @@ while( op < n ){
    op++;
 }
 
+/* TLE is not due to this funcion */
 /* reverse all linked lists */
 for (int ridx=0; ridx<k; ridx++)
   if ( roots[ridx] != NULL ) roots[ridx] = reverseLinkedList(roots[ridx]);
