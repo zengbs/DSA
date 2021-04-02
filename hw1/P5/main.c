@@ -69,6 +69,21 @@ int peek(struct Stack *root)
   return item;
 }
 
+struct Stack* reverseLinkedList(struct Stack *root)
+{
+  struct Stack *temp;
+  struct Stack *prev = NULL;
+  
+  for (int i=0; root != NULL;i++){
+    temp       = root;
+    root       = root->next;
+    temp->next = prev;
+    prev       = temp;
+  }
+
+  return prev;
+}
+
 
 int main(){
 
@@ -97,7 +112,7 @@ while( op < n ){
    
    
    /* the l-th cabin enter the r-th rail */
-   if ( strcmp(operation, "enter")  == 0 && r_enter < k            ) roots[r_enter] = push(roots[r_enter], l_enter);
+   if ( strcmp(operation, "enter")  == 0 && r_enter < k            )                roots[r_enter] = push(roots[r_enter], l_enter);
    
    /* the last cabin leave the r-th rail */
    if ( strcmp(operation, "leave")  == 0 && roots[r_leave] != NULL && r_leave < k ) roots[r_leave] = pop(roots[r_leave]);
@@ -113,6 +128,11 @@ while( op < n ){
    
    op++;
 }
+
+/* reverse all linked lists */
+
+for (int ridx=0; ridx<k; ridx++)
+  if ( roots[ridx] != NULL ) roots[ridx] = reverseLinkedList(roots[ridx]);
 
 /* display all rails */
 for (int ridx=0; ridx<k; ridx++){
