@@ -1,5 +1,6 @@
 #include<stdio.h>
 #include<stdlib.h>
+#include <string.h>
 
 
 struct Stack{
@@ -69,22 +70,55 @@ int peek(struct Stack *root)
 
 int main(){
 
-int n; /* number of operations */
-int k; /* number of rails */
+char operation[8];
+int k; /* total number of rails */
+int n; /* total number of operations */
 
+int l_enter, r_enter; /* the l-th cabin enter the r-th rail */
+int r_leave; /* the last cabin leave the r-th rail */
+int ra, rb; /* migrate all cabins from the rail ra to rb */
+
+scanf("%d %d", &k, &n);
+scanf("%7s", operation);
+
+if      (strcmp(operation, "leave")== 0)   scanf("%d"   , &r_leave);
+else if (strcmp(operation, "enter")== 0)   scanf("%d %d", &r_enter, &l_enter);
+else if (strcmp(operation, "migrate")== 0) scanf("%d %d", &ra, &rb);
+
+if (strcmp(operation, "enter")  == 0)
+if (strcmp(operation, "leave")  == 0)
+if (strcmp(operation, "migrate")== 0)
 
 /* what is difference between sizeof(struct Stack *) and sizeof(struct Stack) ? */
-// struct Stack **roots = (struct Stack **)malloc((size_t)k*sizeof(struct Stack *));
+struct Stack **roots = (struct Stack **)malloc((size_t)k*sizeof(struct Stack *));
 
-struct Stack *root = NULL;
 
-root = push(root, 1);
-root = push(root, 2);
-root = push(root, 3);
-root = push(root, 4);
-root = push(root, 5);
+/* initialization */
+for (int ridx=0;ridx<k;ridx++){
+  roots[ridx]->data = -ridx-1;
+  roots[ridx]->next = NULL;
+}
 
-displayStack(root);
+
+
+
+/* free memory */
+//for (int r=0;r<k;r++){
+//  pop(roots[r])
+//}
+
+//struct Stack *root = NULL;
+//
+//root = push(root, 1);
+//root = push(root, 2);
+//root = push(root, 3);
+//root = pop(root);
+//root = push(root, 4);
+//root = push(root, 5);
+//
+//root = pop(root);
+//
+//displayStack(root);
 
 
 return 0;
