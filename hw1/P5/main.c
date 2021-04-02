@@ -80,37 +80,34 @@ int r_leave;          /* the last cabin leave the r-th rail */
 int ra, rb;           /* migrate all cabins from the rail ra to rb */
 
 scanf("%d %d", &k, &n);
-scanf("%7s", operation);
-
-if      (strcmp(operation, "leave"  )== 0) scanf("%d"   , &r_leave);
-else if (strcmp(operation, "enter"  )== 0) scanf("%d %d", &r_enter, &l_enter);
-else if (strcmp(operation, "migrate")== 0) scanf("%d %d", &ra, &rb);
-
-
 struct Stack **roots = (struct Stack **)malloc((size_t)k*sizeof(struct Stack *));
 
-
 /* initialization */
-for (int ridx=0;ridx<k;ridx++){
-  roots[ridx] = NULL;
+for (int ridx=0;ridx<k;ridx++)  roots[ridx] = NULL;
+
+while(scanf("%7s", operation) != EOF){
+
+   if      (strcmp(operation, "leave"  )== 0) scanf("%d"   , &r_leave);
+   else if (strcmp(operation, "enter"  )== 0) scanf("%d %d", &r_enter, &l_enter);
+   else if (strcmp(operation, "migrate")== 0) scanf("%d %d", &ra, &rb);
+   
+   
+   /* the l-th cabin enter the r-th rail */
+   if ( strcmp(operation, "enter")  == 0 && r_enter < k )           roots[r_enter] = push(roots[r_enter], l_enter);
+   
+   /* the last cabin leave the r-th rail */
+   if (strcmp(operation, "leave")  == 0 && roots[r_leave] != NULL ) roots[r_leave] = pop(roots[r_leave]);
+   
+   //if (strcmp(operation, "migrate")== 0){
+   //  for(int idx = 0;roots[idx] != NULL; idx++){
+   //
+   //  }
+   //}
 }
-
-/* the l-th cabin enter the r-th rail */
-if ( strcmp(operation, "enter")  == 0 && r_enter < k )           roots[r_enter] = push(roots[r_enter], l_enter);
-
-/* the last cabin leave the r-th rail */
-if (strcmp(operation, "leave")  == 0 && roots[r_leave] != NULL ) roots[r_leave] = pop(roots[r_leave]);
-
-//if (strcmp(operation, "migrate")== 0){
-//  for(int idx = 0;roots[idx] != NULL; idx++){
-//
-//  }
-//}
-
 
 /* display all rails */
 for (int ridx=0; ridx<k; ridx++){
-  roots[ridx] != NULL ?  displayStack(roots[ridx]) :  printf(" \n");
+  roots[ridx] != NULL ?  displayStack(roots[ridx]) :  printf("\n");
 }
 
 /* free memory */
