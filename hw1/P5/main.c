@@ -7,10 +7,10 @@ struct Stack{
   struct Stack *next;
 };
 
-void displayList(struct Stack *root)
+void displayStack(struct Stack *root)
 {
   while( root != NULL ){
-    printf(" %d ", root->data);
+    printf("%d\n", root->data);
     root = root->next;
   }
 }
@@ -20,15 +20,17 @@ struct Stack *push(struct Stack *root, int value)
 {
   struct Stack *newNode = (struct Stack*)malloc(sizeof(struct Stack));
 
-  root-> data = value;
 
   if ( root == NULL ){
     root = newNode;
     root-> next = NULL;
   }
   else{
-    root -> next = root;
+    newNode -> next = root;
+    root = newNode;
   }
+
+  root-> data = value;
 
   return root;
 }
@@ -41,8 +43,6 @@ struct Stack *pop(struct Stack *root)
   }
 
   struct Stack *thisNode = root;
-
-  int lastItem = root->data;
 
   root = root->next;
 
@@ -74,10 +74,17 @@ int k; /* number of rails */
 
 
 /* what is difference between sizeof(struct Stack *) and sizeof(struct Stack) ? */
-struct Stack **roots = (struct Stack **)malloc((size_t)k*sizeof(struct Stack *));
+// struct Stack **roots = (struct Stack **)malloc((size_t)k*sizeof(struct Stack *));
 
+struct Stack *root = NULL;
 
+root = push(root, 1);
+root = push(root, 2);
+root = push(root, 3);
+root = push(root, 4);
+root = push(root, 5);
 
+displayStack(root);
 
 
 return 0;
