@@ -106,25 +106,24 @@ int op = 0;
 while( op < n ){
 
    scanf("%7s", operation);
-   if      (strcmp(operation, "leave"  )== 0) scanf("%d"   , &r_leave);
-   else if (strcmp(operation, "enter"  )== 0) scanf("%d %d", &r_enter, &l_enter);
-   else if (strcmp(operation, "migrate")== 0) scanf("%d %d", &ra, &rb);
-   
-   
-   /* the l-th cabin enter the r-th rail */
-   if ( strcmp(operation, "enter")  == 0 && r_enter < k            )                roots[r_enter] = push(roots[r_enter], l_enter);
-   
-   /* the last cabin leave the r-th rail */
-   if ( strcmp(operation, "leave")  == 0 && roots[r_leave] != NULL && r_leave < k ) roots[r_leave] = pop(roots[r_leave]);
-
-   /* migrate all cabins from the rail ra to rb */
-   if (strcmp(operation, "migrate")== 0){
+   if      (strcmp(operation, "leave"  )== 0){
+     scanf("%d"   , &r_leave);
+     if (roots[r_leave] != NULL && r_leave < k) roots[r_leave] = pop(roots[r_leave]);
+   }
+   else if (strcmp(operation, "enter" )== 0){
+     scanf("%d %d", &r_enter, &l_enter);
+     if ( r_enter < k)  roots[r_enter] = push(roots[r_enter], l_enter);
+   }
+   else if (strcmp(operation, "migrate")== 0){
+     scanf("%d %d", &ra, &rb);
      for(int idx = 0;roots[ra] != NULL; idx++){
        int numCabin = peek(roots[ra]);
        roots[ra]  = pop(roots[ra]);
        roots[rb] = push(roots[rb], numCabin);
-     }
+     } 
    }
+   
+   
    
    op++;
 }
