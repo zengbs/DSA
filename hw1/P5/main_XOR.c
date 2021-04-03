@@ -62,7 +62,7 @@ void push(struct Stack **root, int data)
 }
 
 
-void pop(struct Stack **root, int data)
+void pop(struct Stack **root)
 {
   struct Stack *nextNode;
   struct Stack *nextnextNode;
@@ -70,11 +70,10 @@ void pop(struct Stack **root, int data)
   nextNode     = (*root)->npx;
   nextnextNode = XOR(nextNode->npx, *root);
 
-  nextNode->npx = nextnextNode;
+  nextNode->npx  = nextnextNode;
 
   free(*root);
-
-  *root = nextNode->npx;
+  *root = nextNode;
 }
 
 
@@ -83,11 +82,18 @@ void pop(struct Stack **root, int data)
 int main(){
 
 struct Stack *root = NULL;
-
 push(&root, 1);
 push(&root, 2);
 push(&root, 3);
+pop(&root);
+push(&root, 9);
+pop(&root);
 push(&root, 4);
+push(&root, 5);
+push(&root, 6);
+pop(&root);
+pop(&root);
+push(&root, 7);
 printList(root);
 
 //char operation[8];
