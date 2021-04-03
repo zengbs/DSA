@@ -10,9 +10,9 @@ struct Stack{
   struct Stack* npx;
 };
  
-struct Stack* XOR (struct Stack *a, struct Stack *b)
+struct Stack* XOR(struct Stack *a, struct Stack *b)
 {
-  return (struct Stack*) ((uintptr_t) (a) ^ (uintptr_t) (b));
+  return (struct Stack*)((uintptr_t) (a) ^ (uintptr_t) (b));
 }
 
 // prints contents of doubly linked
