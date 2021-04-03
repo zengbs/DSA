@@ -1,4 +1,5 @@
 #include<stdio.h>
+#include<stdbool.h>
 #include<stdint.h>
 #include<stdlib.h>
 #include <string.h>
@@ -16,19 +17,35 @@ struct Stack* XOR (struct Stack *a, struct Stack *b)
 
 // prints contents of doubly linked
 // list in forward direction
-void printList (struct Stack *root)
+void printList (struct Stack *root, bool FromRoot)
 {
-  struct Stack *curr = root;
+  if (FromRoot){
+    struct Stack *curr = root;
 
-  struct Stack *prev = NULL;
-  struct Stack *next;
+    struct Stack *prev = NULL;
+    struct Stack *next;
  
-  while (curr != NULL)
-  {
-      printf ("%d ", curr->data);
-      next = XOR (prev, curr->npx);
-      prev = curr;
-      curr = next;
+    while (curr != NULL)
+    {
+        printf ("%d ", curr->data);
+        next = XOR (prev, curr->npx);
+        prev = curr;
+        curr = next;
+    }
+  }
+  else{
+    struct Stack *curr = root;
+
+    struct Stack *prev;
+    struct Stack *next = NULL;
+ 
+    while (curr != NULL)
+    {
+        printf ("%d ", curr->data);
+        prev = XOR (next, curr->npx);
+        next = curr;
+        curr = prev;
+    }
   }
   printf("\n");
 }
@@ -81,20 +98,6 @@ void pop(struct Stack **root)
 
 int main(){
 
-//struct Stack *root = NULL;
-//push(&root, 1);
-//push(&root, 2);
-//push(&root, 3);
-//pop(&root);
-//push(&root, 9);
-//pop(&root);
-//push(&root, 4);
-//push(&root, 5);
-//push(&root, 6);
-//pop(&root);
-//pop(&root);
-//push(&root, 7);
-//printList(root);
 
 char operation[8];
 int k;                /* total number of rails */
@@ -106,6 +109,8 @@ int ra, rb;           /* migrate all cabins from the rail ra to rb */
 
 scanf("%d %d", &k, &n);
 struct Stack **roots = (struct Stack **)malloc((size_t)k*sizeof(struct Stack *));
+struct Stack **ends  = (struct Stack **)malloc((size_t)k*sizeof(struct Stack *));
+struct Stack *temp = NULL;
 
 /* initialization */
 for (int ridx=0;ridx<k;ridx++)  roots[ridx] = NULL;
@@ -117,11 +122,19 @@ while( op < n ){
    scanf("%7s", operation);
    if      (strcmp(operation, "leave"  )== 0){
      scanf("%d"   , &r_leave);
-     if (roots[r_leave] != NULL && r_leave < k) pop(&roots[r_leave]);
+     if (roots[r_leave] != NULL && r_leave < k){
+       pop(&roots[r_leave]);
+       if (roots[r_leave] == NULL) ends[r_leave] = NULL;
+     }
    }
    else if (strcmp(operation, "enter" )== 0){
      scanf("%d %d", &r_enter, &l_enter);
-     if ( r_enter < k)    push(&roots[r_enter], l_enter);
+     if ( r_enter < k){
+       temp = roots[r_enter];
+       push(&roots[r_enter], l_enter);
+
+       if ( temp == NULL ) ends[r_enter] = roots[r_enter];
+     }
    }
    else if (strcmp(operation, "migrate")== 0){
      scanf("%d %d", &ra, &rb);
@@ -137,7 +150,8 @@ while( op < n ){
 
 /* display all rails */
 for (int ridx=0; ridx<k; ridx++){
-  roots[ridx] != NULL ?  printList(roots[ridx]) :  printf("\n");
+  ends[ridx] != NULL ?  printList(ends[ridx], false) :  printf("\n");
+  //roots[ridx] != NULL ?  printList(roots[ridx], true) :  printf("\n");
 }
 
 return 0;
