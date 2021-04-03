@@ -112,7 +112,10 @@ struct Stack **roots = (struct Stack **)malloc((size_t)k*sizeof(struct Stack *))
 struct Stack **ends  = (struct Stack **)malloc((size_t)k*sizeof(struct Stack *));
 
 /* initialization */
-for (int ridx=0;ridx<k;ridx++)  roots[ridx] = NULL;
+for (int ridx=0;ridx<k;ridx++){
+  roots[ridx] = NULL;
+  ends[ridx] = NULL;
+}
 
 int op = 0;
 
@@ -137,21 +140,32 @@ while( op < n ){
    }
    else if (strcmp(operation, "migrate")== 0){
      scanf("%d %d", &ra, &rb);
-   //  roots[ra] = reverseLinkedList(roots[ra], roots[rb]);
-   //  roots[rb] = roots[ra];
-   //  roots[ra] = NULL;
+     //struct Stack *temp  = (struct Stack *)malloc(sizeof(struct Stack));
+
+     if (roots[rb] != NULL){
+       roots[rb]->npx  = XOR(roots[rb]->npx, roots[ra]);
+       roots[ra]->npx  = XOR(roots[rb], roots[ra]->npx);
+     }
+     else{
+       ends[rb] = roots[ra];
+     }
+     roots[rb] = ends[ra];
+
+     roots[ra] = NULL;
+      ends[ra] = NULL;
    }
    
    
    
    op++;
 }
+printList(ends[1], false);
 
-/* display all rails */
-for (int ridx=0; ridx<k; ridx++){
-  ends[ridx] != NULL ?  printList(ends[ridx], false) :  printf("\n");
-  //roots[ridx] != NULL ?  printList(roots[ridx], true) :  printf("\n");
-}
+///* display all rails */
+//for (int ridx=0; ridx<k; ridx++){
+//  ends[ridx] != NULL ?  printList(ends[ridx], false) :  printf("\n");
+//  //roots[ridx] != NULL ?  printList(roots[ridx], true) :  printf("\n");
+//}
 
 return 0;
 }
