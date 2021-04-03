@@ -1,4 +1,5 @@
 #include<stdio.h>
+#include<stdint.h>
 #include<stdlib.h>
 #include <string.h>
 
@@ -29,6 +30,7 @@ void printList (struct Stack *root)
       prev = curr;
       curr = next;
   }
+  printf("\n");
 }
 
 /* Insert a node at the beginning of the
@@ -65,20 +67,28 @@ void pop(struct Stack **root, int data)
   struct Stack *nextNode;
   struct Stack *nextnextNode;
 
-  *nextNode     = (*root)->npx;
-  *nextnextNode = XOR((*nextNode)->npx, *root);
+  nextNode     = (*root)->npx;
+  nextnextNode = XOR(nextNode->npx, *root);
 
-  (*nextNode)->npx = *nextnextNode;
+  nextNode->npx = nextnextNode;
 
   free(*root);
 
-  *root = (*nextNode)->npx;
+  *root = nextNode->npx;
 }
 
 
 
 
 int main(){
+
+struct Stack *root = NULL;
+
+push(&root, 1);
+push(&root, 2);
+push(&root, 3);
+push(&root, 4);
+printList(root);
 
 //char operation[8];
 //int k;                /* total number of rails */
