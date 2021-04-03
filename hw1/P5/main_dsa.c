@@ -8,10 +8,9 @@ struct Stack{
   struct Stack *next;
 };
 
-/* Is TLE due to this funcion ? */
 void displayStack(struct Stack *root)
 {
-  while( root ){
+  while( root != NULL ){
     printf("%d ", root->data);
     root = root->next;
   }
@@ -23,13 +22,13 @@ struct Stack *push(struct Stack *root, int value)
 {
   struct Stack *newNode = (struct Stack*)malloc(sizeof(struct Stack));
 
-  if ( root ){
-    newNode -> next = root;
-    root = newNode;
-  }
-  else {
+  if ( root == NULL ){
     root = newNode;
     root-> next = NULL;
+  }
+  else{
+    newNode -> next = root;
+    root = newNode;
   }
 
   root-> data = value;
@@ -39,7 +38,7 @@ struct Stack *push(struct Stack *root, int value)
 
 struct Stack *pop(struct Stack *root)
 {
-  if (!root){
+  if (root == NULL){
     printf("stack underflow!\n");
     exit(0);
   }
@@ -50,22 +49,32 @@ struct Stack *pop(struct Stack *root)
 
   free(thisNode);
 
+  thisNode = NULL;
+
   return root;
 }
 
 int peek(struct Stack *root)
 {
-  return root->data;
+  int item;
+
+  if ( root == NULL ){
+    printf("root == NULL!\n");
+    exit(0);
+  }
+  else{
+   item = root->data; 
+  }
+
+  return item;
 }
 
-
-/* TLE is not due to this funcion */
-struct Stack* reverseLinkedList(struct Stack *root)
+struct Stack* reverseLinkedList(struct Stack *root, struct Stack *end)
 {
   struct Stack *temp;
-  struct Stack *prev = NULL;
+  struct Stack *prev = end;
   
-  for (int i=0; root ;i++){
+  for (int i=0; root != NULL;i++){
     temp       = root;
     root       = root->next;
     temp->next = prev;
@@ -89,7 +98,7 @@ int ra, rb;           /* migrate all cabins from the rail ra to rb */
 scanf("%d %d", &k, &n);
 struct Stack **roots = (struct Stack **)malloc((size_t)k*sizeof(struct Stack *));
 
-/* initialization */ /* Is TLE due to this loop ? */
+/* initialization */
 for (int ridx=0;ridx<k;ridx++)  roots[ridx] = NULL;
 
 int op = 0;
@@ -97,21 +106,24 @@ int op = 0;
 while( op < n ){
 
    scanf("%7s", operation);
-   if      (operation[0] == 108){
+   if      (strcmp(operation, "leave"  )== 0){
      scanf("%d"   , &r_leave);
      if (roots[r_leave] != NULL && r_leave < k) roots[r_leave] = pop(roots[r_leave]);
    }
-   else if (operation[0] == 101 ){
+   else if (strcmp(operation, "enter" )== 0){
      scanf("%d %d", &r_enter, &l_enter);
      if ( r_enter < k)  roots[r_enter] = push(roots[r_enter], l_enter);
    }
-   else if (operation[0] == 109){
+   else if (strcmp(operation, "migrate")== 0){
      scanf("%d %d", &ra, &rb);
-     int idx = 0;
-     for( idx = 0;roots[ra] != NULL; idx++){  /* Is TLE due to this loop ? */
-       roots[rb] = push(roots[rb], roots[ra]->data); /* allocate numCabin at one time? */
-       roots[ra] = roots[ra]->next;
-     }
+     roots[ra] = reverseLinkedList(roots[ra], roots[rb]);
+     roots[rb] = roots[ra];
+     roots[ra] = NULL;
+     ////for(int idx = 0;roots[ra] != NULL; idx++){
+     //  int numCabin = peek(roots[ra]);
+     //  roots[ra]  = pop(roots[ra]);
+     //  roots[rb] = push(roots[rb], numCabin);
+     //}
    }
    
    
@@ -119,10 +131,9 @@ while( op < n ){
    op++;
 }
 
-/* TLE is not due to this funcion */
 /* reverse all linked lists */
 for (int ridx=0; ridx<k; ridx++)
-  if ( roots[ridx] != NULL ) roots[ridx] = reverseLinkedList(roots[ridx]);
+  if ( roots[ridx] != NULL ) roots[ridx] = reverseLinkedList(roots[ridx], NULL);
 
 /* display all rails */
 for (int ridx=0; ridx<k; ridx++){
