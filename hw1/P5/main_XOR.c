@@ -110,7 +110,6 @@ int ra, rb;           /* migrate all cabins from the rail ra to rb */
 scanf("%d %d", &k, &n);
 struct Stack **roots = (struct Stack **)malloc((size_t)k*sizeof(struct Stack *));
 struct Stack **ends  = (struct Stack **)malloc((size_t)k*sizeof(struct Stack *));
-struct Stack *temp = NULL;
 
 /* initialization */
 for (int ridx=0;ridx<k;ridx++)  roots[ridx] = NULL;
@@ -130,7 +129,7 @@ while( op < n ){
    else if (strcmp(operation, "enter" )== 0){
      scanf("%d %d", &r_enter, &l_enter);
      if ( r_enter < k){
-       temp = roots[r_enter];
+       struct Stack *temp = roots[r_enter];
        push(&roots[r_enter], l_enter);
 
        if ( temp == NULL ) ends[r_enter] = roots[r_enter];
