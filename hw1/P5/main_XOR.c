@@ -81,68 +81,64 @@ void pop(struct Stack **root)
 
 int main(){
 
-struct Stack *root = NULL;
-push(&root, 1);
-push(&root, 2);
-push(&root, 3);
-pop(&root);
-push(&root, 9);
-pop(&root);
-push(&root, 4);
-push(&root, 5);
-push(&root, 6);
-pop(&root);
-pop(&root);
-push(&root, 7);
-printList(root);
+//struct Stack *root = NULL;
+//push(&root, 1);
+//push(&root, 2);
+//push(&root, 3);
+//pop(&root);
+//push(&root, 9);
+//pop(&root);
+//push(&root, 4);
+//push(&root, 5);
+//push(&root, 6);
+//pop(&root);
+//pop(&root);
+//push(&root, 7);
+//printList(root);
 
-//char operation[8];
-//int k;                /* total number of rails */
-//int n;                /* total number of operations */
-//
-//int l_enter, r_enter; /* the l-th cabin enter the r-th rail */
-//int r_leave;          /* the last cabin leave the r-th rail */
-//int ra, rb;           /* migrate all cabins from the rail ra to rb */
-//
-//scanf("%d %d", &k, &n);
-//struct Stack **roots = (struct Stack **)malloc((size_t)k*sizeof(struct Stack *));
-//
-///* initialization */
-//for (int ridx=0;ridx<k;ridx++)  roots[ridx] = NULL;
-//
-//int op = 0;
-//
-//while( op < n ){
-//
-//   scanf("%7s", operation);
-//   if      (strcmp(operation, "leave"  )== 0){
-//     scanf("%d"   , &r_leave);
-//     if (roots[r_leave] != NULL && r_leave < k) roots[r_leave] = pop(roots[r_leave]);
-//   }
-//   else if (strcmp(operation, "enter" )== 0){
-//     scanf("%d %d", &r_enter, &l_enter);
-//     if ( r_enter < k)  roots[r_enter] = push(roots[r_enter], l_enter);
-//   }
-//   else if (strcmp(operation, "migrate")== 0){
-//     scanf("%d %d", &ra, &rb);
-//     roots[ra] = reverseLinkedList(roots[ra], roots[rb]);
-//     roots[rb] = roots[ra];
-//     roots[ra] = NULL;
-//   }
-//   
-//   
-//   
-//   op++;
-//}
-//
-///* reverse all linked lists */
-//for (int ridx=0; ridx<k; ridx++)
-//  if ( roots[ridx] != NULL ) roots[ridx] = reverseLinkedList(roots[ridx], NULL);
-//
-///* display all rails */
-//for (int ridx=0; ridx<k; ridx++){
-//  roots[ridx] != NULL ?  displayStack(roots[ridx]) :  printf("\n");
-//}
+char operation[8];
+int k;                /* total number of rails */
+int n;                /* total number of operations */
+
+int l_enter, r_enter; /* the l-th cabin enter the r-th rail */
+int r_leave;          /* the last cabin leave the r-th rail */
+int ra, rb;           /* migrate all cabins from the rail ra to rb */
+
+scanf("%d %d", &k, &n);
+struct Stack **roots = (struct Stack **)malloc((size_t)k*sizeof(struct Stack *));
+
+/* initialization */
+for (int ridx=0;ridx<k;ridx++)  roots[ridx] = NULL;
+
+int op = 0;
+
+while( op < n ){
+
+   scanf("%7s", operation);
+   if      (strcmp(operation, "leave"  )== 0){
+     scanf("%d"   , &r_leave);
+     if (roots[r_leave] != NULL && r_leave < k) pop(&roots[r_leave]);
+   }
+   else if (strcmp(operation, "enter" )== 0){
+     scanf("%d %d", &r_enter, &l_enter);
+     if ( r_enter < k)    push(&roots[r_enter], l_enter);
+   }
+   else if (strcmp(operation, "migrate")== 0){
+     scanf("%d %d", &ra, &rb);
+   //  roots[ra] = reverseLinkedList(roots[ra], roots[rb]);
+   //  roots[rb] = roots[ra];
+   //  roots[ra] = NULL;
+   }
+   
+   
+   
+   op++;
+}
+
+/* display all rails */
+for (int ridx=0; ridx<k; ridx++){
+  roots[ridx] != NULL ?  printList(roots[ridx]) :  printf("\n");
+}
 
 return 0;
 }
