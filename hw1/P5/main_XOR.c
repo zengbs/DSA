@@ -41,7 +41,9 @@ void printList (struct Stack *root, bool FromRoot)
  
     while (curr != NULL)
     {
+        //printf("curr=%p\n", curr);
         printf ("%d ", curr->data);
+        //printf("hi\n");
         prev = XOR (next, curr->npx);
         next = curr;
         curr = prev;
@@ -85,12 +87,18 @@ void pop(struct Stack **root)
   struct Stack *nextnextNode;
 
   nextNode     = (*root)->npx;
-  nextnextNode = XOR(nextNode->npx, *root);
 
-  nextNode->npx  = nextnextNode;
+  if (nextNode != NULL){
+    nextnextNode = XOR(nextNode->npx, *root);
+    nextNode->npx  = XOR(nextnextNode, NULL);
 
-  free(*root);
-  *root = nextNode;
+    free(*root);
+    *root = nextNode;
+  }
+  else{
+    free(*root); 
+    *root = NULL;
+  }
 }
 
 
@@ -138,34 +146,31 @@ while( op < n ){
        if ( temp == NULL ) ends[r_enter] = roots[r_enter];
      }
    }
-   else if (strcmp(operation, "migrate")== 0){
+   else if (strcmp(operation, "migrate")== 0 ){
      scanf("%d %d", &ra, &rb);
-     //struct Stack *temp  = (struct Stack *)malloc(sizeof(struct Stack));
+     if (roots[ra] != NULL){
+       if (roots[rb] != NULL){
+         roots[rb]->npx  = XOR(roots[rb]->npx, roots[ra]);
+         roots[ra]->npx  = XOR(roots[rb], roots[ra]->npx);
+       }
+       else{
+         ends[rb] = roots[ra];
+       }
+       roots[rb] = ends[ra];
 
-     if (roots[rb] != NULL){
-       roots[rb]->npx  = XOR(roots[rb]->npx, roots[ra]);
-       roots[ra]->npx  = XOR(roots[rb], roots[ra]->npx);
+       roots[ra] = NULL;
+        ends[ra] = NULL;
      }
-     else{
-       ends[rb] = roots[ra];
-     }
-     roots[rb] = ends[ra];
-
-     roots[ra] = NULL;
-      ends[ra] = NULL;
    }
-   
    
    
    op++;
 }
-printList(ends[1], false);
 
 ///* display all rails */
-//for (int ridx=0; ridx<k; ridx++){
-//  ends[ridx] != NULL ?  printList(ends[ridx], false) :  printf("\n");
-//  //roots[ridx] != NULL ?  printList(roots[ridx], true) :  printf("\n");
-//}
+for (int ridx=0; ridx<k; ridx++){
+  ends[ridx] != NULL ?  printList(ends[ridx], false) :  printf("\n");
+}
 
 return 0;
 }
