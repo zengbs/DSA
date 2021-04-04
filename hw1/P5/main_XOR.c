@@ -17,9 +17,8 @@ struct Stack* XOR(struct Stack *a, struct Stack *b)
 
 // prints contents of doubly linked
 // list in forward direction
-void printList (struct Stack *root, bool FromRoot)
+void printList (struct Stack *root)
 {
-  if (FromRoot){
     struct Stack *curr = root;
 
     struct Stack *prev = NULL;
@@ -32,23 +31,6 @@ void printList (struct Stack *root, bool FromRoot)
         prev = curr;
         curr = next;
     }
-  }
-  else{
-    struct Stack *curr = root;
-
-    struct Stack *prev;
-    struct Stack *next = NULL;
- 
-    while (curr != NULL)
-    {
-        //printf("curr=%p\n", curr);
-        printf ("%d ", curr->data);
-        //printf("hi\n");
-        prev = XOR (next, curr->npx);
-        next = curr;
-        curr = prev;
-    }
-  }
   printf("\n");
 }
 
@@ -90,7 +72,7 @@ void pop(struct Stack **root)
 
   if (nextNode != NULL){
     nextnextNode = XOR(nextNode->npx, *root);
-    nextNode->npx  = XOR(nextnextNode, NULL);
+    nextNode->npx  = nextnextNode;
 
     free(*root);
     *root = nextNode;
@@ -169,7 +151,7 @@ while( op < n ){
 
 ///* display all rails */
 for (int ridx=0; ridx<k; ridx++){
-  ends[ridx] != NULL ?  printList(ends[ridx], false) :  printf("\n");
+  ends[ridx] != NULL ?  printList(ends[ridx]) :  printf("\n");
 }
 
 return 0;
