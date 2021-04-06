@@ -9,16 +9,14 @@ struct List{
   int data;
   struct List* npx;
 };
- 
-
 
 struct List* XOR(struct List *a, struct List *b)
 {
   return (struct List*)((uintptr_t) (a) ^ (uintptr_t) (b));
 }
 
-// prints contents of doubly linked
-// list in forward direction
+
+
 void printList (struct List *root)
 {
     struct List *curr = root;
@@ -59,6 +57,39 @@ void push(struct List **root, int data)
  
   // Change head
   *root = newNode;
+}
+
+/* delete the item at the position `pos` counted from the root. The root is designated by zero */
+void delete(struct List **root, int pos)
+{
+  struct List *next     = NULL;
+  struct List *cursor = *root;  /* this pointer will point to the target to be deleted */
+  struct List *prev     = NULL;
+  struct List *prevprev = NULL;
+
+  struct List *temp     = NULL;
+
+  for (int i=0; i<pos;i++){
+    prev   = cursor;
+    cursor = XOR(cursor->npx, temp)
+    temp   = cursor;
+  }
+  
+  prevprev  = XOR(prev->npx, cursor);
+  next      = XOR(cursor->npx, prev);
+  prev->npx = XOR(next,prevprev);
+
+  free(cursor->data);
+  free(cursor->npx);
+  free(cursor);
+
+}
+
+/* insert `data` before the position `pos`*/
+
+void insert(struct List **root, int pos, int data)
+{
+
 }
 
 int main()
