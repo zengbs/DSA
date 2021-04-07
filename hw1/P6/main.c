@@ -117,23 +117,31 @@ void insert(struct List **root, int pos, int data)
   struct List *prev     = NULL;
   struct List *prevprev = NULL;
 
-  if (cursor != NULL){
 
-    for (int i=1; i<=pos;i++){
-      next   = XOR(cursor->npx, prev);
-      prev   = cursor;
-      cursor = next;
-    }
+  for (int i=1; i<=pos;i++){
+    next   = XOR(cursor->npx, prev);
+    prev   = cursor;
+    cursor = next;
+  }
 
-    cursor = prev;
-    prev   = XOR(cursor->npx, next);
+  cursor = prev;
+  prev   = XOR(cursor->npx, next);
 
+  if (prev == NULL){
+    new->npx = XOR(cursor, NULL);
+    cursor->npx = XOR(next,new);
+    *root = new;
+  }
+  else if(next == NULL){
+    new->npx = XOR(NULL, cursor);
+    cursor->npx = XOR(new, prev);
+    
+  }
+   else{
     new->npx = XOR(cursor, prev);
     cursor->npx = XOR(next,new);
+    prevprev  = XOR(prev->npx, cursor);
     prev->npx = XOR(new, prevprev);
-  }
-  else{
-
   }
 }
 
@@ -144,11 +152,9 @@ struct List *root = NULL;
 push(&root, 1);
 push(&root, 2);
 push(&root, 3);
+delete(&root, 3);
 push(&root, 4);
-push(&root, 5);
-push(&root, 6);
-delete(&root,1);
-//insert(&root, 4, 999);
+insert(&root, 1, 999);
 
 printList(root);
 //printList(end);
