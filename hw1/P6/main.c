@@ -26,6 +26,10 @@ void printList (struct List *root)
  
     while (curr != NULL)
     {
+        if (curr == NULL){
+          printf("root is NULL! %d\n", __LINE__);
+          exit(0);
+        }
         printf ("%d ", curr->data);
         next = XOR (prev, curr->npx);
         prev = curr;
@@ -70,24 +74,34 @@ void delete(struct List **root, int pos)
 
 
   for (int i=1; i<=pos;i++){
-    if (cursor==NULL){
-      printf("position is outside list!!\n");
-      exit(0);
-    }
     next   = XOR(cursor->npx, prev);
     prev   = cursor;
     cursor = next;
   }
-  
+
   cursor    = prev;
   prev      = XOR(cursor->npx, next);
+  
 
-  prevprev  = XOR(prev->npx, cursor);
-  nextnext  = XOR(next->npx, cursor);
-  prev->npx = XOR(next,prevprev);
-  next->npx = XOR(prev, nextnext);
+  if (prev == NULL){
+    nextnext  = XOR(next->npx, cursor);
+    next->npx = XOR(NULL, nextnext);
+ 
+    *root = next;
+  }
+  else if (next == NULL){
+    prevprev  = XOR(prev->npx, cursor);
+    prev->npx = XOR(next,prevprev);
+  }
+  else{
+    prevprev  = XOR(prev->npx, cursor);
+    prev->npx = XOR(next,prevprev);
+    nextnext  = XOR(next->npx, cursor);
+    next->npx = XOR(prev, nextnext);
+  }
 
   free(cursor);
+  cursor = NULL;
 
 }
 
@@ -98,7 +112,6 @@ void insert(struct List **root, int pos, int data)
   struct List *new = (struct List *)malloc(sizeof (struct List) );
   new->data = data;
 
-  struct List *nextnext = NULL;
   struct List *next     = NULL;
   struct List *cursor   = *root;  /* this pointer will point to the target to be deleted */
   struct List *prev     = NULL;
@@ -128,19 +141,15 @@ int main()
 {
 
 struct List *root = NULL;
-//insert(&root, 1, 99);
 push(&root, 1);
-struct List *end = root;
 push(&root, 2);
 push(&root, 3);
 push(&root, 4);
 push(&root, 5);
-//insert(&root, 2, 999);
 push(&root, 6);
-push(&root, 7);
-delete(&root, 3);
-push(&root, 8);
+delete(&root,1);
+//insert(&root, 4, 999);
 
 printList(root);
-printList(end);
+//printList(end);
 }
