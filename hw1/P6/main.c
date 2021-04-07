@@ -71,18 +71,21 @@ void delete(struct List **root, int pos)
 
 
   for (int i=1; i<=pos;i++){
- printf("i=%d\n", i);
     next   = XOR(cursor->npx, prev);
     prev   = cursor;
     cursor = next;
   }
   
+  next      = cursor;  
+  cursor    = prev;
+  prev      = XOR(cursor->npx, next);
+
   prevprev  = XOR(prev->npx, cursor);
   nextnext  = XOR(next->npx, cursor);
   prev->npx = XOR(next,prevprev);
   next->npx = XOR(prev, nextnext);
 
-  free(cursor);
+  //free(cursor);
 
 }
 
@@ -102,7 +105,11 @@ struct List *end = root;
 push(&root, 2);
 push(&root, 3);
 push(&root, 4);
+push(&root, 5);
+push(&root, 6);
+push(&root, 7);
 delete(&root, 2);
+push(&root, 8);
 
 printList(root);
 printList(end);
