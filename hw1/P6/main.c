@@ -5,15 +5,6 @@
 #include <string.h>
 
 
-void XorSwap( struct List **x, struct List **y) 
-{
-  if (*x != *y)
-  {
-    **x ^= **y;
-    **y ^= **x;
-    **x ^= **y;
-  }
-}
 
 struct List{
   int data;
@@ -25,7 +16,7 @@ struct List* XOR(struct List *a, struct List *b)
   return (struct List*)((uintptr_t) (a) ^ (uintptr_t) (b));
 }
 
-void reverse(struct List *root, int l, int r)
+void reverse(struct List **root, int l, int r)
 {
   struct List *r_nextnext = NULL;
   struct List *r_next     = NULL;
@@ -33,48 +24,50 @@ void reverse(struct List *root, int l, int r)
   struct List *r_prev     = NULL;
   struct List *r_prevprev = NULL;
 
-
-  for (int i=1; i<=r;i++){
-    r_next   = XOR(cursor->npx, prev);
-    r_prev   = cursor;
-    r_cursor = next;
-  }
-
-  r_cursor    = prev;
-  r_prev      = XOR(cursor->npx, next);
-
-  r_nextnext  = XOR(r_next->npx, r_cursor);
-  r_prevprev  = XOR(r_prev->npx, r_cursor);
-
-
-/*-----------------------------------------------*/
-
   struct List *l_nextnext = NULL;
   struct List *l_next     = NULL;
   struct List *l_cursor   = *root;  /* this pointer will point to the target to be deleted */
   struct List *l_prev     = NULL;
   struct List *l_prevprev = NULL;
 
+/*-----------------------------------------------*/
 
-  for (int i=1; i<=l;i++){
-    l_next   = XOR(cursor->npx, prev);
-    l_prev   = cursor;
-    l_cursor = next;
+  for (int i=1; i<=r;i++){
+    r_next   = XOR(r_cursor->npx, r_prev);
+    r_prev   = r_cursor;
+    r_cursor = r_next;
   }
 
-  l_cursor    = prev;
-  l_prev      = XOR(cursor->npx, next);
+  r_cursor    = r_prev;
+  r_prev      = XOR(r_cursor->npx, r_next);
+
+  r_nextnext  = XOR(r_next->npx, r_cursor);
+  r_prevprev  = XOR(r_prev->npx, r_cursor);
+
+  printf("r_cursor->data=%d\n", r_cursor->data);
+/*-----------------------------------------------*/
+
+  for (int i=1; i<=l;i++){
+    l_next   = XOR(l_cursor->npx, l_prev);
+    l_prev   = l_cursor;
+    l_cursor = l_next;
+  }
+
+  l_cursor    = l_prev;
+  l_prev      = XOR(l_cursor->npx, l_next);
 
   l_nextnext  = XOR(l_next->npx, l_cursor);
   l_prevprev  = XOR(l_prev->npx, l_cursor);
 
 /*-----------------------------------------------*/
-  
   r_prev->npx = XOR(l_cursor, r_prevprev);
   l_next->npx = XOR(r_cursor, l_nextnext);
 
-  r_cursor    = XOR(r_prev, l_prev);
-  l_cursor    = XOR(l_next, r_next);
+  r_cursor->npx = XOR(r_next, l_next);
+  l_cursor->npx = XOR(l_prev, r_prev);
+
+  printf("l_cursor->data=%d\n", l_cursor->data);
+  
 }
 
 void printList (struct List *root)
@@ -187,7 +180,7 @@ void insert(struct List **root, int pos, int data)
     cursor->npx = XOR(new, prev);
     
   }
-   else{
+  else{
     new->npx = XOR(cursor, prev);
     cursor->npx = XOR(next,new);
     prevprev  = XOR(prev->npx, cursor);
@@ -202,10 +195,15 @@ struct List *root = NULL;
 push(&root, 1);
 push(&root, 2);
 push(&root, 3);
-push(&root, 88);
-delete(&root, 3);
 push(&root, 4);
-insert(&root, 1, 999);
+push(&root, 5);
+push(&root, 6);
+push(&root, 7);
+push(&root, 8);
+push(&root, 9);
+push(&root, 10);
+push(&root, 11);
+reverse(&root, 8, 3);
 
 printList(root);
 //printList(end);
