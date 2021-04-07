@@ -70,6 +70,10 @@ void delete(struct List **root, int pos)
 
 
   for (int i=1; i<=pos;i++){
+    if (cursor==NULL){
+      printf("position is outside list!!\n");
+      exit(0);
+    }
     next   = XOR(cursor->npx, prev);
     prev   = cursor;
     cursor = next;
@@ -87,7 +91,7 @@ void delete(struct List **root, int pos)
 
 }
 
-/* insert `data` after the position `pos` counted from the root. The root is designated by zero */
+/* insert `data` before the position `pos` counted from the root. The root is designated by zero */
 
 void insert(struct List **root, int pos, int data)
 {
@@ -98,37 +102,43 @@ void insert(struct List **root, int pos, int data)
   struct List *next     = NULL;
   struct List *cursor   = *root;  /* this pointer will point to the target to be deleted */
   struct List *prev     = NULL;
+  struct List *prevprev = NULL;
 
+  if (cursor != NULL){
 
-  for (int i=1; i<=pos;i++){
-    next   = XOR(cursor->npx, prev);
-    prev   = cursor;
-    cursor = next;
+    for (int i=1; i<=pos;i++){
+      next   = XOR(cursor->npx, prev);
+      prev   = cursor;
+      cursor = next;
+    }
+
+    cursor = prev;
+    prev   = XOR(cursor->npx, next);
+
+    new->npx = XOR(cursor, prev);
+    cursor->npx = XOR(next,new);
+    prev->npx = XOR(new, prevprev);
   }
+  else{
 
-  cursor = prev;
-  prev   = XOR(cursor->npx, next);
-
-  nextnext  = XOR(next->npx, cursor);
-  new->npx = XOR(cursor, next);
-  cursor->npx = XOR(new,prev);
-  next->npx = XOR(nextnext, new);
+  }
 }
 
 int main()
 {
 
 struct List *root = NULL;
+//insert(&root, 1, 99);
 push(&root, 1);
 struct List *end = root;
 push(&root, 2);
 push(&root, 3);
 push(&root, 4);
 push(&root, 5);
-insert(&root, 2, 99);
+//insert(&root, 2, 999);
 push(&root, 6);
 push(&root, 7);
-delete(&root, 2);
+delete(&root, 3);
 push(&root, 8);
 
 printList(root);
