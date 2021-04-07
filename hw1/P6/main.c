@@ -7,7 +7,7 @@
 
 struct List{
   int data;
-  struct List* npx;
+  struct List *npx;
 };
 
 struct List* XOR(struct List *a, struct List *b)
@@ -63,24 +63,25 @@ void push(struct List **root, int data)
 void delete(struct List **root, int pos)
 {
   struct List *next     = NULL;
-  struct List *cursor = *root;  /* this pointer will point to the target to be deleted */
+  struct List *cursor   = *root;  /* this pointer will point to the target to be deleted */
   struct List *prev     = NULL;
   struct List *prevprev = NULL;
+  struct List *nextnext = NULL;
 
-  struct List *temp     = NULL;
 
-  for (int i=0; i<pos;i++){
+
+  for (int i=1; i<=pos;i++){
+ printf("i=%d\n", i);
+    next   = XOR(cursor->npx, prev);
     prev   = cursor;
-    cursor = XOR(cursor->npx, temp)
-    temp   = cursor;
+    cursor = next;
   }
   
   prevprev  = XOR(prev->npx, cursor);
-  next      = XOR(cursor->npx, prev);
+  nextnext  = XOR(next->npx, cursor);
   prev->npx = XOR(next,prevprev);
+  next->npx = XOR(prev, nextnext);
 
-  free(cursor->data);
-  free(cursor->npx);
   free(cursor);
 
 }
@@ -101,6 +102,7 @@ struct List *end = root;
 push(&root, 2);
 push(&root, 3);
 push(&root, 4);
+delete(&root, 2);
 
 printList(root);
 printList(end);
