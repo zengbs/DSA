@@ -37,7 +37,7 @@ void printList (struct List *root)
 void push(struct List **root, int data)
 {
   // Allocate memory for new node
-  struct List *newNode = (struct List *) malloc (sizeof (struct List) );
+  struct List *newNode = (struct List *)malloc(sizeof (struct List) );
   newNode->data = data;
  
   /* Since new node is being inserted at the
@@ -62,12 +62,11 @@ void push(struct List **root, int data)
 /* delete the item at the position `pos` counted from the root. The root is designated by zero */
 void delete(struct List **root, int pos)
 {
+  struct List *nextnext = NULL;
   struct List *next     = NULL;
   struct List *cursor   = *root;  /* this pointer will point to the target to be deleted */
   struct List *prev     = NULL;
   struct List *prevprev = NULL;
-  struct List *nextnext = NULL;
-
 
 
   for (int i=1; i<=pos;i++){
@@ -76,7 +75,6 @@ void delete(struct List **root, int pos)
     cursor = next;
   }
   
-  next      = cursor;  
   cursor    = prev;
   prev      = XOR(cursor->npx, next);
 
@@ -85,15 +83,36 @@ void delete(struct List **root, int pos)
   prev->npx = XOR(next,prevprev);
   next->npx = XOR(prev, nextnext);
 
-  //free(cursor);
+  free(cursor);
 
 }
 
-/* insert `data` before the position `pos`*/
+/* insert `data` after the position `pos` counted from the root. The root is designated by zero */
 
 void insert(struct List **root, int pos, int data)
 {
+  struct List *new = (struct List *)malloc(sizeof (struct List) );
+  new->data = data;
 
+  struct List *nextnext = NULL;
+  struct List *next     = NULL;
+  struct List *cursor   = *root;  /* this pointer will point to the target to be deleted */
+  struct List *prev     = NULL;
+
+
+  for (int i=1; i<=pos;i++){
+    next   = XOR(cursor->npx, prev);
+    prev   = cursor;
+    cursor = next;
+  }
+
+  cursor = prev;
+  prev   = XOR(cursor->npx, next);
+
+  nextnext  = XOR(next->npx, cursor);
+  new->npx = XOR(cursor, next);
+  cursor->npx = XOR(new,prev);
+  next->npx = XOR(nextnext, new);
 }
 
 int main()
@@ -106,6 +125,7 @@ push(&root, 2);
 push(&root, 3);
 push(&root, 4);
 push(&root, 5);
+insert(&root, 2, 99);
 push(&root, 6);
 push(&root, 7);
 delete(&root, 2);
