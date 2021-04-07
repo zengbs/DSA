@@ -72,6 +72,9 @@ void reverse(struct List *root, int l, int r)
   
   r_prev->npx = XOR(l_cursor, r_prevprev);
   l_next->npx = XOR(r_cursor, l_nextnext);
+
+  r_cursor    = XOR(r_prev, l_prev);
+  l_cursor    = XOR(l_next, r_next);
 }
 
 void printList (struct List *root)
