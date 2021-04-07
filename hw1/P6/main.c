@@ -5,6 +5,16 @@
 #include <string.h>
 
 
+void XorSwap( struct List **x, struct List **y) 
+{
+  if (*x != *y)
+  {
+    **x ^= **y;
+    **y ^= **x;
+    **x ^= **y;
+  }
+}
+
 struct List{
   int data;
   struct List *npx;
@@ -15,7 +25,54 @@ struct List* XOR(struct List *a, struct List *b)
   return (struct List*)((uintptr_t) (a) ^ (uintptr_t) (b));
 }
 
+void reverse(struct List *root, int l, int r)
+{
+  struct List *r_nextnext = NULL;
+  struct List *r_next     = NULL;
+  struct List *r_cursor   = *root;  /* this pointer will point to the target to be deleted */
+  struct List *r_prev     = NULL;
+  struct List *r_prevprev = NULL;
 
+
+  for (int i=1; i<=r;i++){
+    r_next   = XOR(cursor->npx, prev);
+    r_prev   = cursor;
+    r_cursor = next;
+  }
+
+  r_cursor    = prev;
+  r_prev      = XOR(cursor->npx, next);
+
+  r_nextnext  = XOR(r_next->npx, r_cursor);
+  r_prevprev  = XOR(r_prev->npx, r_cursor);
+
+
+/*-----------------------------------------------*/
+
+  struct List *l_nextnext = NULL;
+  struct List *l_next     = NULL;
+  struct List *l_cursor   = *root;  /* this pointer will point to the target to be deleted */
+  struct List *l_prev     = NULL;
+  struct List *l_prevprev = NULL;
+
+
+  for (int i=1; i<=l;i++){
+    l_next   = XOR(cursor->npx, prev);
+    l_prev   = cursor;
+    l_cursor = next;
+  }
+
+  l_cursor    = prev;
+  l_prev      = XOR(cursor->npx, next);
+
+  l_nextnext  = XOR(l_next->npx, l_cursor);
+  l_prevprev  = XOR(l_prev->npx, l_cursor);
+
+/*-----------------------------------------------*/
+  
+  r_prev->npx = XOR(l_cursor, r_prevprev);
+  l_next->npx = XOR(r_cursor, l_nextnext);
+}
 
 void printList (struct List *root)
 {
@@ -40,26 +97,16 @@ void printList (struct List *root)
 
 void push(struct List **root, int data)
 {
-  // Allocate memory for new node
   struct List *newNode = (struct List *)malloc(sizeof (struct List) );
   newNode->data = data;
  
-  /* Since new node is being inserted at the
-     beginning, npx of new node will always be
-     XOR of current head and NULL */
   newNode->npx = *root;
  
-  /* If linked list is not empty, then npx of
-     current head node will be XOR of new node
-     and node next to current head */
   if (*root != NULL)
   {
-      // *(root)->npx is XOR of NULL and next.
-      // So if we do XOR of it with NULL, we get next
-      (*root)->npx = XOR(newNode, (*root)->npx);
+    (*root)->npx = XOR(newNode, (*root)->npx);
   }
  
-  // Change head
   *root = newNode;
 }
 
@@ -152,6 +199,7 @@ struct List *root = NULL;
 push(&root, 1);
 push(&root, 2);
 push(&root, 3);
+push(&root, 88);
 delete(&root, 3);
 push(&root, 4);
 insert(&root, 1, 999);
