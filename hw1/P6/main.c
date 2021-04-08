@@ -18,14 +18,27 @@ struct List* XOR(struct List *a, struct List *b)
 
 void GetNeighbour(int pos, struct List **prevprev, struct List **prev, struct List **cursor, struct List **next, struct List **nextnext)
 {
-  for (int i=1; i<=pos;i++){
-    *next   = XOR((*cursor)->npx, *prev);
+  int i;
+
+
+  for (i=1; i<=pos; i++){
+    if (*cursor != NULL) *next   = XOR((*cursor)->npx, *prev);
     *prev   = *cursor;
     *cursor = *next;
   }
-
+ 
   *cursor    = *prev;
-  *prev      = XOR((*cursor)->npx, *next);
+
+  //if (*cursor==NULL){
+  //  *prev = *root;
+  //  *prevprev = XOR((*prev)->npx, NULL);
+  //  return;
+  //}
+
+
+  if (*cursor != NULL) *prev      = XOR((*cursor)->npx, *next);
+  if (*prev   != NULL) *prevprev  = XOR((*prev)->npx, *cursor);
+  if (*next   != NULL) *nextnext  = XOR((*next)->npx, *cursor);
 }
 
 void reverse(struct List **end, struct List **root, int l, int r)
@@ -153,42 +166,41 @@ void delete(struct List **end, struct List **root, int pos)
 
 }
 
-/* insert `data` before the position `pos` counted from the root. The root is designated by zero */
+/* insert `data` before the position `pos` counted from the end. The end is designated by 1 */
 
-void insert(struct List **root, int pos, int data)
+void insert(struct List **end, struct List **root, int pos, int data)
 {
   struct List *new = (struct List *)malloc(sizeof (struct List) );
   new->data = data;
 
+  struct List *nextnext = NULL;
   struct List *next     = NULL;
-  struct List *cursor   = *root;  /* this pointer will point to the target to be deleted */
+  struct List *cursor   = *end;  /* this pointer will point to the target to be deleted */
   struct List *prev     = NULL;
   struct List *prevprev = NULL;
 
-
-  for (int i=1; i<=pos;i++){
-    next   = XOR(cursor->npx, prev);
-    prev   = cursor;
-    cursor = next;
-  }
-
-  cursor = prev;
-  prev   = XOR(cursor->npx, next);
+  GetNeighbour(pos, &prevprev, &prev, &cursor, &next, &nextnext);
 
   if (prev == NULL){
     new->npx = XOR(cursor, NULL);
     cursor->npx = XOR(next,new);
-    *root = new;
+    *end = new;
   }
   else if(next == NULL){
-    new->npx = XOR(NULL, cursor);
-    cursor->npx = XOR(new, prev);
-    
+    new->npx = XOR(prev, cursor);
+    cursor->npx = XOR(new, NULL);
+    prev->npx  = XOR(new, prevprev);
+  }
+  else if (cursor == NULL){
+    new->npx = XOR(prev, NULL);
+    prev->npx = XOR(prevprev, new);
+    *root = new;
+    printf("prev->data=%d\n",prev->data);
+    printf("prevprev->data=%d\n",prevprev->data);
   }
   else{
     new->npx = XOR(cursor, prev);
     cursor->npx = XOR(next,new);
-    prevprev  = XOR(prev->npx, cursor);
     prev->npx = XOR(new, prevprev);
   }
 }
@@ -205,10 +217,10 @@ push(&root, 4);
 push(&root, 5);
 push(&root, 6);
 push(&root, 7);
-delete(&end, &root, 3);
-push(&root, 8);
+insert(&end, &root, 8, 99);
+//push(&root, 8);
 //reverse(&end, &root, 1, 9);
 
-//printList(root);
+printList(root);
 printList(end);
 }
