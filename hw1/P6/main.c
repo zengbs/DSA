@@ -16,17 +16,17 @@ struct List* XOR(struct List *a, struct List *b)
   return (struct List*)((uintptr_t) (a) ^ (uintptr_t) (b));
 }
 
-void reverse(struct List **root, int l, int r)
+void reverse(struct List **end, int l, int r)
 {
   struct List *r_nextnext = NULL;
   struct List *r_next     = NULL;
-  struct List *r_cursor   = *root;  /* this pointer will point to the target to be deleted */
+  struct List *r_cursor   = *end;  /* this pointer will point to the target to be deleted */
   struct List *r_prev     = NULL;
   struct List *r_prevprev = NULL;
 
   struct List *l_nextnext = NULL;
   struct List *l_next     = NULL;
-  struct List *l_cursor   = *root;  /* this pointer will point to the target to be deleted */
+  struct List *l_cursor   = *end;  /* this pointer will point to the target to be deleted */
   struct List *l_prev     = NULL;
   struct List *l_prevprev = NULL;
 
@@ -44,7 +44,6 @@ void reverse(struct List **root, int l, int r)
   r_nextnext  = XOR(r_next->npx, r_cursor);
   r_prevprev  = XOR(r_prev->npx, r_cursor);
 
-  printf("r_cursor->data=%d\n", r_cursor->data);
 /*-----------------------------------------------*/
 
   for (int i=1; i<=l;i++){
@@ -60,13 +59,12 @@ void reverse(struct List **root, int l, int r)
   l_prevprev  = XOR(l_prev->npx, l_cursor);
 
 /*-----------------------------------------------*/
-  r_prev->npx = XOR(l_cursor, r_prevprev);
-  l_next->npx = XOR(r_cursor, l_nextnext);
 
-  r_cursor->npx = XOR(r_next, l_next);
-  l_cursor->npx = XOR(l_prev, r_prev);
+  r_next->npx = XOR(l_cursor, r_nextnext);
+  l_prev->npx = XOR(r_cursor, l_prevprev);
 
-  printf("l_cursor->data=%d\n", l_cursor->data);
+  r_cursor->npx = XOR(r_prev, l_prev);
+  l_cursor->npx = XOR(l_next, r_next);
   
 }
 
@@ -193,6 +191,7 @@ int main()
 
 struct List *root = NULL;
 push(&root, 1);
+struct List *end = root;
 push(&root, 2);
 push(&root, 3);
 push(&root, 4);
@@ -203,8 +202,8 @@ push(&root, 8);
 push(&root, 9);
 push(&root, 10);
 push(&root, 11);
-reverse(&root, 8, 3);
+reverse(&end, 3, 8);
 
-printList(root);
-//printList(end);
+//printList(root);
+printList(end);
 }
