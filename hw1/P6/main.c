@@ -53,40 +53,41 @@ void reverse(struct List **end, struct List **root, int l, int r)
   struct List *r_next     = NULL;
   struct List *r_cursor   = *end;  /* this pointer will point to the target to be deleted */
   struct List *r_prev     = NULL;
-  //struct List *r_prevprev = NULL;
 
-  //struct List *l_nextnext = NULL;
   struct List *l_next     = NULL;
   struct List *l_cursor   = *end;  /* this pointer will point to the target to be deleted */
   struct List *l_prev     = NULL;
   struct List *l_prevprev = NULL;
 
 /*-----------------------------------------------*/
+  bool doLeftPart = true;
 
   for (int i=1; i<=r;i++){
     r_next   = XOR(r_cursor->npx, r_prev);
     r_prev   = r_cursor;
     r_cursor = r_next;
+
+    if (i<=l  && doLeftPart){
+      l_next   = XOR(l_cursor->npx, l_prev);
+      l_prev   = l_cursor;
+      l_cursor = l_next;
+    }
+    else{
+      doLeftPart = false;
+    }
   }
 
   r_cursor    = r_prev;
   r_prev      = XOR(r_cursor->npx, r_next);
 
   if (r_next != NULL) r_nextnext  = XOR(r_next->npx, r_cursor);
-  //r_prevprev  = XOR(r_prev->npx, r_cursor);
 
 /*-----------------------------------------------*/
 
-  for (int i=1; i<=l;i++){
-    l_next   = XOR(l_cursor->npx, l_prev);
-    l_prev   = l_cursor;
-    l_cursor = l_next;
-  }
 
   l_cursor    = l_prev;
   l_prev      = XOR(l_cursor->npx, l_next);
 
-  //l_nextnext  = XOR(l_next->npx, l_cursor);
   if (l_prev != NULL) l_prevprev  = XOR(l_prev->npx, l_cursor);
 
 /*-----------------------------------------------*/
@@ -228,18 +229,12 @@ int main()
     insert(&end, &root, 1, number);
   }
 
-  /* swap **root and **end */
+  /* reverse list by swapping **root and **end */
   struct List *tmp;
   tmp = root;
   root = end;
   end = tmp;
 
-
-  //reverse(&end, &root, 1, 7);
-  //reverse(&end, &root, 2, 6);
-  //insert(&end, &root, 9, 99);
-  //delete(&end, &root, 5);
-  //insert(&end, &root, 5, 99);
   
   //printList(root);
   printList(end);
