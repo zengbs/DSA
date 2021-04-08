@@ -16,15 +16,15 @@ struct List* XOR(struct List *a, struct List *b)
   return (struct List*)((uintptr_t) (a) ^ (uintptr_t) (b));
 }
 
-void reverse(struct List **end, int l, int r)
+void reverse(struct List **end, struct List **root, int l, int r)
 {
   struct List *r_nextnext = NULL;
   struct List *r_next     = NULL;
   struct List *r_cursor   = *end;  /* this pointer will point to the target to be deleted */
   struct List *r_prev     = NULL;
-  struct List *r_prevprev = NULL;
+  //struct List *r_prevprev = NULL;
 
-  struct List *l_nextnext = NULL;
+  //struct List *l_nextnext = NULL;
   struct List *l_next     = NULL;
   struct List *l_cursor   = *end;  /* this pointer will point to the target to be deleted */
   struct List *l_prev     = NULL;
@@ -42,7 +42,7 @@ void reverse(struct List **end, int l, int r)
   r_prev      = XOR(r_cursor->npx, r_next);
 
   if (r_next != NULL) r_nextnext  = XOR(r_next->npx, r_cursor);
-  r_prevprev  = XOR(r_prev->npx, r_cursor);
+  //r_prevprev  = XOR(r_prev->npx, r_cursor);
 
 /*-----------------------------------------------*/
 
@@ -55,7 +55,7 @@ void reverse(struct List **end, int l, int r)
   l_cursor    = l_prev;
   l_prev      = XOR(l_cursor->npx, l_next);
 
-  l_nextnext  = XOR(l_next->npx, l_cursor);
+  //l_nextnext  = XOR(l_next->npx, l_cursor);
   if (l_prev != NULL) l_prevprev  = XOR(l_prev->npx, l_cursor);
 
 /*-----------------------------------------------*/
@@ -67,6 +67,7 @@ void reverse(struct List **end, int l, int r)
   l_cursor->npx = XOR(l_next, r_next);
  
   if (l_prev == NULL) *end = r_cursor;
+  if (r_next == NULL) *root = l_cursor;
 }
 
 void printList (struct List *root)
@@ -201,9 +202,8 @@ push(&root, 6);
 push(&root, 7);
 push(&root, 8);
 push(&root, 9);
+reverse(&end, &root, 1, 9);
 push(&root, 10);
-push(&root, 11);
-reverse(&end, 3, 8);
 
 //printList(root);
 printList(end);
