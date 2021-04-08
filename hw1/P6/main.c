@@ -225,7 +225,8 @@ int main()
   push(&root, number);
   struct List *end = root;
 
-  while(scanf("%d", &number) != EOF){
+  for(int i=1;i<=n-1;i++){
+    scanf("%d", &number);
     insert(&end, &root, 1, number);
   }
 
@@ -235,6 +236,25 @@ int main()
   root = end;
   end = tmp;
 
+  /* read operations */
+  char operation[10];
+  int l_pos, r_pos, value;
+
+  for(int i=0;i<q;i++){
+   scanf("%7s", operation);
+     if(strcmp(operation, "Delete"  )== 0){
+       scanf("%d", &l_pos);
+       delete(&end, &root, l_pos);
+     }
+     if(strcmp(operation, "Insert"  )== 0){
+       scanf("%d %d", &l_pos, &value);
+       insert(&end, &root, l_pos, value);
+     }
+     if(strcmp(operation, "Reverse"  )== 0){
+       scanf("%d %d", &l_pos, &r_pos);
+       reverse(&end, &root, l_pos, r_pos);
+     }
+  }
   
   //printList(root);
   printList(end);
