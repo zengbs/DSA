@@ -4,16 +4,28 @@
 #include<stdlib.h>
 #include <string.h>
 
-
-
 struct List{
   int data;
   struct List *npx;
 };
 
+
 struct List* XOR(struct List *a, struct List *b)
 {
   return (struct List*)((uintptr_t) (a) ^ (uintptr_t) (b));
+}
+
+
+void GetNeighbour(int pos, struct List **prevprev, struct List **prev, struct List **cursor, struct List **next, struct List **nextnext)
+{
+  for (int i=1; i<=pos;i++){
+    *next   = XOR((*cursor)->npx, *prev);
+    *prev   = *cursor;
+    *cursor = *next;
+  }
+
+  *cursor    = *prev;
+  *prev      = XOR((*cursor)->npx, *next);
 }
 
 void reverse(struct List **end, struct List **root, int l, int r)
@@ -107,34 +119,27 @@ void push(struct List **root, int data)
 }
 
 /* delete the item at the position `pos` counted from the root. The root is designated by zero */
-void delete(struct List **root, int pos)
+void delete(struct List **end, struct List **root, int pos)
 {
   struct List *nextnext = NULL;
   struct List *next     = NULL;
-  struct List *cursor   = *root;  /* this pointer will point to the target to be deleted */
+  struct List *cursor   = *end;  /* this pointer will point to the target to be deleted */
   struct List *prev     = NULL;
   struct List *prevprev = NULL;
 
-
-  for (int i=1; i<=pos;i++){
-    next   = XOR(cursor->npx, prev);
-    prev   = cursor;
-    cursor = next;
-  }
-
-  cursor    = prev;
-  prev      = XOR(cursor->npx, next);
-  
+  GetNeighbour(pos, &prevprev, &prev, &cursor, &next, &nextnext);
 
   if (prev == NULL){
     nextnext  = XOR(next->npx, cursor);
     next->npx = XOR(NULL, nextnext);
  
-    *root = next;
+    *end = next;
   }
   else if (next == NULL){
     prevprev  = XOR(prev->npx, cursor);
     prev->npx = XOR(next,prevprev);
+    
+    *root = prev;
   }
   else{
     prevprev  = XOR(prev->npx, cursor);
@@ -200,10 +205,9 @@ push(&root, 4);
 push(&root, 5);
 push(&root, 6);
 push(&root, 7);
+delete(&end, &root, 3);
 push(&root, 8);
-push(&root, 9);
-reverse(&end, &root, 1, 9);
-push(&root, 10);
+//reverse(&end, &root, 1, 9);
 
 //printList(root);
 printList(end);
