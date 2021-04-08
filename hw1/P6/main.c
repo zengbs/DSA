@@ -212,20 +212,22 @@ void insert(struct List **end, struct List **root, int pos, int data)
 int main()
 {
 
-struct List *root = NULL;
-push(&root, 1);
-struct List *end = root;
-push(&root, 2);
-push(&root, 3);
-reverse(&end, &root, 1, 1);
-push(&root, 4);
-push(&root, 5);
-insert(&end, &root, 5, 99);
-push(&root, 6);
-push(&root, 7);
-//push(&root, 8);
-//reverse(&end, &root, 1, 7);
-
-//printList(root);
-printList(end);
+  struct List *root = NULL;
+  push(&root, 1);
+  struct List *end = root;
+  push(&root, 2);
+  push(&root, 3);
+  push(&root, 4);
+  push(&root, 5);
+  push(&root, 6);
+  push(&root, 7);
+  push(&root, 8);
+  reverse(&end, &root, 1, 7);
+  reverse(&end, &root, 2, 6);
+  insert(&end, &root, 9, 99);
+  delete(&end, &root, 5);
+  insert(&end, &root, 5, 99);
+  
+  //printList(root);
+  printList(end);
 }
