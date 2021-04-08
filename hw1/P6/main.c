@@ -41,7 +41,7 @@ void reverse(struct List **end, int l, int r)
   r_cursor    = r_prev;
   r_prev      = XOR(r_cursor->npx, r_next);
 
-  r_nextnext  = XOR(r_next->npx, r_cursor);
+  if (r_next != NULL) r_nextnext  = XOR(r_next->npx, r_cursor);
   r_prevprev  = XOR(r_prev->npx, r_cursor);
 
 /*-----------------------------------------------*/
@@ -56,16 +56,17 @@ void reverse(struct List **end, int l, int r)
   l_prev      = XOR(l_cursor->npx, l_next);
 
   l_nextnext  = XOR(l_next->npx, l_cursor);
-  l_prevprev  = XOR(l_prev->npx, l_cursor);
+  if (l_prev != NULL) l_prevprev  = XOR(l_prev->npx, l_cursor);
 
 /*-----------------------------------------------*/
 
-  r_next->npx = XOR(l_cursor, r_nextnext);
-  l_prev->npx = XOR(r_cursor, l_prevprev);
+  if (r_next != NULL) r_next->npx = XOR(l_cursor, r_nextnext);
+  if (l_prev != NULL) l_prev->npx = XOR(r_cursor, l_prevprev);
 
   r_cursor->npx = XOR(r_prev, l_prev);
   l_cursor->npx = XOR(l_next, r_next);
-  
+ 
+  if (l_prev == NULL) *end = r_cursor;
 }
 
 void printList (struct List *root)
