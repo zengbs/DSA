@@ -211,22 +211,35 @@ void insert(struct List **end, struct List **root, int pos, int data)
 
 int main()
 {
+  int n; // length of sequence
+  int q; // number of operations
+
+  scanf("%d %d", &n, &q);
+
+  int number;
+
+  scanf("%d", &number);
 
   struct List *root = NULL;
-  push(&root, 1);
+  push(&root, number);
   struct List *end = root;
-  push(&root, 2);
-  push(&root, 3);
-  push(&root, 4);
-  push(&root, 5);
-  push(&root, 6);
-  push(&root, 7);
-  push(&root, 8);
-  reverse(&end, &root, 1, 7);
-  reverse(&end, &root, 2, 6);
-  insert(&end, &root, 9, 99);
-  delete(&end, &root, 5);
-  insert(&end, &root, 5, 99);
+
+  while(scanf("%d", &number) != EOF){
+    insert(&end, &root, 1, number);
+  }
+
+  /* swap **root and **end */
+  struct List *tmp;
+  tmp = root;
+  root = end;
+  end = tmp;
+
+
+  //reverse(&end, &root, 1, 7);
+  //reverse(&end, &root, 2, 6);
+  //insert(&end, &root, 9, 99);
+  //delete(&end, &root, 5);
+  //insert(&end, &root, 5, 99);
   
   //printList(root);
   printList(end);
