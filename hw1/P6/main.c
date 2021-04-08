@@ -47,6 +47,8 @@ void GetNeighbour(int pos, struct List **prevprev, struct List **prev, struct Li
 
 void reverse(struct List **end, struct List **root, int l, int r)
 {
+  if ( l == r ) return;
+
   struct List *r_nextnext = NULL;
   struct List *r_next     = NULL;
   struct List *r_cursor   = *end;  /* this pointer will point to the target to be deleted */
@@ -215,14 +217,14 @@ push(&root, 1);
 struct List *end = root;
 push(&root, 2);
 push(&root, 3);
-reverse(&end, &root, 1, 3);
+reverse(&end, &root, 1, 1);
 push(&root, 4);
 push(&root, 5);
 insert(&end, &root, 5, 99);
 push(&root, 6);
 push(&root, 7);
-push(&root, 8);
-reverse(&end, &root, 1, 7);
+//push(&root, 8);
+//reverse(&end, &root, 1, 7);
 
 //printList(root);
 printList(end);
