@@ -16,8 +16,10 @@ struct List* XOR(struct List *a, struct List *b)
 }
 
 
-void GetNeighbour(int pos, struct List **prevprev, struct List **prev, struct List **cursor, struct List **next, struct List **nextnext)
+void GetNeighbour(int pos, struct List **prevprev, struct List **prev, struct List **end, struct List **next, struct List **nextnext, struct List **root)
 {
+  struct List **cursor = end;
+
   int i;
 
 
@@ -29,11 +31,13 @@ void GetNeighbour(int pos, struct List **prevprev, struct List **prev, struct Li
  
   *cursor    = *prev;
 
-  //if (*cursor==NULL){
-  //  *prev = *root;
-  //  *prevprev = XOR((*prev)->npx, NULL);
-  //  return;
-  //}
+  if (*cursor==NULL){
+    *prev = *root;
+    *prevprev = XOR((*prev)->npx, NULL);
+    *next = NULL;
+    *nextnext = NULL;
+    return;
+  }
 
 
   if (*cursor != NULL) *prev      = XOR((*cursor)->npx, *next);
@@ -140,7 +144,7 @@ void delete(struct List **end, struct List **root, int pos)
   struct List *prev     = NULL;
   struct List *prevprev = NULL;
 
-  GetNeighbour(pos, &prevprev, &prev, &cursor, &next, &nextnext);
+  GetNeighbour(pos, &prevprev, &prev, &cursor, &next, &nextnext, root);
 
   if (prev == NULL){
     nextnext  = XOR(next->npx, cursor);
@@ -179,14 +183,14 @@ void insert(struct List **end, struct List **root, int pos, int data)
   struct List *prev     = NULL;
   struct List *prevprev = NULL;
 
-  GetNeighbour(pos, &prevprev, &prev, &cursor, &next, &nextnext);
+  GetNeighbour(pos, &prevprev, &prev, &cursor, &next, &nextnext, root);
 
   if (prev == NULL){
     new->npx = XOR(cursor, NULL);
     cursor->npx = XOR(next,new);
     *end = new;
   }
-  else if(next == NULL){
+  else if(next == NULL && cursor != NULL){
     new->npx = XOR(prev, cursor);
     cursor->npx = XOR(new, NULL);
     prev->npx  = XOR(new, prevprev);
@@ -195,8 +199,6 @@ void insert(struct List **end, struct List **root, int pos, int data)
     new->npx = XOR(prev, NULL);
     prev->npx = XOR(prevprev, new);
     *root = new;
-    printf("prev->data=%d\n",prev->data);
-    printf("prevprev->data=%d\n",prevprev->data);
   }
   else{
     new->npx = XOR(cursor, prev);
@@ -213,14 +215,15 @@ push(&root, 1);
 struct List *end = root;
 push(&root, 2);
 push(&root, 3);
+reverse(&end, &root, 1, 3);
 push(&root, 4);
 push(&root, 5);
+insert(&end, &root, 5, 99);
 push(&root, 6);
 push(&root, 7);
-insert(&end, &root, 8, 99);
-//push(&root, 8);
-//reverse(&end, &root, 1, 9);
+push(&root, 8);
+reverse(&end, &root, 1, 7);
 
-printList(root);
+//printList(root);
 printList(end);
 }
