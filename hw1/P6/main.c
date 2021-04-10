@@ -5,39 +5,42 @@
 #include<stdint.h>
 
 struct List{
-  int data;
+  int *array;
+  int arraySize;
   struct List *next;
 };
 
-insertAfter()
-{
+//insertAfter()
+//{
+//
+//}
 
-}
+//void removeAfter(struct List **node, int pos)
+//{
+//  struct List *cursor;
+//  struct List *temp;
+//
+//  for(int i=0;cursor == *node;i++){
+//    temp         = cursor->next;
+//    cursor->next = cursor->next->next;
+//  }
+//  free(temp);
+//}
 
-void removeAfter(struct List **node, int pos)
-{
-  struct List *cursor;
-  struct List *temp;
-
-  for(int i=0;cursor == *node;i++){
-    temp         = cursor->next;
-    cursor->next = cursor->next->next;
-  }
-  free(temp);
-}
-
-void appendNode(struct List **node, int data)
+void appendNode(struct List **node, int* array, size_t arraySize)
 {
   struct List *newNode = (struct List*)calloc((size_t)1, sizeof(struct List));
 
   if (*node == NULL){
     *node = newNode;
-    (*node)->data = data;
+    (*node)->array = array;
+    (*node)->arraySize = arraySize;
     (*node)->next = NULL;
   }
   else{
-    newNode->data = data;
+    newNode->array = array;
     newNode->next = *node;
+    newNode->arraySize = arraySize;
     *node = newNode;
   }
 }
@@ -45,21 +48,51 @@ void appendNode(struct List **node, int data)
 void printList(struct List *node)
 {
   for(int i=0;node != NULL;i++){
-    printf("%d ", node->data);
+    for(int j=0;j<node->arraySize;j++){
+      printf("%d ", (node->array)[j]);
+    }
     node = node->next;
+    printf("\n");
   }
-  printf("\n");
 }
 
 int main(){
-  struct List *list = NULL;
+  int n; // length of sequence
+  int q; // number of operations
+  int number; // appended number
 
-  appendNode(&list, 1);
-  appendNode(&list, 2);
-  appendNode(&list, 3);
-  appendNode(&list, 4);
-  appendNode(&list, 4);
-  appendNode(&list, 4);
+  scanf("%d %d", &n, &q);
+
+  struct List *list = NULL;
+  int * array = (int*)calloc(n, sizeof(int));
+
+  for(int i=0;i<=n-1;i++){
+    scanf("%d", &number);
+    array[i] = number;
+  }
+
+  appendNode(&list, array, n);
+
+  ///* read operations */
+  //char operation[10];
+  //int l_pos, r_pos, value;
+
+  //for(int i=0;i<q;i++){
+  // scanf("%7s", operation);
+  //   if(strcmp(operation, "Delete"  )== 0){
+  //     scanf("%d", &l_pos);
+  //     delete(&end, &root, l_pos);
+  //   }
+  //   if(strcmp(operation, "Insert"  )== 0){
+  //     scanf("%d %d", &l_pos, &value);
+  //     insert(&end, &root, l_pos, value);
+  //   }
+  //   if(strcmp(operation, "Reverse"  )== 0){
+  //     scanf("%d %d", &l_pos, &r_pos);
+  //     reverse(&end, &root, l_pos, r_pos);
+  //   }
+  //}
+
   printList(list);
 
   return 0;
