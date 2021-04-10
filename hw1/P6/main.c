@@ -15,15 +15,25 @@ struct List{
 //
 //}
 
-void removeAfter(struct List **node, int pos)
-{
-  struct List *cursor;
-  struct List *temp;
+//void removeAfter(struct List **node, int pos)
+//{
+//  struct List *cursor;
+//  struct List *temp;
+//
+//  for(int i=0;cursor == *node;i++){
+//    temp         = cursor->next;
+//    cursor->next = cursor->next->next;
+//  }
+//  free(temp);
+//}
 
-  for(int i=0;cursor == *node;i++){
-    temp         = cursor->next;
-    cursor->next = cursor->next->next;
-  }
+void removeRoot(struct List **root)
+{
+  struct List *temp;
+  temp = *root;
+  *root = (*root)->next;
+
+  free(temp->array);
   free(temp);
 }
 
@@ -80,7 +90,13 @@ int main(){
   }
   appendNode(&list, brray, n);
 
+  removeRoot(&list);
 
+  for(int i=0;i<=n-1;i++){
+    brray[i] = i*i;
+  }
+
+  appendNode(&list, brray, n);
   ///* read operations */
   //char operation[10];
   //int l_pos, r_pos, value;
