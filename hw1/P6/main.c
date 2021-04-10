@@ -49,7 +49,7 @@ void printList(struct List *node)
 {
   for(int i=0;node != NULL;i++){
     for(int j=0;j<node->arraySize;j++){
-      printf("%d ", (node->array)[j]);
+      printf("%d ", node->array[j]);
     }
     node = node->next;
     printf("\n");
@@ -65,6 +65,7 @@ int main(){
 
   struct List *list = NULL;
   int * array = (int*)calloc(n, sizeof(int));
+  int * brray = (int*)calloc(n, sizeof(int));
 
   for(int i=0;i<=n-1;i++){
     scanf("%d", &number);
@@ -72,6 +73,13 @@ int main(){
   }
 
   appendNode(&list, array, n);
+
+
+  for(int i=0;i<=n-1;i++){
+    brray[i] = -i;
+  }
+  appendNode(&list, brray, n);
+
 
   ///* read operations */
   //char operation[10];
