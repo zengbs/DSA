@@ -15,17 +15,17 @@ struct List{
 //
 //}
 
-//void removeAfter(struct List **node, int pos)
-//{
-//  struct List *cursor;
-//  struct List *temp;
-//
-//  for(int i=0;cursor == *node;i++){
-//    temp         = cursor->next;
-//    cursor->next = cursor->next->next;
-//  }
-//  free(temp);
-//}
+void removeAfter(struct List **node, int pos)
+{
+  struct List *cursor;
+  struct List *temp;
+
+  for(int i=0;cursor == *node;i++){
+    temp         = cursor->next;
+    cursor->next = cursor->next->next;
+  }
+  free(temp);
+}
 
 void appendNode(struct List **node, int* array, size_t arraySize)
 {
