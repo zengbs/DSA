@@ -1,4 +1,6 @@
 log
+.nfs*
+_minted-*
 a.out
 .*.swp
 input
