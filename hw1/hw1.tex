@@ -67,7 +67,7 @@
     On the other hand, $2^{g}=2^{\lg n}=n$\\
     $\implies 2^{f}=O(n^2)\neq O(n) = 2^{g}$
  \item \textcolor{blue}{True.} \par
-    As shown in the left figure, the total area of the red rectangulars is obviously smaller than
+    As shown in the left figure, the total area of the red rectangles is obviously smaller than
     that under the curve $1/x$(blue line) between $1<x<n$. Hence, we obtain the upper bound as follows:
 
     \begin{equation}
@@ -139,10 +139,10 @@ Hence, $f(n)=\Theta(n(\lg n)^2)$.
     \end{algorithm}
     \end{minipage}
   \item 
-    The \# of iterations of outer loop: the size of initial queue, $n$.\\
-    The \# of iterations of inner loop: $n-k$, where $k$ is the \# of iterations of the outer loop at $k\text{-th}$ times.\\
-    Hence, the time complexity is $n+(n-1)+\dots+1=0.5n(n+1)=O(n^2)-\text{time}$.
-    How about $O(1)$-extra space?
+    The number of iterations of outer loop: the size of initial queue, $n$.\\
+    The number of iterations of inner loop: $n-k$, where $k$ is the \# of iterations of the outer loop at $k\text{-th}$ times.\\
+    Hence, the time complexity is $n+(n-1)+\dots+1=0.5n(n+1)=O(n^2)-\text{time}$.\\
+    We do not use the additional third array or queue to reverse queue. Thus extra-space complexity is $O(1)$.
   \item Illustration\par 
 
 
@@ -477,164 +477,114 @@ c_{0}a+c_{0}a3^1+c_{0}a3^2+\dots+c_{0}a3^{q-1}=0.5c_{0}a\left(3^{q+1}-1\right)=\
 \label{Dynamic stack}
 \end{equation}
 
-Substituting $q=\log_{3}(n/a)$ into Eq.(\ref{Dynamic stack}) yields the time \textcolor{blue}{$\Theta(n)$} required for $n$ consecutive push operations into dynamic stack.
+Substituting $q=\log_{3}(n/a)$ into Eq.(\ref{Dynamic stack}) yields the time complexity \textcolor{blue}{$\Theta(n)$} required for $n$ consecutive push operations into dynamic stack.
 \end{enumerate}
 
 
 \section*{Problem 3}
 \begin{enumerate}
-\item Pseudo code:\par
-       \begin{minipage}{.8\linewidth}
-       \begin{algorithm}[H]
-          \SetKwFor{For}{for}{do}{endfor}
-          \SetKwFunction{KwAppendEnd}{AppendEnd}
-          \SetKwFunction{KwInitialList}{initalList}
-          \SetKwIF{If}{ElseIf}{Else}{if}{then}{else if}{else}{endif}
-          \SetKwArray{KwA}{A}
-          \SetKwArray{KwL}{List}
-          \KwIn{\KwA is the array containing $n$ integers $\in$ $\{0,1,\dots,n-1\}$}
-          \KwIn{$i_{0}$ is the index where the frog is initially located.}
-
-         \KwL = \KwInitialList{\KwA{$i_{0}$}}\; \textcolor{blue}{\tcc*[f]{initialize the list with the single node \KwA{$i_{0}$}}}
-
-          \For{$(i=0; i < \KwA.Length; i++)$}{
-             \If {i == \KwL.End}{\textcolor{blue}{\tcc*[f]{\KwL.End is the the last element of \KwL}}
-                \Return{[Finite jumps!]}
-             }
-             \KwL = \KwAppendEnd{\KwL, \KwA{\KwL.End}}\;
-             \textcolor{blue}{\tcc*[f]{append the node \KwA{\KwL.End} to the end of \KwL}}
-          }
-          \Return{[Infinite jumps!]}
-
-       \end{algorithm}
-       \end{minipage}
-
-       \begin{itemize}
-       \item Time complexity: The time complexity of loop itself is $\Theta(n)$ but \texttt{List.End},
-       which is $\Theta(n)$, is inside the loop. Thus, the effective time complextity is \textcolor{blue}{$\Theta(n^2)$}.\\
-       \item Space complexity: \textcolor{blue}{$\Theta(n)$} (Why?).
-       \end{itemize}
-
-\item Pseudo code:\par
-       \begin{minipage}{.8\linewidth}
-       \begin{algorithm}[H]
-          \SetKwFor{For}{for}{do}{endfor}
-          \SetKwFunction{KwAppendEnd}{AppendEnd}
-          \SetKwFunction{KwInitialList}{initalList}
-          \SetKwFunction{KwList}{List}
-          \SetKwIF{If}{ElseIf}{Else}{if}{then}{else if}{else}{endif}
-          \SetKwArray{KwA}{A}
-          \SetKwArray{KwL}{List}
-          \KwIn{\KwA is the array containing $n$ integers $\in$ $\{0,1,\dots,n-1\}$.}
-          \KwIn{$i_{0}$ is the index where the frog is initially located.}
-          \KwOut{$j$ is the length of the jumping loop.}
-
-         \KwL = \KwInitialList{\KwA{$i_{0}$}}\;
-         \textcolor{blue}{\tcc*[f]{initialize the list with the single node \KwA{$i_{0}$}}}
-
-          \For{$(i=0$; $i<$ \KwA.Length; $i++)$}{
-             \KwL = \KwAppendEnd{\KwL, \KwA{\KwL.End}}\;
-             \textcolor{blue}{\tcc*[f]{append the node \KwA{\KwL.End} to the end of \KwL}}
-             \For{$(j= \KwL.Length-2;j>=0; j--)$}{
-                \If {\KwList{j} == \KwL.End}{\textcolor{blue}{\tcc*[f]{\KwList{j} is the $j^{\text{th}}$ element of \KwL}}\\
-                       \Return{j}
-                }
-             }
-          }
-       \end{algorithm}
-       \end{minipage}
-
-       \begin{itemize}
-       \item Time complexity: The time complexity of loop itself is $\Theta(n)$ but \texttt{List.End},
-       which is $\Theta(n)$, is inside the loop. Thus, the effective time complextity is \textcolor{blue}{$\Theta(n^2)$}.\\
-       \item Space complexity: \textcolor{blue}{$\Theta(n)$} (Why?).
-       \end{itemize}
-
-       \item 
-       Given that the array $A$ is a strictly increasing array, $\text{max}(M_{0,i},M_{i,j},M_{j,n})$
-       and $\text{min}(M_{0,i},M_{i,j},M_{j,n})$ must be equal to $M_{j,n}$ and $M_{0,i}$, respectively.
-       Moreover, the two elements $A[i-1]$ and $A[j]$ must be as close as possible
-       to make $f(i,j)=M_{j,n}-M_{0,i}$ reach the minimum. We thus simplify the original question as follows:
-       \textcolor{blue}{find a index $k$, such that $M_{k+1,n}-M_{0,k-1}$ is minimized, where $i=k$ and $j=k+1$.}
-
-
-       \begin{minipage}{.8\linewidth}
-       \begin{algorithm}[H]
-          \SetKwFor{For}{for}{do}{endfor}
-          \SetKwFunction{KwGetMedian}{GetMedian}
-          \SetKwFunction{KwGetMinIdx}{GetMinIdx}
-          \SetKwIF{If}{ElseIf}{Else}{if}{then}{else if}{else}{endif}
-          \SetKwArray{KwA}{A}
-          \SetKwArray{KwF}{F}
-          \KwIn{a strictly increasing array, \KwA.}
-          \KwOut{$i, j$.}
-
-          \For{$(m=1$; $m<$ \KwA.Length$-1$; $m++)$}{
-               \KwF{m-1} = \KwGetMedian{m+1,n}-\KwGetMedian{0,m-1}\;
-          }
-
-          k=\KwGetMinIdx{F}+1
-
-          \Return{k, k+1}
-       \end{algorithm}
-       \end{minipage}
-
-       \begin{itemize}
-       \item Time complexity: The time complexity of loop itself is $\Theta(n)$ but \texttt{List.End},
-       which is $\Theta(n)$, is inside the loop. Thus, the effective time complextity is \textcolor{blue}{$\Theta(n^2)$}.\\
-       \item Space complexity: \textcolor{blue}{$\Theta(n)$} (Why?).
-       \end{itemize}
-       \item\mbox{}\\
 \definecolor{bg}{rgb}{0.95,0.95,0.95}
-\begin{minted}
-[
-frame=lines,
-framesep=2mm,
-baselinestretch=1.2,
-bgcolor=bg,
-fontsize=\footnotesize,
-linenos
-]{c}
-/* Step 1: Get the length of list */
-/*========================================*/
-Ptr = Head;
-Length = 1
+\item Code:\par
+       \begin{minted}
+       [
+       frame=lines,
+       framesep=2mm,
+       baselinestretch=1.2,
+       bgcolor=bg,
+       fontsize=\footnotesize,
+       linenos
+       ]{c}
+         int main(){
+         
+           int A[6] = {2,0,1,3,4,3}; // The array given by statement
+           int i=3;                  // initial position of the frog
+           int j=0;                  // counter of loop
+           
+           while(1){
+           
+             int next = A[i];
+           
+             if ( A[i] == i ){
+               printf("Frog will stop!\n");
+               break;
+             }
+             else if( j == 6 ){
+               printf("Frog will keep jumping forever!\n");
+               break;
+             }
+           
+             i = next;
+             j++;
+           }
+           
+           return 0;
+         
+         }
+       \end{minted}
+         \begin{itemize}
+           \item Time complexity is \textcolor{blue}{$\Theta(n)$} since we loop over the array \texttt{A[i]}. If the counter \texttt{j} equals to the length of the array \texttt{A[i]}, then we stop the loop and think the frog will keep jumping forever.
+           \item Extra-space complexity is \textcolor{blue}{$\Theta(1)$} because we do not use the helper array to keep track where the frog passes.
+         \end{itemize}
+         \definecolor{bg}{rgb}{0.95,0.95,0.95}
+         \item Code:\par
+         \begin{minted}
+         [
+         frame=lines,
+         framesep=2mm,
+         baselinestretch=1.2,
+         bgcolor=bg,
+         fontsize=\footnotesize,
+         linenos
+         ]{c}
+             int main(){
+             
+               int A[8] = {1,0,4,2,3,1,4,6};   // The array given by statement
+               int B[8] = {0};                 // helper array to keep track of where the frog passes
+               int i = 2;                      // Initial position of the frog
+               int j = 0;                      // loop counter
+             
+             
+             
+               while(1){
+             
+                 if (B[i] != 1){
+                   B[i] = 1;
+                   j++;
+                 }else{
+                   printf("The length of the loop is %d\n", j);
+                   break;
+                 }
+             
+                 i = A[i];  
+               }
+             
+               return 0;
+             }
+         \end{minted}
+         \begin{itemize}
+         \item Time complexity is \textcolor{blue}{$\Theta(n)$} since we loop over the array \texttt{A[i]}. We stop the loop and return the counter \texttt{j} which represent the length of the loop when the helper array \texttt{B[i]} equals to $1$.
+         \item Extra-space complexity is \textcolor{blue}{$\Theta(n)$} because the frog may enter the infinite loop from non-initial position, and thus we need the helper array \texttt{B[i]} to keep track where the frog passes.
+         \end{itemize}
 
-while( Ptr->Next != Head )
-{
-   Ptr = Ptr->Next;
-   Length++;
-}
+\item find the minimum of $f(i,j)$\par
+         \begin{itemize}
+           \item Time complexity is \textcolor{blue}{$\Theta(n)$}.
+           \item Extra-space complexity is \textcolor{blue}{$\Theta(1)$}.
+         \end{itemize}
+         Since the array is strictly increasing, the two indice \texttt{i} and \texttt{j} must be as close as possible
+         so that $f(i,j)$ can reach the minimum. i.e. $\texttt{j}=\texttt{i}+1$. Using the constraint $\texttt{j}=\texttt{i}+1$,
+         we simply loop the index \texttt{i} over the array and compare the current $f(i,j)$ with the previous one to find
+         the minimum $f(i,j)$.
+         
+\item  Circularly linked list (CLL):\par
+    a) Loop over the CLL from the head find the node, say \texttt{A}, having the maximum data.\\
+    b) Loop over again the CLL from the node \texttt{A->next} instead of \texttt{A}.\\
+    c) During the loop, if the next data is smaller than the current data, we remove the next node from the CLL and store the data in the next node in helper array.
+       Note that the size of helper array is expected to be 2 as the CLL only have 2 decreasing.\\
+    d) After the second loop, we finally loop over the CLL and insert the data into the proper position.\\
+    e) In summary, we loop the CLL 3 times and use one helper array with length 2. Thus, the time complexity is $O(n)$,
+       and the extra-space complexity is $O(1)$.
 
-/* Step 2: Sorting list with bubble sort */
-/*========================================*/
-itr_out = 0; /*iteration number of the outer loop*/
-Swap = true; /*Do not enter the outer loop if Swap=false,
-which can help the time complexity in the worst case down to O(n)*/
-Ptr = Head;
-
-while( Ptr->Next != Head && Swap )
-{
-   Ptr_in = Head;
-   Swap = false;
-   itr_in = 0;  /*iteration number of the inner loop*/
-
-   while( Ptr_in->Next != Head && itr_in < Length - itr_out - 1 )
-   {
-      if ( Ptr_in->Next->Data  <  Ptr_in->Data )
-      {
-         swap( Ptr_in->Next->Data, Ptr_in->Data );
-         Swap = true;
-      }
-      Ptr_in = Ptr_in -> Next;
-
-      itr_in++;
-   }
-   Ptr = Ptr->Next;
-   itr_out++;
-}
-
-\end{minted}
 \end{enumerate}
 
 \end{document}

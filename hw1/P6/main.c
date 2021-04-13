@@ -37,31 +37,57 @@ void removeRoot(struct List **root)
   free(temp);
 }
 
-void appendNode(struct List **node, int* array, size_t arraySize)
+void appendNode(struct List **root, int* array, size_t arraySize)
 {
   struct List *newNode = (struct List*)calloc((size_t)1, sizeof(struct List));
 
-  if (*node == NULL){
-    *node = newNode;
-    (*node)->array = array;
-    (*node)->arraySize = arraySize;
-    (*node)->next = NULL;
+  if (*root == NULL){
+    *root = newNode;
+    (*root)->array = array;
+    (*root)->arraySize = arraySize;
+    (*root)->next = NULL;
   }
   else{
     newNode->array = array;
-    newNode->next = *node;
+    newNode->next = *root;
     newNode->arraySize = arraySize;
-    *node = newNode;
+    *root = newNode;
   }
 }
 
-void printList(struct List *node)
+/* cut array before `pos` and append a new node to strore the second half array */
+/* note that `pos` is counted from zero */
+void delete(struct List **root, int pos)
 {
-  for(int i=0;node != NULL;i++){
-    for(int j=0;j<node->arraySize;j++){
-      printf("%d ", node->array[j]);
+  int cursor = 0;
+
+  do{
+    cursor += (*root)->arraySize - 1;
+    *root = (*root)->next;
+  }while(pos>cursor)
+
+  int originalArraySize = (*root)->arraySize;
+  int firstArraySize = pos;
+  int secondArraySize = originalArraySize - pos;
+
+  int *secondArray = (int*)calloc(secondArraySize, sizeof(int));
+
+  for(int i=0;i<secondArraySize;i++){
+    secondArray[i] = originalArray[i+pos];
+  }
+
+  appendNode(root, secondArray, secondArraySize);
+}
+
+
+
+void printList(struct List *root)
+{
+  for(int i=0;root != NULL;i++){
+    for(int j=0;j<root->arraySize;j++){
+      printf("%d ", root->array[j]);
     }
-    node = node->next;
+    root = root->next;
     printf("\n");
   }
 }
@@ -73,51 +99,38 @@ int main(){
 
   scanf("%d %d", &n, &q);
 
-  struct List *list = NULL;
+  struct List *root = NULL;
   int * array = (int*)calloc(n, sizeof(int));
-  int * brray = (int*)calloc(n, sizeof(int));
 
   for(int i=0;i<=n-1;i++){
     scanf("%d", &number);
     array[i] = number;
   }
 
-  appendNode(&list, array, n);
+  appendNode(&root, array, n);
 
 
-  for(int i=0;i<=n-1;i++){
-    brray[i] = -i;
+  /* read operations */
+  char operation[10];
+  int l_pos, r_pos, value;
+
+  for(int i=0;i<q;i++){
+   scanf("%7s", operation);
+     if(strcmp(operation, "Delete"  )== 0){
+       scanf("%d", &l_pos);
+       delete(&root, l_pos);
+     }
+     //if(strcmp(operation, "Insert"  )== 0){
+     //  scanf("%d %d", &l_pos, &value);
+     //  insert(&end, &root, l_pos, value);
+     //}
+     //if(strcmp(operation, "Reverse"  )== 0){
+     //  scanf("%d %d", &l_pos, &r_pos);
+     //  reverse(&end, &root, l_pos, r_pos);
+     //}
   }
-  appendNode(&list, brray, n);
 
-  removeRoot(&list);
-
-  for(int i=0;i<=n-1;i++){
-    brray[i] = i*i;
-  }
-
-  appendNode(&list, brray, n);
-  ///* read operations */
-  //char operation[10];
-  //int l_pos, r_pos, value;
-
-  //for(int i=0;i<q;i++){
-  // scanf("%7s", operation);
-  //   if(strcmp(operation, "Delete"  )== 0){
-  //     scanf("%d", &l_pos);
-  //     delete(&end, &root, l_pos);
-  //   }
-  //   if(strcmp(operation, "Insert"  )== 0){
-  //     scanf("%d %d", &l_pos, &value);
-  //     insert(&end, &root, l_pos, value);
-  //   }
-  //   if(strcmp(operation, "Reverse"  )== 0){
-  //     scanf("%d %d", &l_pos, &r_pos);
-  //     reverse(&end, &root, l_pos, r_pos);
-  //   }
-  //}
-
-  printList(list);
+  printList(root);
 
   return 0;
 }
