@@ -1,6 +1,7 @@
 #include<stdio.h>
 #include<stdlib.h>
 #include<stdbool.h>
+#include<limits.h>
 
 
 
@@ -18,7 +19,7 @@ int getLeftData( int **root, int **parent )
 
 int getRightData( int **root, int **parent )
 {
-  int dataRight, dataIdxRight;
+  int dataIdxRight;
 
   dataIdxRight = *(*parent+2);
 
@@ -35,6 +36,10 @@ int main(){
 int numNode, data, IdxLeft, IdxRight;
 
   scanf("%d", &numNode);
+
+  if ((double)INT_MAX/(double)numNode < 3.0 ){
+    exit(0);
+  }
 
   int *nodeList  = malloc((size_t)(3*numNode)*sizeof(int));
 
