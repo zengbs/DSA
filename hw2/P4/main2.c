@@ -7,29 +7,19 @@
 
 
 
-int *getLeftData( int **root, int **parent)
+int *getLeftData( int **root, int *parent)
 {
-  int dataIdxLeft;
-
-  dataIdxLeft  = *(*parent+1);
- 
-
-  if (dataIdxLeft < 0) return NULL;
-  else                 return *root+3*dataIdxLeft;
+  if (*(parent+1) < 0) return NULL;
+  else                 return *root+3* *(parent+1);
 }
 
-int *getRightData( int **root, int **parent)
+int *getRightData( int **root, int *parent)
 {
-  int dataIdxRight;
-
-  dataIdxRight = *(*parent+2);
-
-
-  if (dataIdxRight < 0) return NULL;
-  else                  return *root+3*dataIdxRight;
+  if (*(parent+2) < 0) return NULL;
+  else                 return *root+3* *(parent+2);
 }
 
-bool serarchBT( int **root, int **parent, int *inputData )
+bool serarchBT( int **root, int *parent, int *inputData )
 {
   int *RightChild, *LeftChild;
 
@@ -37,21 +27,14 @@ bool serarchBT( int **root, int **parent, int *inputData )
   RightChild  = getRightData(root, parent);
 
  
-  //printf("inputData=%d\n", *inputData);
-  //printf("**parent=%d\n", **parent);
-  //printf("RightChild=%d\n", *RightChild);
-  //printf("LeftChild=%d\n", *LeftChild );
+  if ( *inputData == *parent ) return true;
+ 
 
-  if ( *inputData == **parent ) return true;
-
-  
-
-  if ( (*parent)[0] > *inputData && LeftChild != NULL){
-    //printf("*LeftChild=%d\n", *LeftChild);
-    serarchBT(root, &LeftChild, inputData);
+  if ( *parent > *inputData && LeftChild != NULL){
+    serarchBT(root, LeftChild, inputData);
   }
-  else if ((*parent)[0] < *inputData && (*parent)[0] > 0 && RightChild != NULL ){
-    serarchBT(root, &RightChild, inputData);
+  else if (*parent < *inputData && *parent > 0 && RightChild != NULL ){
+    serarchBT(root, RightChild, inputData);
   }
   else{
     return false;
@@ -81,21 +64,12 @@ int numNode, data, IdxLeft, IdxRight;
 
 
 
-
-  //for(int i=0; i<3*numNode; i+=3){
-  //  printf("%d %d %d\n", nodeList[i], nodeList[i+1]+1, nodeList[i+2]+1);
-  //}
-
-
   int c=0;
 
   for(int i=0; i<3*numNode; i+=3){
-    if (serarchBT(&nodeList, &nodeList, nodeList+i)) c++;
+    if (serarchBT(&nodeList, nodeList, nodeList+i)) c++;
   }
   printf("%d\n", c);
-
-  //if (serarchBT(&nodeList, &nodeList, nodeList+18)) printf("found!!\n");
-  //else                                              printf("no!!\n");
 
   free(nodeList);
 
