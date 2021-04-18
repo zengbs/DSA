@@ -16,6 +16,24 @@ int *getRightData( int **root, int *parent)
   else                                          return *root+4* *(parent+2);
 }
 
+void inorderTraversal( int **root, int **subroot )
+{
+  int *RightChild, *LeftChild;
+
+  LeftChild  = getLeftData (root, *subroot);
+  RightChild = getRightData(root, *subroot);
+
+  if ( LeftChild  != NULL ){
+    *(LeftChild+3) = 0;
+    inorderTraversal(root, &LeftChild);
+  }
+
+  if ( RightChild != NULL ){
+    *(RightChild+3) = 0;
+    inorderTraversal(root, &RightChild);
+  }
+}
+
 bool serarchBT( int **root, int *grand, int *parent, int *inputData, bool rightGrand )
 {
   int *RightChild, *LeftChild;
@@ -31,6 +49,8 @@ bool serarchBT( int **root, int *grand, int *parent, int *inputData, bool rightG
     else if ( grand != NULL &&  rightGrand && *grand > *LeftChild  )    *( LeftChild+3)  = 1; 
     else if ( grand != NULL &&  rightGrand && *grand < *LeftChild  )    *( LeftChild+3)  = 1; 
     else                                                                *( LeftChild+3)  = 1;
+
+    if ( *( LeftChild+3)  == 0 ) inorderTraversal(root, &LeftChild);
   }
 
 
@@ -40,7 +60,9 @@ bool serarchBT( int **root, int *grand, int *parent, int *inputData, bool rightG
     else if ( grand != NULL &&  rightGrand && *grand > *RightChild  )    *( RightChild+3)  = 1; 
     else if ( grand != NULL && !rightGrand && *grand < *RightChild  )    *( RightChild+3)  = 1; 
     else if ( grand != NULL && !rightGrand && *grand > *RightChild  )    *( RightChild+3)  = 1; 
-    else *( RightChild+3)  = 1;
+    else                                                                 *( RightChild+3)  = 1;
+
+    if ( *( RightChild+3)  == 0 ) inorderTraversal(root, &RightChild);
   }
 
 
