@@ -1,53 +1,71 @@
 #include<stdio.h>
 #include<stdlib.h>
 #include<stdbool.h>
+#include<limits.h>
 
 
-struct node{
-  int *data;
-  struct node *left, *right;
-};
-
-struct node *newNode(int *data, struct node **new)
-
-  *new = (struct node *)malloc(sizeof( struct node));
-
-  (*new)->data  = data;
-  (*new)->left  = NULL;
-  (*new)->right = NULL;
-
-  return new;
+int *getLeftData( int **root, int *parent)
+{
+  //if (*(parent+1) < 0 || *(parent+1) > *parent) return NULL;
+  if (*(parent+1) < 0 )                         return NULL;
+  else                                          return *root+4* *(parent+1);
 }
 
-
-struct node *buildBinaryTree(const int *nodeListData, const int *nodeListLeft, const int *nodeListRight, const int numNode)
+int *getRightData( int **root, int *parent)
 {
-  int *dataRoot;
-  int *dataIdxLeft, *dataIdxRight;
-  int  IdxLeft, IdxRight;
-  struct node *root, *leftChild, *rightChild;
+  //if (*(parent+2) < 0 || *(parent+2) < *parent) return NULL;
+  if (*(parent+2) < 0)                          return NULL;
+  else                                          return *root+4* *(parent+2);
+}
 
+bool serarchBT( int **root, int *parent, int *inputData )
+{
+  int *RightChild, *LeftChild;
 
-  for(int i=0; i<numNode; i++){
-    dataRoot = &nodeListData[i];
+  LeftChild  = getLeftData (root, parent);
+  RightChild = getRightData(root, parent);
 
-    IdxLeft  =  nodeListLeft[i];
-    IdxRight =  nodeListRight[i];
-
-    dataIdxLeft  = &nodeListData[IdxLeft];
-    dataIdxRight = &nodeListData[IdxRight];
-
-    root  = newNode( dataRoot, &root );
-    root  = newNode( dataRoot, &root );
-
-    root->left  = ;
-    root->right = ;
-
+  if ( LeftChild  != NULL && *parent < *LeftChild ){
+    *( LeftChild +3)  = 0;
+  }
+  else if (LeftChild  != NULL && *parent > *LeftChild){
+    *( LeftChild +3)  = 1;
+  }
+  if ( RightChild != NULL && *parent > *RightChild){
+    *( RightChild+3)  = 0;
+  }
+  else if(RightChild != NULL && *parent < *RightChild){
+    *( RightChild+3)  = 1;
   }
 
+  //if ( LeftChild  == NULL ) printf("%d\n", *(*root +4* *(parent+1) +3));
+  //if ( LeftChild  == NULL ) printf("%d\n", *(*root +4* *(parent+2) +3));
 
-  return newNode();
+  //if ( LeftChild   == NULL && *(parent+1) == *inputData )  *(*root +4* *(parent+1) +3) = 1;
+  //if ( RightChild  == NULL && *(parent+2) == *inputData )  *(*root +4* *(parent+2) +3) = 1;
+  
+
+  //printf("*parent=%d, *inputData=%d\n", *parent, *inputData);
+
+
+ 
+  if ( *inputData == *parent )    return true;
+
+ 
+
+  if ( *parent > *inputData && LeftChild != NULL){
+    serarchBT(root, LeftChild, inputData);
+  }
+  else if (*parent < *inputData && *parent > 0 && RightChild != NULL ){
+    serarchBT(root, RightChild, inputData);
+  }
+  else{
+    *(inputData+3)=0;
+    return false;
+  }
 }
+
+
 
 int main(){
 
@@ -55,28 +73,39 @@ int numNode, data, IdxLeft, IdxRight;
 
   scanf("%d", &numNode);
 
-  int *nodeListData  = malloc((size_t)(numNode)*sizeof(int));
-  int *nodeListLeft  = malloc((size_t)(numNode)*sizeof(int));
-  int *nodeListRight = malloc((size_t)(numNode)*sizeof(int));
+  if ((double)INT_MAX/(double)numNode < 4.0 ){
+    exit(0);
+  }
 
-  int i = 0;
+  int *nodeList  = malloc((size_t)(4*numNode)*sizeof(int));
 
-  for(int i=0; i<numNode; i++){
+  for(int i=0; i<4*numNode; i += 4){
     scanf("%d %d %d", &data, &IdxLeft, &IdxRight);
-    nodeListData [i] = data;
-    nodeListLeft [i] = IdxLeft-1;
-    nodeListRight[i] = IdxRight-1;
+    nodeList[i  ] = data;
+    nodeList[i+1] = IdxLeft-1;
+    nodeList[i+2] = IdxRight-1;
+    nodeList[i+3] = 2;
   }
 
 
 
+  int c=0;
 
+  for(int i=4*numNode-4; i>=0;i-=4){
 
-  i = 0;
-  for(int node=0; node<numNode; node++){
-    printf("%d %d %d\n", nodeList[i], nodeList[i+1]+1, nodeList[i+2]+1);
-    i += 3;
+    //if ( nodeList[i+3] == 1)                                                 c++;
+    //if ( nodeList[i+3] == 2 && serarchBT(&nodeList, nodeList, nodeList+i))   c++;
+    
+    if ( serarchBT(&nodeList, nodeList, nodeList+i)) c++;
   }
+
+  //for(int i=0; i<4*numNode; i+=4){
+  //  printf("nodeList[i+3]=%d\n", nodeList[i+3]);
+  //}
+
+
+  printf("%d\n", c);
+
 
   free(nodeList);
 
