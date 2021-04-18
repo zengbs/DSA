@@ -113,13 +113,13 @@ int numNode, data, IdxLeft, IdxRight;
 
   for(int i=4*numNode-4; i>=0;i-=4){
     if ( nodeList[i+3] == 1 ) c++;
-    if ( nodeList[i+3] == 2 && serarchBT(&nodeList, NULL, nodeList, nodeList+i, true))   c++;
+    if ( nodeList[i+3] == 2 && serarchBT(&nodeList, NULL, nodeList, nodeList+i, true)) c++;
 
   }
 
-  for(int i=0; i<4*numNode; i+=4){
-    printf("nodeList[i+3]=%d\n", nodeList[i+3]);
-  }
+  //for(int i=0; i<4*numNode; i+=4){
+  //  printf("nodeList[i+3]=%d\n", nodeList[i+3]);
+  //}
 
 
   printf("%d\n", c);
