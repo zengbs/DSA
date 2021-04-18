@@ -28,13 +28,19 @@ bool serarchBT( int **root, int *grand, int *parent, int *inputData, bool rightG
     if ( *parent < *LeftChild )                                         *( LeftChild+3)  = 0;
     else if ( grand != NULL && !rightGrand && *grand > *LeftChild  )    *( LeftChild+3)  = 0;
     else if ( grand != NULL && !rightGrand && *grand < *LeftChild  )    *( LeftChild+3)  = 1; 
+    else if ( grand != NULL &&  rightGrand && *grand > *LeftChild  )    *( LeftChild+3)  = 1; 
+    else if ( grand != NULL &&  rightGrand && *grand < *LeftChild  )    *( LeftChild+3)  = 1; 
+    else                                                                *( LeftChild+3)  = 1;
   }
 
 
   if ( RightChild  != NULL ){
-    if ( *parent > *RightChild )                                        *( RightChild+3)  = 0;
-    else if ( grand != NULL && rightGrand && *grand < *RightChild  )    *( RightChild+3)  = 0;
-    else if ( grand != NULL && rightGrand && *grand > *RightChild  )    *( RightChild+3)  = 1; 
+    if ( *parent > *RightChild )                                         *( RightChild+3)  = 0;
+    else if ( grand != NULL &&  rightGrand && *grand < *RightChild  )    *( RightChild+3)  = 0;
+    else if ( grand != NULL &&  rightGrand && *grand > *RightChild  )    *( RightChild+3)  = 1; 
+    else if ( grand != NULL && !rightGrand && *grand < *RightChild  )    *( RightChild+3)  = 1; 
+    else if ( grand != NULL && !rightGrand && *grand > *RightChild  )    *( RightChild+3)  = 1; 
+    else *( RightChild+3)  = 1;
   }
 
 
@@ -69,6 +75,7 @@ int numNode, data, IdxLeft, IdxRight;
 
   int *nodeList  = malloc((size_t)(4*numNode)*sizeof(int));
 
+
   for(int i=0; i<4*numNode; i += 4){
     scanf("%d %d %d", &data, &IdxLeft, &IdxRight);
     nodeList[i  ] = data;
@@ -77,6 +84,7 @@ int numNode, data, IdxLeft, IdxRight;
     nodeList[i+3] = 2;
   }
 
+  nodeList[3] = 1;
 
 
   int c=0;
@@ -87,9 +95,9 @@ int numNode, data, IdxLeft, IdxRight;
 
   }
 
-  //for(int i=0; i<4*numNode; i+=4){
-  //  printf("nodeList[i+3]=%d\n", nodeList[i+3]);
-  //}
+  for(int i=0; i<4*numNode; i+=4){
+    printf("nodeList[i+3]=%d\n", nodeList[i+3]);
+  }
 
 
   printf("%d\n", c);
