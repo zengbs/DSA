@@ -22,31 +22,10 @@ bool serarchBT( int **root, int *parent, int *inputData )
 {
   int *RightChild, *LeftChild;
 
+  
+ 
   LeftChild  = getLeftData (root, parent);
   RightChild = getRightData(root, parent);
-
-  if ( LeftChild  != NULL && *parent < *LeftChild ){
-    *( LeftChild +3)  = 0;
-  }
-  else if (LeftChild  != NULL && *parent > *LeftChild){
-    *( LeftChild +3)  = 1;
-  }
-  if ( RightChild != NULL && *parent > *RightChild){
-    *( RightChild+3)  = 0;
-  }
-  else if(RightChild != NULL && *parent < *RightChild){
-    *( RightChild+3)  = 1;
-  }
-
-  //if ( LeftChild  == NULL ) printf("%d\n", *(*root +4* *(parent+1) +3));
-  //if ( LeftChild  == NULL ) printf("%d\n", *(*root +4* *(parent+2) +3));
-
-  //if ( LeftChild   == NULL && *(parent+1) == *inputData )  *(*root +4* *(parent+1) +3) = 1;
-  //if ( RightChild  == NULL && *(parent+2) == *inputData )  *(*root +4* *(parent+2) +3) = 1;
-  
-
-  //printf("*parent=%d, *inputData=%d\n", *parent, *inputData);
-
 
  
   if ( *inputData == *parent )    return true;
@@ -63,6 +42,7 @@ bool serarchBT( int **root, int *parent, int *inputData )
     *(inputData+3)=0;
     return false;
   }
+
 }
 
 
@@ -91,12 +71,13 @@ int numNode, data, IdxLeft, IdxRight;
 
   int c=0;
 
-  for(int i=4*numNode-4; i>=0;i-=4){
+  //for(int i=4*numNode-4; i>=0;i-=4){
+  for(int i=0; i<4*numNode-3;i+=4){
 
     //if ( nodeList[i+3] == 1)                                                 c++;
     //if ( nodeList[i+3] == 2 && serarchBT(&nodeList, nodeList, nodeList+i))   c++;
     
-    if ( serarchBT(&nodeList, nodeList, nodeList+i)) c++;
+    if ( serarchBT(&nodeList, nodeList, nodeList+i)) { c++;}
   }
 
   //for(int i=0; i<4*numNode; i+=4){

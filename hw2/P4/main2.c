@@ -50,7 +50,7 @@ bool serarchBT( int **root, int *grand, int *parent, int *inputData, bool rightG
     else if ( grand != NULL &&  rightGrand && *grand < *LeftChild  )    *( LeftChild+3)  = 1; 
     else                                                                *( LeftChild+3)  = 1;
 
-    if ( *( LeftChild+3)  == 0 ) inorderTraversal(root, &LeftChild);
+    //if ( *( LeftChild+3)  == 0 ) inorderTraversal(root, &LeftChild);
   }
 
 
@@ -62,7 +62,7 @@ bool serarchBT( int **root, int *grand, int *parent, int *inputData, bool rightG
     else if ( grand != NULL && !rightGrand && *grand > *RightChild  )    *( RightChild+3)  = 1; 
     else                                                                 *( RightChild+3)  = 1;
 
-    if ( *( RightChild+3)  == 0 ) inorderTraversal(root, &RightChild);
+    //if ( *( RightChild+3)  == 0 ) inorderTraversal(root, &RightChild);
   }
 
 
@@ -111,7 +111,8 @@ int numNode, data, IdxLeft, IdxRight;
 
   int c=0;
 
-  for(int i=4*numNode-4; i>=0;i-=4){
+  //for(int i=4*numNode-4; i>=0;i-=4){
+  for(int i=0; i<4*numNode-3;i+=4){
     if ( nodeList[i+3] == 1 ) c++;
     if ( nodeList[i+3] == 2 && serarchBT(&nodeList, NULL, nodeList, nodeList+i, true)) c++;
 
