@@ -24,11 +24,12 @@ void Update(int biTree[], int n, int idx, int data)
 	}
 }
 
-int InversionCount(int Q[], int R[], int n, int Bit[], int bitSize)
+int InversionCount(int Q[], int R[], int left, int right, int Bit[], int bitSize)
 {
 	int c = 0;
 
-	for (int i=n-1; i>=0; i--){
+
+	for (int i=right; i>=left; i--){
 		c += Sum(Bit, Q[i]);
 		Update(Bit, bitSize, R[i], 1);
 	}
@@ -80,7 +81,26 @@ int main()
    
     int *Bit = (int *)calloc((size_t)bitSize, sizeof(int));
 
-    int ans = InversionCount(Q, R, numTriangle, Bit, bitSize);
+
+    int numDuplicate = 1;
+
+    for (int i=0;i<numTriangle;i=i+numDuplicate){
+
+      numDuplicate = 1;
+
+      int ii = i+1;
+
+      while( P[i] == P[ii] ){
+
+        numDuplicate++; 
+ 
+        ii++;
+      }
+
+      printf("numDuplicate=%d\n", numDuplicate);
+    }
+
+    int ans = InversionCount(Q, R, 0, numTriangle-1, Bit, bitSize);
 
     
 
