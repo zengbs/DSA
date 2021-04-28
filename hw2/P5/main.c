@@ -1,11 +1,23 @@
+/* Reference:
+ * https://www.programiz.com/c-programming/examples/swapping
+ * https://www.geeksforgeeks.org/count-inversions-array-set-3-using-bit/
+ * https://hackmd.io/@zengbs/Bk6pVcdHO
+ * */
+
 #include<stdio.h>
 #include<stdlib.h>
 #include<limits.h>
 
-int compare (const void * a, const void * b)
-{
-  return *(int*)a - *(int*)b;
+struct PQArray{
+    int p;
+    int q;
+    int r;
+};
+
+int compare(const void *struct1, const void *struct2) {
+    return ((struct PQArray *)struct1)->p - ((struct PQArray *)struct2)->p;
 }
+
 
 void swap(int *a, int *b)
 {
@@ -51,38 +63,76 @@ int InversionCount(int Q[], int R[], int left, int right, int Bit[], int bitSize
 
 int main()
 {
-    int numTriangle = 5;
-
+    int numTriangle = 8;
     int *P = (int *)malloc((size_t)numTriangle*sizeof(int));
     int *Q = (int *)malloc((size_t)numTriangle*sizeof(int));
     int *R = (int *)malloc((size_t)numTriangle*sizeof(int));
 
-    P[0] = -10; //1;
-    P[1] = 7; //2;
-    P[2] = 9; //2;
-    P[3] = 12; //3;
-    P[4] = 12; //3;
-    //P[5] = ; //5;
-    //P[6] = ; //5;
-    //P[7] = ; //5;
+    struct PQArray *pqrArray = (struct PQArray *)malloc((size_t)numTriangle*sizeof(struct PQArray));
 
-    Q[0] = 5; //2; 
-    Q[1] = 5; //2;
-    Q[2] = 5; //2;
-    Q[3] = -16; //5;
-    Q[4] = 11; //3;
-    //Q[5] = ; //3;
-    //Q[6] = ; //5;
-    //Q[7] = ; //5;
 
-    R[0] = -8; //1;
-    R[1] = -13; //2;
-    R[2] = 10; //2;
-    R[3] = 8; //1;
-    R[4] = -2; //2;
-    //R[5] = ; //2;
-    //R[6] = ; //5;
-    //R[7] = ; //5;
+    P[0] = 2;
+    P[1] = 5;
+    P[2] = 3;
+    P[3] = 5;
+    P[4] = 3;
+    P[5] = 2;
+    P[6] = 5;
+    P[7] = 0;
+        
+    Q[0] = 2; 
+    Q[1] = 3;
+    Q[2] = 5;
+    Q[3] = 5;
+    Q[4] = 3;
+    Q[5] = 2;
+    Q[6] = 5;
+    Q[7] = 2;
+        
+    R[0] = 2;
+    R[1] = 2;
+    R[2] = 1;
+    R[3] = 5;
+    R[4] = 2;
+    R[5] = 2;
+    R[6] = 5;
+    R[7] = 0;
+
+    
+    for (int i=0;i<numTriangle;i++){
+      pqrArray[i].p = P[i];
+      pqrArray[i].q = Q[i];
+      pqrArray[i].r = R[i];
+    }
+
+
+    qsort(pqrArray, numTriangle, sizeof(*pqrArray), compare);
+
+
+    for (int i=0;i<numTriangle;i++){
+      P[i] = pqrArray[i].p;
+      Q[i] = pqrArray[i].q;
+      R[i] = pqrArray[i].r;
+    }
+
+    free(pqrArray);
+
+//    for (int i=0;i<numTriangle;i++){
+//      printf("%2d ", pqrArray[i].p);
+//    }
+//    printf("\n"); 
+//
+//    for (int i=0;i<numTriangle;i++){
+//      printf("%2d ", pqrArray[i].q);
+//    }
+//    printf("\n"); 
+//
+//    for (int i=0;i<numTriangle;i++){
+//      printf("%2d ", pqrArray[i].r);
+//    }
+//
+//    printf("\n"); 
+//    exit(0);
 
     /* get the minimum item in P[] */
     int minP = INT_MAX;
@@ -163,11 +213,8 @@ int main()
 
     }
 
-
-    
-
-
 	printf("%d\n",  ans-partialCountTotal+Temp);
+
 	return 0;
 }
 
