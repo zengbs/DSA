@@ -19,67 +19,56 @@ int *getRightData( int *root, int *parent)
 }
 
 
-void serarchBT( int *root, int *parent, int lower, int upper )
+void serarchBT( int *root, int *parent )
 {
   int *RightChild, *LeftChild;
+  int upper, lower;
 
   LeftChild  = getLeftData (root, parent);
   RightChild = getRightData(root, parent);
 
-  printf("*parent=%d\n", *parent);
+ // printf("*parent=%d\n", *parent);
 
   if ( LeftChild != NULL){
+//    printf("*LeftChild=%d, *(LeftChild+3)=%d\n", *(LeftChild), *(LeftChild+3));
 
 
-    printf("*LeftChild=%d, *(LeftChild+3)=%d\n", *(LeftChild), *(LeftChild+3));
-    if ( *(LeftChild+3) == 2 ){
-
-      upper = MIN( *parent,  upper );
+    upper = MIN( *parent,  *(parent+5) );
+    lower = MIN( *parent,  *(parent+4) );
    
-      *(LeftChild+4) = lower;
-      *(LeftChild+5) = upper;
+    *(LeftChild+4) = lower;
+    *(LeftChild+5) = upper;
 
-      if ( lower < *LeftChild && *LeftChild < upper ) *(LeftChild+3) = 1;
+    if ( lower < *LeftChild && *LeftChild < upper ) *(LeftChild+3) = 1;
 
-      if ( *LeftChild < lower && lower < upper )      *(LeftChild+3) = 0;
+    if ( *LeftChild < lower && lower < upper )      *(LeftChild+3) = 0;
 
-      if ( lower < upper && upper < *LeftChild )      *(LeftChild+3) = 0;
+    if ( lower < upper && upper < *LeftChild )      *(LeftChild+3) = 0;
 
-      if ( lower > upper )                            *(LeftChild+3) = 0;
-    }
-    else{
-      lower = *(parent+4);
-      upper = *(parent+5);
-    }
+    if ( lower >= upper )                           *(LeftChild+3) = 0;
 
-    serarchBT(root, LeftChild, lower, upper);
+    serarchBT(root, LeftChild);
 
   }
 
   if ( *parent > 0 && RightChild != NULL ){
-    printf("*RightChild=%d, *(RightChild+3)=%d\n", *(RightChild), *(RightChild+3));
+    //printf("*RightChild=%d, *(RightChild+3)=%d\n", *(RightChild), *(RightChild+3));
 
-    if ( *(RightChild+3) == 2 ){
+    lower = MAX( *parent,  *(parent+4) );
+    upper = MAX( *parent,  *(parent+5) );
 
-      lower = MAX( *parent, lower );
+    *(RightChild+4) = lower;
+    *(RightChild+5) = upper;
 
-      *(RightChild+4) = lower;
-      *(RightChild+5) = upper;
+    if ( lower < *RightChild && *RightChild < upper ) *(RightChild+3) = 1;
 
-      if ( lower < *RightChild && *RightChild < upper ) *(RightChild+3) = 1;
+    if ( *RightChild < lower && lower < upper )       *(RightChild+3) = 0;
 
-      if ( *RightChild < lower && lower < upper )       *(RightChild+3) = 0;
+    if ( lower < upper && upper < *RightChild )       *(RightChild+3) = 0;
 
-      if ( lower < upper && upper < *RightChild )       *(RightChild+3) = 0;
+    if ( lower >= upper )                             *(RightChild+3) = 0;
 
-      if ( lower > upper )                              *(RightChild+3) = 0;
-    }
-    else{
-      lower = *(parent+4);
-      upper = *(parent+5);
-    }
-
-    serarchBT(root, RightChild, lower, upper);
+    serarchBT(root, RightChild);
 
   }
 }
@@ -108,18 +97,25 @@ int numNode, data, IdxLeft, IdxRight;
 
 
   nodeList[3] = 1;
+  nodeList[4] = INT_MIN;
+  nodeList[5] = INT_MAX;
 
-  serarchBT(nodeList, nodeList, 0, INT_MAX);
+  serarchBT(nodeList, nodeList);
 
 
+
+  //for(int i=0; i<6*numNode; i+=6){
+  //  printf("%2d %2d %2d %2d %10d %10d\n",
+  //         nodeList[i], nodeList[i+1], nodeList[i+2], nodeList[i+3], nodeList[i+4], nodeList[i+5]);
+  //}
+
+  int c = 0;
 
   for(int i=0; i<6*numNode; i+=6){
-    printf("%2d %2d %2d %2d %10d %10d\n",
-           nodeList[i], nodeList[i+1], nodeList[i+2], nodeList[i+3], nodeList[i+4], nodeList[i+5]);
+    if (nodeList[i+3] == 1) c++;
   }
 
-
-
+  printf("%d\n", c);
 
   free(nodeList);
 

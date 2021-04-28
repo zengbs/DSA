@@ -2,7 +2,7 @@ export PATH=/software/gcc/9.3.0/bin:$PATH
 export LD_LIBRARY_PATH=/software/gcc/9.3.0/lib:$LD_LIBRARY_PATH
 export LD_LIBRARY_PATH=/software/gcc/9.3.0/lib64:$LD_LIBRARY_PATH
 
-gcc main1.c -o a1.out
+gcc main2.c -o a1.out
 gcc main4.c -o a2.out
 
 printf "%d/%d\n"     `./a1.out < input0_1`          `./a2.out < input0_1`
