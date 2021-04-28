@@ -9,8 +9,9 @@
 #include<limits.h>
 #include "generator.h"
 
+typedef unsigned long long uint64_t;
 
-#define JUDGE
+//#define JUDGE
 
 struct PQArray{
     int p;
