@@ -2,6 +2,18 @@
 #include<stdlib.h>
 #include<limits.h>
 
+int compare (const void * a, const void * b)
+{
+  return *(int*)a - *(int*)b;
+}
+
+void swap(int *a, int *b)
+{
+  *a = *a + *b;
+  *b = *a - *b;
+  *a = *a - *b;
+}
+
 int Sum(int biTree[], int idx)
 {
 	int sum = 0;
@@ -39,56 +51,51 @@ int InversionCount(int Q[], int R[], int left, int right, int Bit[], int bitSize
 
 int main()
 {
-    int numTriangle = 8;
+    int numTriangle = 5;
 
     int *P = (int *)malloc((size_t)numTriangle*sizeof(int));
     int *Q = (int *)malloc((size_t)numTriangle*sizeof(int));
     int *R = (int *)malloc((size_t)numTriangle*sizeof(int));
 
-    P[0] = 1;
-    P[1] = 2;
-    P[2] = 2;
-    P[3] = 3;
-    P[4] = 3;
-    P[5] = 5;
-    P[6] = 5;
-    P[7] = 5;
+    P[0] = -10; //1;
+    P[1] = 7; //2;
+    P[2] = 9; //2;
+    P[3] = 12; //3;
+    P[4] = 12; //3;
+    //P[5] = ; //5;
+    //P[6] = ; //5;
+    //P[7] = ; //5;
 
-    Q[0] = 2; 
-    Q[1] = 2;
-    Q[2] = 2;
-    Q[3] = 5;
-    Q[4] = 3;
-    Q[5] = 3;
-    Q[6] = 5;
-    Q[7] = 5;
+    Q[0] = 5; //2; 
+    Q[1] = 5; //2;
+    Q[2] = 5; //2;
+    Q[3] = -16; //5;
+    Q[4] = 11; //3;
+    //Q[5] = ; //3;
+    //Q[6] = ; //5;
+    //Q[7] = ; //5;
 
-    R[0] = 1;
-    R[1] = 2;
-    R[2] = 2;
-    R[3] = 1;
-    R[4] = 2;
-    R[5] = 2;
-    R[6] = 5;
-    R[7] = 5;
+    R[0] = -8; //1;
+    R[1] = -13; //2;
+    R[2] = 10; //2;
+    R[3] = 8; //1;
+    R[4] = -2; //2;
+    //R[5] = ; //2;
+    //R[6] = ; //5;
+    //R[7] = ; //5;
 
     /* get the minimum item in P[] */
     int minP = INT_MAX;
-    for ( int i=0;i<numTriangle;i++ ){
-      if ( minP > P[i] ) minP = P[i];
-    } 
-
-    /* get the minimum item in Q[] */
     int minQ = INT_MAX;
-    for ( int i=0;i<numTriangle;i++ ){
-      if ( minQ > Q[i] ) minQ = Q[i];
-    } 
-
-    /* get the minimum item in R[] */
     int minR = INT_MAX;
     for ( int i=0;i<numTriangle;i++ ){
+      if ( minP > P[i] ) minP = P[i];
+      if ( minQ > Q[i] ) minQ = Q[i];
       if ( minR > R[i] ) minR = R[i];
+
+      if (Q[i] < R[i]) swap( &Q[i], &R[i] );
     } 
+
 
     /* get the minimum item in RPQ */
     int minPQR[3] = {minP, minQ, minR};
