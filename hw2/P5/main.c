@@ -1,4 +1,5 @@
 #include<stdio.h>
+#include<stdlib.h>
 
 int Sum(int biTree[], int idx)
 {
@@ -23,24 +24,24 @@ void Update(int biTree[], int n, int idx, int data)
 	}
 }
 
-int InversionCount(int arr[], int n)
+int InversionCount(int Q[], int R[], int n)
 {
 	int c = 0;
 
 	int size = 0;
-	for (int i=0; i<n; i++)
-		if (size < arr[i])
-			size = arr[i];
+
+    /* get the maximum item in R[] */
+	for (int i=0; i<n; i++){
+      if (size < R[i]) size = R[i];
+    }
 
 	int bit[size+1];
-	for (int i=1; i<=size; i++)
-		bit[i] = 0;
 
-	for (int i=n-1; i>=0; i--)
-	{
-		c += Sum(bit, arr[i]-1);
+	for (int i=1; i<=size; i++) bit[i] = 0;
 
-		updatebit(bit, size, arr[i], 1);
+	for (int i=n-1; i>=0; i--){
+		c += Sum(bit, Q[i]);
+		Update(bit, size, R[i], 1);
 	}
 
 	return c;
@@ -50,8 +51,8 @@ int main()
 {
     int numTriangle = 8;
 
-    int *P = (int *)malloc((size_t)numTriangle*sizeof(int));
     int *Q = (int *)malloc((size_t)numTriangle*sizeof(int));
+    int *R = (int *)malloc((size_t)numTriangle*sizeof(int));
 
     Q[0] = 2; 
     Q[1] = 2;
@@ -72,9 +73,9 @@ int main()
     R[7] = 5;
 
 
-    
+    int ans = InversionCount(Q, R, numTriangle);    
 
-	printf("%d\n",  InversionCount(arr,n));
+	printf("%d\n",  ans);
 	return 0;
 }
 
