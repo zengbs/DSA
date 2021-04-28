@@ -40,9 +40,18 @@ int main()
 {
     int numTriangle = 8;
 
+    int *P = (int *)malloc((size_t)numTriangle*sizeof(int));
     int *Q = (int *)malloc((size_t)numTriangle*sizeof(int));
     int *R = (int *)malloc((size_t)numTriangle*sizeof(int));
 
+    P[0] = 0;
+    P[1] = 2;
+    P[2] = 2;
+    P[3] = 3;
+    P[4] = 3;
+    P[5] = 5;
+    P[6] = 5;
+    P[7] = 5;
 
     Q[0] = 2; 
     Q[1] = 2;
