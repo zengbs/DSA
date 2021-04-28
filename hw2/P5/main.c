@@ -10,7 +10,7 @@
 #include "generator.h"
 
 
-//#define JUDGE
+#define JUDGE
 
 struct PQArray{
     int p;
@@ -227,6 +227,8 @@ int main()
           Bit = (long *)calloc((size_t)bitSize, sizeof(long));
 
           partialCountTotal += InversionCount(Q, R, i, i+numDuplicate-1, Bit, bitSize);
+
+          free(Bit);
 
           Temp += numDuplicate*(numDuplicate-1)/2;
         }
