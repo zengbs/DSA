@@ -10,7 +10,7 @@
 #include "generator.h"
 
 
-#define JUDGE
+//#define JUDGE
 
 struct PQArray{
     int p;
