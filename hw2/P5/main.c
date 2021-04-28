@@ -45,7 +45,7 @@ int main()
     int *Q = (int *)malloc((size_t)numTriangle*sizeof(int));
     int *R = (int *)malloc((size_t)numTriangle*sizeof(int));
 
-    P[0] = 0;
+    P[0] = 1;
     P[1] = 2;
     P[2] = 2;
     P[3] = 3;
@@ -72,17 +72,23 @@ int main()
     R[6] = 5;
     R[7] = 5;
 
-    /* get the maximum item in R[] */
-    int bitSize;
+    /* get the maximum item in Q[] */
+    int bitSize = 1;
 
 	for (int i=0; i<numTriangle; i++){
-      if (bitSize < R[i]) bitSize = R[i];
+      if (bitSize < Q[i]) bitSize = Q[i];
     }
+    bitSize++;
    
     int *Bit = (int *)calloc((size_t)bitSize, sizeof(int));
 
+    int ans = InversionCount(Q, R, 0, numTriangle-1, Bit, bitSize);
+
+    free(Bit);
 
     int numDuplicate = 1;
+    int Temp = 0;
+    int partialCountTotal=0;
 
     for (int i=0;i<numTriangle;i=i+numDuplicate){
 
@@ -97,15 +103,28 @@ int main()
         ii++;
       }
 
-      printf("numDuplicate=%d\n", numDuplicate);
+      if (numDuplicate > 1){
+        //printf("i=%d, i+numDuplicate-1=%d, numDuplicate=%d\n", i, i+numDuplicate-1, numDuplicate);
+        bitSize = 1;
+	    for (int ii=i; ii<=i+numDuplicate-1; ii++){
+          if (bitSize < Q[ii]) bitSize = Q[ii];
+        }
+        bitSize++;
+        //printf("bitSize=%d\n", bitSize);
+        Bit = (int *)calloc((size_t)bitSize, sizeof(int));
+
+        partialCountTotal += InversionCount(Q, R, i, i+numDuplicate-1, Bit, bitSize);
+
+        Temp += numDuplicate*(numDuplicate-1)/2;
+      }
+
     }
 
-    int ans = InversionCount(Q, R, 0, numTriangle-1, Bit, bitSize);
 
     
 
 
-	printf("%d\n",  ans);
+	printf("%d\n",  ans-partialCountTotal+Temp);
 	return 0;
 }
 
