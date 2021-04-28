@@ -7,6 +7,10 @@
 #include<stdio.h>
 #include<stdlib.h>
 #include<limits.h>
+#include "generator.h"
+
+
+#define JUDGE
 
 struct PQArray{
     int p;
@@ -63,158 +67,174 @@ int InversionCount(int Q[], int R[], int left, int right, int Bit[], int bitSize
 
 int main()
 {
+#   ifndef JUDGE
     int numTriangle = 8;
     int *P = (int *)malloc((size_t)numTriangle*sizeof(int));
     int *Q = (int *)malloc((size_t)numTriangle*sizeof(int));
     int *R = (int *)malloc((size_t)numTriangle*sizeof(int));
+#   endif
 
-    struct PQArray *pqrArray = (struct PQArray *)malloc((size_t)numTriangle*sizeof(struct PQArray));
+#   ifdef JUDGE
+    generator.init();
+
+    int t = generator.getT();
+
+    while (t--) {
+
+      int numTriangle, *P, *Q, *R;
+
+      generator.getData(&numTriangle, &P, &Q, &R);
+#   endif
+
+      struct PQArray *pqrArray = (struct PQArray *)malloc((size_t)numTriangle*sizeof(struct PQArray));
+
+#     ifndef JUDGE
+      P[0] = 2;
+      P[1] = 5;
+      P[2] = 3;
+      P[3] = 5;
+      P[4] = 3;
+      P[5] = 2;
+      P[6] = 5;
+      P[7] = 0;
+          
+      Q[0] = 2; 
+      Q[1] = 3;
+      Q[2] = 5;
+      Q[3] = 5;
+      Q[4] = 3;
+      Q[5] = 2;
+      Q[6] = 5;
+      Q[7] = 2;
+          
+      R[0] = 2;
+      R[1] = 2;
+      R[2] = 1;
+      R[3] = 5;
+      R[4] = 2;
+      R[5] = 2;
+      R[6] = 5;
+      R[7] = 0;
+#     endif
+      
+      for (int i=0;i<numTriangle;i++){
+        pqrArray[i].p = P[i];
+        pqrArray[i].q = Q[i];
+        pqrArray[i].r = R[i];
+      }
 
 
-    P[0] = 2;
-    P[1] = 5;
-    P[2] = 3;
-    P[3] = 5;
-    P[4] = 3;
-    P[5] = 2;
-    P[6] = 5;
-    P[7] = 0;
-        
-    Q[0] = 2; 
-    Q[1] = 3;
-    Q[2] = 5;
-    Q[3] = 5;
-    Q[4] = 3;
-    Q[5] = 2;
-    Q[6] = 5;
-    Q[7] = 2;
-        
-    R[0] = 2;
-    R[1] = 2;
-    R[2] = 1;
-    R[3] = 5;
-    R[4] = 2;
-    R[5] = 2;
-    R[6] = 5;
-    R[7] = 0;
-
-    
-    for (int i=0;i<numTriangle;i++){
-      pqrArray[i].p = P[i];
-      pqrArray[i].q = Q[i];
-      pqrArray[i].r = R[i];
-    }
+      qsort(pqrArray, numTriangle, sizeof(*pqrArray), compare);
 
 
-    qsort(pqrArray, numTriangle, sizeof(*pqrArray), compare);
+      for (int i=0;i<numTriangle;i++){
+        P[i] = pqrArray[i].p;
+        Q[i] = pqrArray[i].q;
+        R[i] = pqrArray[i].r;
+      }
 
+      free(pqrArray);
 
-    for (int i=0;i<numTriangle;i++){
-      P[i] = pqrArray[i].p;
-      Q[i] = pqrArray[i].q;
-      R[i] = pqrArray[i].r;
-    }
-
-    free(pqrArray);
-
-//    for (int i=0;i<numTriangle;i++){
-//      printf("%2d ", pqrArray[i].p);
-//    }
-//    printf("\n"); 
+//      for (int i=0;i<numTriangle;i++){
+//        printf("%2d ", pqrArray[i].p);
+//      }
+//      printf("\n"); 
 //
-//    for (int i=0;i<numTriangle;i++){
-//      printf("%2d ", pqrArray[i].q);
-//    }
-//    printf("\n"); 
+//      for (int i=0;i<numTriangle;i++){
+//        printf("%2d ", pqrArray[i].q);
+//      }
+//      printf("\n"); 
 //
-//    for (int i=0;i<numTriangle;i++){
-//      printf("%2d ", pqrArray[i].r);
-//    }
+//      for (int i=0;i<numTriangle;i++){
+//        printf("%2d ", pqrArray[i].r);
+//      }
 //
-//    printf("\n"); 
-//    exit(0);
+//      printf("\n"); 
+//      exit(0);
 
-    /* get the minimum item in P[] */
-    int minP = INT_MAX;
-    int minQ = INT_MAX;
-    int minR = INT_MAX;
-    for ( int i=0;i<numTriangle;i++ ){
-      if ( minP > P[i] ) minP = P[i];
-      if ( minQ > Q[i] ) minQ = Q[i];
-      if ( minR > R[i] ) minR = R[i];
+      /* get the minimum item in P[] */
+      int minP = INT_MAX;
+      int minQ = INT_MAX;
+      int minR = INT_MAX;
+      for ( int i=0;i<numTriangle;i++ ){
+        if ( minP > P[i] ) minP = P[i];
+        if ( minQ > Q[i] ) minQ = Q[i];
+        if ( minR > R[i] ) minR = R[i];
 
-      if (Q[i] < R[i]) swap( &Q[i], &R[i] );
-    } 
-
-
-    /* get the minimum item in RPQ */
-    int minPQR[3] = {minP, minQ, minR};
-    int min = INT_MAX;
-    for (int i=0;i<3;i++){
-      if (min > minPQR[i] ) min = minPQR[i];
-    }
-
-    min--;
-
-    /* coordinate shift */
-    for (int i=0;i<numTriangle;i++){
-      P[i] -= min;
-      Q[i] -= min;
-      R[i] -= min;
-    }
+        if (Q[i] < R[i]) swap( &Q[i], &R[i] );
+      } 
 
 
-    /* get the maximum item in Q[] */
-    int bitSize = 1;
+      /* get the minimum item in RPQ */
+      int minPQR[3] = {minP, minQ, minR};
+      int min = INT_MAX;
+      for (int i=0;i<3;i++){
+        if (min > minPQR[i] ) min = minPQR[i];
+      }
 
-	for (int i=0; i<numTriangle; i++){
-      if (bitSize < Q[i]) bitSize = Q[i];
-    }
+      min--;
 
-    bitSize++;
+      /* coordinate shift */
+      for (int i=0;i<numTriangle;i++){
+        P[i] -= min;
+        Q[i] -= min;
+        R[i] -= min;
+      }
+
+
+      /* get the maximum item in Q[] */
+      int bitSize = 1;
+
+	  for (int i=0; i<numTriangle; i++){
+        if (bitSize < Q[i]) bitSize = Q[i];
+      }
+
+      bitSize++;
    
-    int *Bit = (int *)calloc((size_t)bitSize, sizeof(int));
+      int *Bit = (int *)calloc((size_t)bitSize, sizeof(int));
 
-    int ans = InversionCount(Q, R, 0, numTriangle-1, Bit, bitSize);
+      int ans = InversionCount(Q, R, 0, numTriangle-1, Bit, bitSize);
 
-    free(Bit);
+      free(Bit);
 
-    int numDuplicate = 1;
-    int Temp = 0;
-    int partialCountTotal=0;
+      int numDuplicate = 1;
+      int Temp = 0;
+      int partialCountTotal=0;
 
-    for (int i=0;i<numTriangle;i=i+numDuplicate){
+      for (int i=0;i<numTriangle;i=i+numDuplicate){
 
-      numDuplicate = 1;
+        numDuplicate = 1;
 
-      int ii = i+1;
+        int ii = i+1;
 
-      while( P[i] == P[ii] ){
+        while( P[i] == P[ii] ){
 
-        numDuplicate++; 
+          numDuplicate++; 
  
-        ii++;
-      }
-
-      if (numDuplicate > 1){
-        //printf("i=%d, i+numDuplicate-1=%d, numDuplicate=%d\n", i, i+numDuplicate-1, numDuplicate);
-        bitSize = 1;
-	    for (int ii=i; ii<=i+numDuplicate-1; ii++){
-          if (bitSize < Q[ii]) bitSize = Q[ii];
+          ii++;
         }
-        bitSize++;
-        //printf("bitSize=%d\n", bitSize);
-        Bit = (int *)calloc((size_t)bitSize, sizeof(int));
 
-        partialCountTotal += InversionCount(Q, R, i, i+numDuplicate-1, Bit, bitSize);
+        if (numDuplicate > 1){
+          //printf("i=%d, i+numDuplicate-1=%d, numDuplicate=%d\n", i, i+numDuplicate-1, numDuplicate);
+          bitSize = 1;
+	      for (int ii=i; ii<=i+numDuplicate-1; ii++){
+            if (bitSize < Q[ii]) bitSize = Q[ii];
+          }
+          bitSize++;
+          //printf("bitSize=%d\n", bitSize);
+          Bit = (int *)calloc((size_t)bitSize, sizeof(int));
 
-        Temp += numDuplicate*(numDuplicate-1)/2;
+          partialCountTotal += InversionCount(Q, R, i, i+numDuplicate-1, Bit, bitSize);
+
+          Temp += numDuplicate*(numDuplicate-1)/2;
+        }
+
       }
-
+   
+	  printf("%d\n",  ans-partialCountTotal+Temp);
+#   ifdef JUDGE
     }
-
-	printf("%d\n",  ans-partialCountTotal+Temp);
-
+#   endif
 	return 0;
 }
 
