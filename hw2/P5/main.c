@@ -2,6 +2,7 @@
  * https://www.programiz.com/c-programming/examples/swapping
  * https://www.geeksforgeeks.org/count-inversions-array-set-3-using-bit/
  * https://hackmd.io/@zengbs/Bk6pVcdHO
+ * https://www.geeksforgeeks.org/merge-sort/
  * */
 
 #include<stdio.h>
@@ -10,18 +11,90 @@
 #include "generator.h"
 
 
-#define JUDGE
+//#define JUDGE
 
-struct PQArray{
+struct PQRArray{
     int p;
     int q;
     int r;
 };
 
+
+void merge(struct PQRArray *pqrArray, int left, int m, int right)
+{
+    int i, j, k;
+    int idxL = m - left + 1;
+    int idxR = right - m;
+ 
+    struct PQRArray *L = (struct PQRArray *)malloc((size_t)idxL*sizeof(struct PQRArray));
+    struct PQRArray *R = (struct PQRArray *)malloc((size_t)idxR*sizeof(struct PQRArray));
+ 
+    for (i = 0; i < idxL; i++){
+      L[i].p = pqrArray[left + i].p;
+      L[i].q = pqrArray[left + i].q;
+      L[i].r = pqrArray[left + i].r;
+    }
+
+    for (j = 0; j < idxR; j++){
+      R[j].p = pqrArray[m + 1 + j].p;
+      R[j].q = pqrArray[m + 1 + j].q;
+      R[j].r = pqrArray[m + 1 + j].r;
+    }
+ 
+    i = j = 0;
+    k = left;
+
+    while(i < idxL && j < idxR){
+      if(L[i].p <= R[j].p){
+        pqrArray[k].p = L[i].p;
+        pqrArray[k].q = L[i].q;
+        pqrArray[k].r = L[i].r;
+        i++;
+      }
+      else{
+        pqrArray[k].p = R[j].p;
+        pqrArray[k].q = R[j].q;
+        pqrArray[k].r = R[j].r;
+        j++;
+      }
+      k++;
+    }
+ 
+    while(i < idxL){
+      pqrArray[k].p = L[i].p;
+      pqrArray[k].q = L[i].q;
+      pqrArray[k].r = L[i].r;
+      i++;
+      k++;
+    }
+ 
+    while(j < idxR){
+      pqrArray[k].p = R[j].p;
+      pqrArray[k].q = R[j].q;
+      pqrArray[k].r = R[j].r;
+      j++;
+      k++;
+    }
+
+    free(L);
+    free(R);
+}
+ 
+void mergeSort(struct PQRArray *pqrArray, int left, int right)
+{
+    if (left < right){
+
+      int m = left + (right - left) / 2;
+      mergeSort(pqrArray, left, m);
+      mergeSort(pqrArray, m + 1, right);
+      merge(pqrArray, left, m, right);
+    }
+}
+
 int compare(const void *struct1, const void *struct2) {
-      if ( ((struct PQArray *)struct1)->p <  ((struct PQArray *)struct2)->p ) return -1;
-      if ( ((struct PQArray *)struct1)->p == ((struct PQArray *)struct2)->p ) return 0;
-      if ( ((struct PQArray *)struct1)->p >  ((struct PQArray *)struct2)->p ) return 1;
+      if ( ((struct PQRArray *)struct1)->p <  ((struct PQRArray *)struct2)->p ) return -1;
+      if ( ((struct PQRArray *)struct1)->p == ((struct PQRArray *)struct2)->p ) return 0;
+      if ( ((struct PQRArray *)struct1)->p >  ((struct PQRArray *)struct2)->p ) return 1;
 }
 
 
@@ -88,7 +161,7 @@ int main()
       generator.getData(&numTriangle, &P, &Q, &R);
 #   endif
 
-      struct PQArray *pqrArray = (struct PQArray *)malloc((size_t)numTriangle*sizeof(struct PQArray));
+      struct PQRArray *pqrArray = (struct PQRArray *)malloc((size_t)numTriangle*sizeof(struct PQRArray));
 
 #     ifndef JUDGE
       P[0] = 2;
@@ -126,7 +199,8 @@ int main()
       }
 
 
-      qsort(pqrArray, numTriangle, sizeof(*pqrArray), compare);
+      //qsort(pqrArray, numTriangle, sizeof(*pqrArray), compare);
+      mergeSort(pqrArray, 0, numTriangle-1);
 
 
       for (long i=0;i<numTriangle;i++){
