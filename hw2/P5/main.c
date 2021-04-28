@@ -1,5 +1,6 @@
 #include<stdio.h>
 #include<stdlib.h>
+#include<limits.h>
 
 int Sum(int biTree[], int idx)
 {
@@ -27,7 +28,6 @@ void Update(int biTree[], int n, int idx, int data)
 int InversionCount(int Q[], int R[], int left, int right, int Bit[], int bitSize)
 {
 	int c = 0;
-
 
 	for (int i=right; i>=left; i--){
 		c += Sum(Bit, Q[i]);
@@ -72,12 +72,48 @@ int main()
     R[6] = 5;
     R[7] = 5;
 
+    /* get the minimum item in P[] */
+    int minP = INT_MAX;
+    for ( int i=0;i<numTriangle;i++ ){
+      if ( minP > P[i] ) minP = P[i];
+    } 
+
+    /* get the minimum item in Q[] */
+    int minQ = INT_MAX;
+    for ( int i=0;i<numTriangle;i++ ){
+      if ( minQ > Q[i] ) minQ = Q[i];
+    } 
+
+    /* get the minimum item in R[] */
+    int minR = INT_MAX;
+    for ( int i=0;i<numTriangle;i++ ){
+      if ( minR > R[i] ) minR = R[i];
+    } 
+
+    /* get the minimum item in RPQ */
+    int minPQR[3] = {minP, minQ, minR};
+    int min = INT_MAX;
+    for (int i=0;i<3;i++){
+      if (min > minPQR[i] ) min = minPQR[i];
+    }
+
+    min--;
+
+    /* coordinate shift */
+    for (int i=0;i<numTriangle;i++){
+      P[i] -= min;
+      Q[i] -= min;
+      R[i] -= min;
+    }
+
+
     /* get the maximum item in Q[] */
     int bitSize = 1;
 
 	for (int i=0; i<numTriangle; i++){
       if (bitSize < Q[i]) bitSize = Q[i];
     }
+
     bitSize++;
    
     int *Bit = (int *)calloc((size_t)bitSize, sizeof(int));
