@@ -82,6 +82,9 @@ int main()
 
     int ans = InversionCount(Q, R, numTriangle, Bit, bitSize);
 
+    
+
+
 	printf("%d\n",  ans);
 	return 0;
 }
