@@ -24,24 +24,13 @@ void Update(int biTree[], int n, int idx, int data)
 	}
 }
 
-int InversionCount(int Q[], int R[], int n)
+int InversionCount(int Q[], int R[], int n, int Bit[], int bitSize)
 {
 	int c = 0;
 
-	int size = 0;
-
-    /* get the maximum item in R[] */
-	for (int i=0; i<n; i++){
-      if (size < R[i]) size = R[i];
-    }
-
-	int bit[size+1];
-
-	for (int i=1; i<=size; i++) bit[i] = 0;
-
 	for (int i=n-1; i>=0; i--){
-		c += Sum(bit, Q[i]);
-		Update(bit, size, R[i], 1);
+		c += Sum(Bit, Q[i]);
+		Update(Bit, bitSize, R[i], 1);
 	}
 
 	return c;
@@ -53,6 +42,7 @@ int main()
 
     int *Q = (int *)malloc((size_t)numTriangle*sizeof(int));
     int *R = (int *)malloc((size_t)numTriangle*sizeof(int));
+
 
     Q[0] = 2; 
     Q[1] = 2;
@@ -72,8 +62,16 @@ int main()
     R[6] = 5;
     R[7] = 5;
 
+    /* get the maximum item in R[] */
+    int bitSize;
 
-    int ans = InversionCount(Q, R, numTriangle);    
+	for (int i=0; i<numTriangle; i++){
+      if (bitSize < R[i]) bitSize = R[i];
+    }
+   
+    int *Bit = (int *)calloc((size_t)bitSize, sizeof(int));
+
+    int ans = InversionCount(Q, R, numTriangle, Bit, bitSize);
 
 	printf("%d\n",  ans);
 	return 0;
