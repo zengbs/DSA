@@ -128,11 +128,12 @@ void Update(long biTree[], long n, long idx, long data)
 	}
 }
 
-long InversionCount(int P[], int Q[], int R[])
+long InversionCount(int P[], int Q[], int R[], int numTriangle)
 {
 	long c = 0;
     long numDuplicate = 1;
-    long partialCountTotal=0;
+    long Temp = 0;
+    long partialCountTotal = 0;
 
     /* get the maximum item in Q[] */
     long bitSize = 1;
@@ -145,39 +146,43 @@ long InversionCount(int P[], int Q[], int R[])
    
     long *Bit1 = (long *)calloc((size_t)bitSize, sizeof(long));  // for unique P[]
 
-    for (long i=0;i<numTriangle;i=i+numDuplicate){
+    for (long i=numTriangle-1;i>=0;i=i-numDuplicate){
 
       numDuplicate = 1;
-
-      long ii = i+1;
+      long ii = i-1;
 
       while( P[i] == P[ii] ){
         numDuplicate++; 
-        ii++;
+        ii--;
       }
 
       if (numDuplicate > 1){
 
         long *Bit2 = (long *)calloc((size_t)bitSize, sizeof(long));  // for duplicate P[]
 
-        for (int ii=i ;ii<i+numDuplicate;ii++){
-		  c += Sum(Bit2, Q[i]);
-		  Update(Bit2, bitSize, R[i], 1);
+        for (int ii=i ;ii>i-numDuplicate;ii--){
+		  partialCountTotal += Sum(Bit2, Q[ii]);
+		  Update(Bit2, bitSize, R[ii], 1);
+
+		  c += Sum(Bit1, Q[ii]);
+		  Update(Bit1, bitSize, R[ii], 1);
         }
 
         free(Bit2);
 
+
+        Temp += numDuplicate*(numDuplicate-1)/2;
+
       }
       else{
-		c += Sum(Bit, Q[i]);
-		Update(Bit, bitSize, R[i], 1);
+		c += Sum(Bit1, Q[i]);
+		Update(Bit1, bitSize, R[i], 1);
       }
 
     }
 
     free(Bit1);
-
-	return c;
+	return c-partialCountTotal+Temp;
 }
 
 int main()
@@ -290,7 +295,6 @@ int main()
 
       min--;
 
-//      long min = -1024;
 
       /* coordinate shift */
       for (long i=0;i<numTriangle;i++){
@@ -301,7 +305,7 @@ int main()
 
 
 
-      long ans = InversionCount(P, Q, R);
+      long ans = InversionCount(P, Q, R, numTriangle);
 
 
    
