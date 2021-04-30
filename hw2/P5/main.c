@@ -11,7 +11,7 @@
 #include "generator.h"
 
 
-//#define JUDGE
+#define JUDGE
 
 struct PQRArray{
     int p;
@@ -128,14 +128,54 @@ void Update(long biTree[], long n, long idx, long data)
 	}
 }
 
-long InversionCount(int Q[], int R[], long left, long right, long Bit[], long bitSize)
+long InversionCount(int P[], int Q[], int R[])
 {
 	long c = 0;
+    long numDuplicate = 1;
+    long partialCountTotal=0;
 
-	for (long i=right; i>=left; i--){
+    /* get the maximum item in Q[] */
+    long bitSize = 1;
+
+	for (long i=0; i<numTriangle; i++){
+      if (bitSize < Q[i]) bitSize = Q[i];
+    }
+
+    bitSize++;
+   
+    long *Bit1 = (long *)calloc((size_t)bitSize, sizeof(long));  // for unique P[]
+
+    for (long i=0;i<numTriangle;i=i+numDuplicate){
+
+      numDuplicate = 1;
+
+      long ii = i+1;
+
+      while( P[i] == P[ii] ){
+        numDuplicate++; 
+        ii++;
+      }
+
+      if (numDuplicate > 1){
+
+        long *Bit2 = (long *)calloc((size_t)bitSize, sizeof(long));  // for duplicate P[]
+
+        for (int ii=i ;ii<i+numDuplicate;ii++){
+		  c += Sum(Bit2, Q[i]);
+		  Update(Bit2, bitSize, R[i], 1);
+        }
+
+        free(Bit2);
+
+      }
+      else{
 		c += Sum(Bit, Q[i]);
 		Update(Bit, bitSize, R[i], 1);
-	}
+      }
+
+    }
+
+    free(Bit1);
 
 	return c;
 }
@@ -250,6 +290,8 @@ int main()
 
       min--;
 
+//      long min = -1024;
+
       /* coordinate shift */
       for (long i=0;i<numTriangle;i++){
         P[i] -= min;
@@ -258,58 +300,12 @@ int main()
       }
 
 
-      /* get the maximum item in Q[] */
-      long bitSize = 1;
 
-	  for (long i=0; i<numTriangle; i++){
-        if (bitSize < Q[i]) bitSize = Q[i];
-      }
+      long ans = InversionCount(P, Q, R);
 
-      bitSize++;
+
    
-      long *Bit = (long *)calloc((size_t)bitSize, sizeof(long));
-
-      long ans = InversionCount(Q, R, 0, numTriangle-1, Bit, bitSize);
-
-      free(Bit);
-
-      long numDuplicate = 1;
-      long Temp = 0;
-      long partialCountTotal=0;
-
-      for (long i=0;i<numTriangle;i=i+numDuplicate){
-
-        numDuplicate = 1;
-
-        long ii = i+1;
-
-        while( P[i] == P[ii] ){
-
-          numDuplicate++; 
- 
-          ii++;
-        }
-
-        if (numDuplicate > 1){
-          //printf("i=%d, i+numDuplicate-1=%d, numDuplicate=%d\n", i, i+numDuplicate-1, numDuplicate);
-          bitSize = 1;
-	      for (long ii=i; ii<=i+numDuplicate-1; ii++){
-            if (bitSize < Q[ii]) bitSize = Q[ii];
-          }
-          bitSize++;
-          //printf("bitSize=%d\n", bitSize);
-          Bit = (long *)calloc((size_t)bitSize, sizeof(long));
-
-          partialCountTotal += InversionCount(Q, R, i, i+numDuplicate-1, Bit, bitSize);
-
-          free(Bit);
-
-          Temp += numDuplicate*(numDuplicate-1)/2;
-        }
-
-      }
-   
-	  printf("%ld\n",  ans-partialCountTotal+Temp);
+	  printf("%ld\n",  ans);
 #   ifdef JUDGE
     }
 #   endif
