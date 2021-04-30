@@ -11,7 +11,7 @@
 #include "generator.h"
 
 
-#define JUDGE
+//#define JUDGE
 
 struct PQRArray{
     int p;
@@ -105,7 +105,7 @@ void swap(int *a, int *b)
   *a = *a - *b;
 }
 
-long Sum(long biTree[], long idx)
+long Sum(int biTree[], int idx)
 {
 	long sum = 0;
 
@@ -118,7 +118,7 @@ long Sum(long biTree[], long idx)
 	return sum;
 }
 
-void Update(long biTree[], long n, long idx, long data)
+void Update(int biTree[], int n, int idx, int data)
 {
 	while (idx <= n)
 	{
@@ -136,7 +136,7 @@ long InversionCount(int P[], int Q[], int R[], int numTriangle)
     long partialCountTotal = 0;
 
     /* get the maximum item in Q[] */
-    long bitSize = 1;
+    int bitSize = 1;
 
 	for (long i=0; i<numTriangle; i++){
       if (bitSize < Q[i]) bitSize = Q[i];
@@ -144,7 +144,7 @@ long InversionCount(int P[], int Q[], int R[], int numTriangle)
 
     bitSize++;
    
-    long *Bit1 = (long *)calloc((size_t)bitSize, sizeof(long));  // for unique P[]
+    int *Bit1 = (int *)calloc((size_t)bitSize, sizeof(int));  // for unique P[]
 
     for (long i=numTriangle-1;i>=0;i=i-numDuplicate){
 
@@ -158,14 +158,14 @@ long InversionCount(int P[], int Q[], int R[], int numTriangle)
 
       if (numDuplicate > 1){
 
-        long *Bit2 = (long *)calloc((size_t)bitSize, sizeof(long));  // for duplicate P[]
+        int *Bit2 = (int *)calloc((size_t)bitSize, sizeof(int));  // for duplicate P[]
 
         for (int ii=i ;ii>i-numDuplicate;ii--){
-		  partialCountTotal += Sum(Bit2, Q[ii]);
-		  Update(Bit2, bitSize, R[ii], 1);
+	      partialCountTotal += Sum(Bit2, Q[ii]);
+	      Update(Bit2, bitSize, R[ii], 1);
 
-		  c += Sum(Bit1, Q[ii]);
-		  Update(Bit1, bitSize, R[ii], 1);
+	      c += Sum(Bit1, Q[ii]);
+	      Update(Bit1, bitSize, R[ii], 1);
         }
 
         free(Bit2);
