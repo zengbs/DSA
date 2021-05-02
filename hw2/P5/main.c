@@ -7,11 +7,12 @@
 
 #include<stdio.h>
 #include<stdlib.h>
+#include<stdbool.h>
 #include<limits.h>
 #include "generator.h"
 
 
-//#define JUDGE
+#define JUDGE
 
 struct PQRArray{
     int p;
@@ -130,59 +131,53 @@ void Update(int biTree[], int n, int idx, int data)
 
 long InversionCount(int P[], int Q[], int R[], int numTriangle)
 {
+    int  numDuplicate = 1;
 	long c = 0;
-    long numDuplicate = 1;
-    long Temp = 0;
-    long partialCountTotal = 0;
 
     /* get the maximum item in Q[] */
     int bitSize = 1;
 
-	for (long i=0; i<numTriangle; i++){
+	for (int i=0; i<numTriangle; i++){
       if (bitSize < Q[i]) bitSize = Q[i];
     }
 
     bitSize++;
    
-    int *Bit1 = (int *)calloc((size_t)bitSize, sizeof(int));  // for unique P[]
+    int *Bit = (int *)calloc((size_t)bitSize, sizeof(int));  // for unique P[]
 
-    for (long i=numTriangle-1;i>=0;i=i-numDuplicate){
+    for (int i=numTriangle-1;i>=0;i=i-numDuplicate){
 
       numDuplicate = 1;
-      long ii = i-1;
 
-      while( P[i] == P[ii] ){
-        numDuplicate++; 
-        ii--;
-      }
+      if( P[i] == P[i-1] ){
 
-      if (numDuplicate > 1){
+        int ii = i;
 
-        int *Bit2 = (int *)calloc((size_t)bitSize, sizeof(int));  // for duplicate P[]
 
-        for (int ii=i ;ii>i-numDuplicate;ii--){
-	      partialCountTotal += Sum(Bit2, Q[ii]);
-	      Update(Bit2, bitSize, R[ii], 1);
-
-	      c += Sum(Bit1, Q[ii]);
-	      Update(Bit1, bitSize, R[ii], 1);
+        while( P[i] == P[ii] ){
+          ii--;
+          numDuplicate++; 
+          c += Sum(Bit, Q[ii]);
         }
 
-        free(Bit2);
+        numDuplicate--;
 
+        for ( int jj=i;jj>i-numDuplicate;jj-- ){
+          Update(Bit, bitSize, R[jj], 1);
+        }
 
-        Temp += numDuplicate*(numDuplicate-1)/2;
+        c += numDuplicate*(numDuplicate-1)/2;
 
       }
       else{
-		c += Sum(Bit1, Q[i]);
-		Update(Bit1, bitSize, R[i], 1);
+        c += Sum(Bit, Q[i]);
+        Update(Bit, bitSize, R[i], 1);
       }
 
     }
 
-    free(Bit1);
-	return c-partialCountTotal+Temp;
+    free(Bit);
+	return c;
 }
 
 int main()
@@ -237,7 +232,7 @@ int main()
       R[7] = 0;
 #     endif
       
-      for (long i=0;i<numTriangle;i++){
+      for (int i=0;i<numTriangle;i++){
         pqrArray[i].p = P[i];
         pqrArray[i].q = Q[i];
         pqrArray[i].r = R[i];
@@ -248,7 +243,7 @@ int main()
       mergeSort(pqrArray, 0, numTriangle-1);
 
 
-      for (long i=0;i<numTriangle;i++){
+      for (int i=0;i<numTriangle;i++){
         P[i] = pqrArray[i].p;
         Q[i] = pqrArray[i].q;
         R[i] = pqrArray[i].r;
@@ -274,22 +269,21 @@ int main()
 //      exit(0);
 
       /* get the minimum item in P[] */
-      long minP = LONG_MAX;
-      long minQ = LONG_MAX;
-      long minR = LONG_MAX;
-      for ( long i=0;i<numTriangle;i++ ){
-        if ( minP > P[i] ) minP = P[i];
+      int minQ = INT_MAX;
+      int minR = INT_MAX;
+
+      for ( int i=0;i<numTriangle;i++ ){
         if ( minQ > Q[i] ) minQ = Q[i];
         if ( minR > R[i] ) minR = R[i];
 
         if (Q[i] < R[i]) swap( &Q[i], &R[i] );
-      } 
+      }
 
 
       /* get the minimum item in RPQ */
-      long minPQR[3] = {minP, minQ, minR};
-      long min = LONG_MAX;
-      for (long i=0;i<3;i++){
+      int minPQR[3] = {P[0], minQ, minR};
+      int min = INT_MAX;
+      for (int i=0;i<3;i++){
         if (min > minPQR[i] ) min = minPQR[i];
       }
 
@@ -297,7 +291,7 @@ int main()
 
 
       /* coordinate shift */
-      for (long i=0;i<numTriangle;i++){
+      for (int i=0;i<numTriangle;i++){
         P[i] -= min;
         Q[i] -= min;
         R[i] -= min;
