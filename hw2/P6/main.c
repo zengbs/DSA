@@ -2,7 +2,7 @@
 #include<stdlib.h>
 #include<stdbool.h>
 #include <string.h>
-
+#include<stdint.h>
 
 struct Deque{
   int data;
@@ -16,9 +16,9 @@ struct Deque* XOR(struct Deque *a, struct Deque *b)
 }
 
 
-void printList (struct Deque *root)
+void printList (struct Deque *endPoint)
 {
-    struct Deque *curr = root;
+    struct Deque *curr = endPoint;
  
     struct Deque *prev = NULL;
     struct Deque *next;
@@ -34,48 +34,60 @@ void printList (struct Deque *root)
 }
 
 
-void push(struct Deque **root, int data)
+
+void push(struct Deque **endPoint, int data)
 {
   struct Deque *newNode = (struct Deque *) malloc (sizeof (struct Deque) );
   newNode->data = data;
+  newNode->npx = *endPoint;
  
-  newNode->npx = *root;
- 
-  if (*root != NULL)
+  if (*endPoint != NULL)
   {
-      (*root)->npx = XOR(newNode, (*root)->npx);
+      (*endPoint)->npx = XOR(newNode, (*endPoint)->npx);
   }
  
-  *root = newNode;
+  *endPoint = newNode;
 }
-void pop(struct Deque **root)
+
+
+void pop(struct Deque **endPoint)
 { 
   struct Deque *nextNode;
   struct Deque *nextnextNode;
   
-  nextNode     = (*root)->npx;
+  nextNode     = (*endPoint)->npx;
   
   if (nextNode != NULL){
-    nextnextNode = XOR(nextNode->npx, *root);
+    nextnextNode = XOR(nextNode->npx, *endPoint);
     nextNode->npx  = nextnextNode;
   
-    free(*root);
-    *root = nextNode;
+    free(*endPoint);
+    *endPoint = nextNode;
   }
   else{
-    free(*root); 
-    *root = NULL;
+    free(*endPoint); 
+    *endPoint = NULL;
   }
 }
+
+
 
 int main(){
 
 
+  struct Deque *left  = NULL;
+  struct Deque *right = NULL;
 
+  push(&left, 1);
+  
+  right = left;
 
+  push(&left, 2);
+  push(&left, 3);
+  push(&right, 99);
+  push(&left, 4);
 
-
-
+  printList(right);
 
 
   return 0;
