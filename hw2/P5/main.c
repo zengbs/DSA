@@ -137,7 +137,7 @@ long InversionCount(int P[], int Q[], int R[], int numTriangle)
     /* get the maximum item in Q[] */
     long bitSize = 1;
 
-	for (long i=0; i<numTriangle; i++){
+	for (int i=0; i<numTriangle; i++){
       if (bitSize < Q[i]) bitSize = Q[i];
     }
 
@@ -145,12 +145,12 @@ long InversionCount(int P[], int Q[], int R[], int numTriangle)
    
     int *Bit = (int *)calloc((size_t)bitSize, sizeof(int));  // for unique P[]
 
-    for (long i=numTriangle-1;i>=0;i=i-numDuplicate){
+    for (int i=numTriangle-1;i>=0;i=i-numDuplicate){
 
       numDuplicate = 1;
 
       if( P[i] == P[i-1] ){
-        long ii = i;
+        int ii = i;
 
 
         while( P[i] == P[ii] ){
@@ -162,7 +162,7 @@ long InversionCount(int P[], int Q[], int R[], int numTriangle)
 
         numDuplicate--;
 
-        for ( long jj=i;jj>i-numDuplicate;jj-- ){
+        for ( int jj=i;jj>i-numDuplicate;jj-- ){
           Update(Bit, bitSize, R[jj], 1);
         }
 
@@ -184,9 +184,9 @@ int main()
 {
 #   ifndef JUDGE
     int numTriangle = 8;
-    int *P = (int *)malloc((size_t)numTriangle*sizeof(long));
-    int *Q = (int *)malloc((size_t)numTriangle*sizeof(long));
-    int *R = (int *)malloc((size_t)numTriangle*sizeof(long));
+    int *P = (int *)malloc((size_t)numTriangle*sizeof(int));
+    int *Q = (int *)malloc((size_t)numTriangle*sizeof(int));
+    int *R = (int *)malloc((size_t)numTriangle*sizeof(int));
 #   endif
 
 #   ifdef JUDGE
@@ -266,7 +266,7 @@ int main()
 //      R[9] = 4;
 #     endif
       
-      for (long i=0;i<numTriangle;i++){
+      for (int i=0;i<numTriangle;i++){
         pqrArray[i].p = P[i];
         pqrArray[i].q = Q[i];
         pqrArray[i].r = R[i];
@@ -277,7 +277,7 @@ int main()
       mergeSort(pqrArray, 0, numTriangle-1);
 
 
-      for (long i=0;i<numTriangle;i++){
+      for (int i=0;i<numTriangle;i++){
         P[i] = pqrArray[i].p;
         Q[i] = pqrArray[i].q;
         R[i] = pqrArray[i].r;
@@ -285,17 +285,17 @@ int main()
 
       free(pqrArray);
 
-//      for (long i=0;i<numTriangle;i++){
+//      for (int i=0;i<numTriangle;i++){
 //        printf("%2d ", pqrArray[i].p);
 //      }
 //      printf("\n"); 
 //
-//      for (long i=0;i<numTriangle;i++){
+//      for (int i=0;i<numTriangle;i++){
 //        printf("%2d ", pqrArray[i].q);
 //      }
 //      printf("\n"); 
 //
-//      for (long i=0;i<numTriangle;i++){
+//      for (int i=0;i<numTriangle;i++){
 //        printf("%2d ", pqrArray[i].r);
 //      }
 //
@@ -303,12 +303,12 @@ int main()
 //      exit(0);
 
       /* get the minimum item in P[] */
-      long minP = LONG_MAX;
-      long minQ = LONG_MAX;
-      long minR = LONG_MAX;
+//      int minP = LONG_MAX;
+      int minQ = INT_MAX;
+      int minR = INT_MAX;
 
-      for ( long i=0;i<numTriangle;i++ ){
-        if ( minP > P[i] ) minP = P[i];
+      for ( int i=0;i<numTriangle;i++ ){
+//        if ( minP > P[i] ) minP = P[i];
         if ( minQ > Q[i] ) minQ = Q[i];
         if ( minR > R[i] ) minR = R[i];
 
@@ -317,9 +317,9 @@ int main()
 
 
       /* get the minimum item in RPQ */
-      long minPQR[3] = {minP, minQ, minR};
-      long min = INT_MAX;
-      for (long i=0;i<3;i++){
+      int minPQR[3] = {P[0], minQ, minR};
+      int min = INT_MAX;
+      for (int i=0;i<3;i++){
         if (min > minPQR[i] ) min = minPQR[i];
       }
 
@@ -327,7 +327,7 @@ int main()
 
 
       /* coordinate shift */
-      for (long i=0;i<numTriangle;i++){
+      for (int i=0;i<numTriangle;i++){
         P[i] -= min;
         Q[i] -= min;
         R[i] -= min;
