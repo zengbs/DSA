@@ -1,9 +1,51 @@
+/* https://github.com/stephanoumenos/BinomialHeap/blob/master/binomial_heap.c
+ * */
+
 #include<stdio.h>
 #include<stdlib.h>
 #include<stdbool.h>
 #include <string.h>
 #include<stdint.h>
+#include "binomial_heap.h"
 
+typedef struct Node_t{
+  int key;
+  int degree;
+  struct Node_t parent;
+  struct Node_t sibling;
+  struct Node_t child;
+} Node;
+
+
+typedef struct BinomialHeap_t{
+  Node *head;
+} BinomialHeap;
+
+
+BinomialHeap* MakeBinomialHeap( )
+{
+  return NULL;
+}
+
+Node* BinomialHeapMinimum( BinomialHeap *bh )
+{
+  Node *x = bh->head;
+  Node *minNode = NULL;
+
+  int min = INT_MAX;
+
+  while( x ){
+    if ( min < x->key){
+      min = x->key;
+      minNode = x;
+    }
+    x = x->sibling;
+  }
+
+  return minNode;
+}
+
+/* Deque */
 struct Deque{
   int data;
   struct Deque *npx;
@@ -58,6 +100,7 @@ void pop(struct Deque **endPoint)
   nextNode     = (*endPoint)->npx;
   
   if (nextNode != NULL){
+
     nextnextNode = XOR(nextNode->npx, *endPoint);
     nextNode->npx  = nextnextNode;
   
@@ -75,20 +118,32 @@ void pop(struct Deque **endPoint)
 int main(){
 
 
-  struct Deque *left  = NULL;
-  struct Deque *right = NULL;
+//  struct Deque *left  = NULL;
+//  struct Deque *right = NULL;
+//
+//  push(&left, 1);
+//  
+//  right = left;
+//
+//  push(&left, 2);
+//  push(&left, 3);
+//  push(&right, 99);
+//  push(&left, 4);
+//  pop(&left);
+//  push(&right, -1);
+//  push(&right, 0);
+//  pop(&right);
+//  push(&right, 55);
+//
+//
+//  printList(left);
 
-  push(&left, 1);
-  
-  right = left;
+  Node *Node1 = (Node*)malloc(sizeof(Node));
+  Node1->key = 1;
 
-  push(&left, 2);
-  push(&left, 3);
-  push(&right, 99);
-  push(&left, 4);
+  Binomial_heap H1 = make_binomial_heap();
 
-  printList(right);
-
+  H1 = binomial_heap_insert( H1, Node1 );
 
   return 0;
 }
