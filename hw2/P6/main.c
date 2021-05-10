@@ -12,7 +12,6 @@ typedef struct Node_t {
 
 	unsigned int 	degree;
 	int			    key;
-	const void*	   	value;
 }Node;
 
 typedef struct BHeap_t {
@@ -28,14 +27,13 @@ void init(BHeap* heap)
 }
 
 
-void node_init(Node* h, int key, const void* value)
+void node_init(Node* node, int key)
 {
-	h->parent   = NULL;
-	h->sibling  = NULL;
-	h->child    = NULL;
-	h->degree   = INT_MAX;
-	h->value    = value;
-	h->key      = key;
+	node->parent   = NULL;
+	node->sibling  = NULL;
+	node->child    = NULL;
+	node->degree   = INT_MAX;
+	node->key      = key;
 }
 
 
@@ -50,8 +48,8 @@ void heapLink(Node* root, Node* child)
 
 Node* heapMerge(Node* a, Node* b)
 {
-	Node* head = NULL;
-	Node** pos = &head;
+	Node *head = NULL;
+	Node **pos = &head;
 
 	while (a && b){
 	  if (a->degree < b->degree){
@@ -195,7 +193,7 @@ void insert(BHeap* heap, Node* node)
 	} else heapUnion(heap, node);
 }
 
-void uncacheMin(BHeap* heap)
+void removeMin(BHeap* heap)
 {
 	Node* min;
 	if (heap->min){
@@ -208,29 +206,15 @@ void uncacheMin(BHeap* heap)
 
 Node* peek(BHeap* heap)
 {
-	if (!heap->min)
-		heap->min = extractMin(heap);
+	if (!heap->min)  heap->min = extractMin(heap);
+
 	return heap->min;
 }
 
-Node* take(BHeap* heap)
-{
-	Node *node;
 
-	if (!heap->min) heap->min = extractMin(heap);
-
-	node = heap->min;
-	heap->min = NULL;
-
-	if (node) node->degree = INT_MAX;
-
-	return node;
-}
-
-void decrease(BHeap* heap, Node* node, int new_key)
+void heapDecrease(BHeap* heap, Node* node, int new_key)
 {
 	Node *parent;
-	const void* tmp;
 	int   tmp_key;
 
 	if (new_key >= node->key) return;
@@ -239,16 +223,13 @@ void decrease(BHeap* heap, Node* node, int new_key)
 
 	if (heap->min != node){
 
-		if (heap->min && node->key < heap->min->key) uncacheMin(heap);
+		if (heap->min && node->key < heap->min->key) removeMin(heap);
 
 		parent = node->parent;
 
 		while (parent && node->key < parent->key){
-			tmp           = parent->value;
 			tmp_key       = parent->key;
-			parent->value = node->value;
 			parent->key   = node->key;
-			node->value   = tmp;
 			node->key     = tmp_key;
 
 			node           = parent;
@@ -260,7 +241,6 @@ void decrease(BHeap* heap, Node* node, int new_key)
 void delete(BHeap* heap, Node* node)
 {
 	Node *parent, *prev, *pos;
-	const void* tmp;
 	int tmp_key;
 
 
@@ -268,11 +248,8 @@ void delete(BHeap* heap, Node* node)
 	  parent = node->parent;
 
 	  while (parent){
-	  	tmp           = parent->value;
 	  	tmp_key       = parent->key;
-	  	parent->value = node->value;
 	  	parent->key   = node->key;
-	  	node->value   = tmp;
 	  	node->key     = tmp_key;
 
 
@@ -397,6 +374,21 @@ int main(){
 //
 //  printList(left);
 
+
+  #define N 10
+
+  int A[N] = {4, 2, 5, 7, 2, 77, 9, -3, -25, 95};
+
+  Node  *node = (Node  *)malloc(sizeof(Node));
+  BHeap *heap = (BHeap *)malloc(sizeof(BHeap));
+
+
+  init(heap);
+
+
+  node_init(node, 3);
+
+  insert(heap, node);
 
   return 0;
 }
