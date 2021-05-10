@@ -5,6 +5,8 @@
 #include<stdint.h>
 #include<limits.h>
 
+
+
 typedef struct Node_t {
 	struct Node_t* 	parent;
 	struct Node_t* 	sibling;
@@ -19,6 +21,7 @@ typedef struct BHeap_t {
 	struct Node_t*	min;
 }BHeap;
 
+void removeMin(BHeap* heap);
 
 void init(BHeap* heap)
 {
@@ -73,7 +76,7 @@ Node* heapReverse(Node* h)
 	Node* tail = NULL;
 	Node* sibling;
 
-	if (h != NULL) return h;
+	if (!h) return h;
 
 	h->parent = NULL;
 
@@ -90,29 +93,22 @@ Node* heapReverse(Node* h)
 	return h;
 }
 
-void getMinNode(BHeap* heap, Node** prev, Node** node)
+void getMinNode(BHeap *heap, Node **prev, Node **node)
 {
-	Node *nodePrev, *nodeCur;
-	*prev = NULL;
+	Node *nodeCur = heap->head;
 
-	if (!heap->head){
-		*node = NULL;
-		return;
-	}
+    int min = INT_MAX;
 
-	*node = heap->head;
-	nodePrev = heap->head;
-	nodeCur   = heap->head->sibling;
 
 	while (nodeCur){
 
-	  if (nodeCur->key < (*node)->key){
-	  	*node = nodeCur;
-	  	*prev = nodePrev;
+	  if (nodeCur->key < min){
+        min = nodeCur->key;
+        *node = nodeCur;
 	  }
 
-	  nodePrev = nodeCur;
-	  nodeCur   = nodeCur->sibling;
+      *prev  = nodeCur;
+	  nodeCur  = nodeCur->sibling;
 	}
 }
 
@@ -136,24 +132,33 @@ void heapUnion(BHeap* heap, Node* h2)
 	sibling = x->sibling;
 
 	while (sibling){
-	  if (x->degree != sibling->degree || (sibling->sibling && sibling->sibling->degree == x->degree)){
+	  if (x->degree != sibling->degree || ((sibling->sibling != NULL) && sibling->sibling->degree == x->degree)){
 	  	prev = x;
 	  	x    = sibling;
-	  } else if (x->key < sibling->key){
+	  } else if (x->key <= sibling->key){
 	  	x->sibling = sibling->sibling;
-	  	heapLink(x, sibling);
+	  	heapLink(sibling, x);
 	  } else {
 
 	  	if (prev) prev->sibling = sibling;
 	  	else      h1 = sibling;
 
-	  	heapLink(sibling, x);
+	  	heapLink(x, sibling);
 	  	x = sibling;
 	  }
 	  sibling = x->sibling;
 	}
 
 	heap->head = h1;
+}
+
+
+void iheap_union(BHeap *target, BHeap *addition)
+{
+    removeMin(target);
+    removeMin(addition);
+    heapUnion(target, addition->head);
+    addition->head = NULL;
 }
 
 Node* extractMin(BHeap* heap)
@@ -165,7 +170,7 @@ Node* extractMin(BHeap* heap)
 	if (!node) return NULL;
 
 	if (prev) prev->sibling = node->sibling;
-	else      heap->head = node->sibling;
+	else      heap->head    = node->sibling;
 
 	heapUnion(heap, heapReverse(node->child));
 
@@ -377,18 +382,34 @@ int main(){
 
   #define N 10
 
-  int A[N] = {4, 2, 5, 7, 2, 77, 9, -3, -25, 95};
+  int A[N]   = {-1, 3, 5, 7, 2, 77, -3, 9, -25, -26};
+  int B[N] = {-5, 5, 6, 654, 852, -2, -43696, 1, 2, 3};
 
-  Node  *node = (Node  *)malloc(sizeof(Node));
-  BHeap *heap = (BHeap *)malloc(sizeof(BHeap));
+  BHeap *heapA = (BHeap*)malloc(sizeof(BHeap));
+  BHeap *heapB = (BHeap*)malloc(sizeof(BHeap));
+  init(heapA);
+  init(heapB);
+
+  for (int i=0;i<N;i++){
+    Node  *nodeA = (Node*)malloc(sizeof(Node));
+    node_init(nodeA, A[i]);
+    insert(heapA, nodeA);
+    Node  *nodeB = (Node*)malloc(sizeof(Node));
+    node_init(nodeB, B[i]);
+    insert(heapB, nodeB);
+  }
+
+  Node *minA = NULL;
+
+  //getMinNode(heapA, &minAprev, &minA);
+  //printf("%d\n", minA->key);
+
+  //iheap_union(heapA, heapB);
+
+  minA = peek(heapA);
 
 
-  init(heap);
-
-
-  node_init(node, 3);
-
-  insert(heap, node);
+  printf("%d\n", minA->key);
 
   return 0;
 }
