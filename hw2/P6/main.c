@@ -1,6 +1,3 @@
-/* https://github.com/stephanoumenos/BinomialHeap/blob/master/binomial_heap.c
- * */
-
 #include<stdio.h>
 #include<stdlib.h>
 #include<stdbool.h>
@@ -33,25 +30,25 @@ void init(BHeap* heap)
 
 void node_init_ref(Node** heap, int key, const void* value)
 {
-	Node* h   = *heap;
-	h->parent = NULL;
-	h->sibling   = NULL;
-	h->child  = NULL;
-	h->degree = INT_MAX;
-	h->value  = value;
-	h->ref    = heap;
-	h->key    = key;
+	Node* h     = *heap;
+	h->parent   = NULL;
+	h->sibling  = NULL;
+	h->child    = NULL;
+	h->degree   = INT_MAX;
+	h->value    = value;
+	h->ref      = heap;
+	h->key      = key;
 }
 
 void node_init(Node* h, int key, const void* value)
 {
-	h->parent = NULL;
-	h->sibling   = NULL;
-	h->child  = NULL;
-	h->degree = INT_MAX;
-	h->value  = value;
-	h->ref    = NULL;
-	h->key    = key;
+	h->parent   = NULL;
+	h->sibling  = NULL;
+	h->child    = NULL;
+	h->degree   = INT_MAX;
+	h->value    = value;
+	h->ref      = NULL;
+	h->key      = key;
 }
 
 const void* node_value(Node* h)
@@ -124,7 +121,7 @@ Node* heapReverse(Node* h)
 
 void getMinNode(BHeap* heap, Node** prev, Node** node)
 {
-	Node *nodePrev, *cur;
+	Node *nodePrev, *nodeCur;
 	*prev = NULL;
 
 	if (!heap->head){
@@ -134,17 +131,17 @@ void getMinNode(BHeap* heap, Node** prev, Node** node)
 
 	*node = heap->head;
 	nodePrev = heap->head;
-	cur   = heap->head->sibling;
+	nodeCur   = heap->head->sibling;
 
-	while (cur){
+	while (nodeCur){
 
-	  if (cur->key < (*node)->key){
-	  	*node = cur;
+	  if (nodeCur->key < (*node)->key){
+	  	*node = nodeCur;
 	  	*prev = nodePrev;
 	  }
 
-	  nodePrev = cur;
-	  cur   = cur->sibling;
+	  nodePrev = nodeCur;
+	  nodeCur   = nodeCur->sibling;
 	}
 }
 
@@ -175,6 +172,7 @@ void heapUnion(BHeap* heap, Node* h2)
 	  	x->sibling = sibling->sibling;
 	  	heapLink(x, sibling);
 	  } else {
+
 	  	if (prev) prev->sibling = sibling;
 	  	else      h1 = sibling;
 
@@ -244,12 +242,14 @@ Node* peek(BHeap* heap)
 Node* take(BHeap* heap)
 {
 	Node *node;
-	if (!heap->min)
-		heap->min = extractMin(heap);
+
+	if (!heap->min) heap->min = extractMin(heap);
+
 	node = heap->min;
 	heap->min = NULL;
-	if (node)
-		node->degree = INT_MAX;
+
+	if (node) node->degree = INT_MAX;
+
 	return node;
 }
 
@@ -266,8 +266,8 @@ void decrease(BHeap* heap, Node* node, int new_key)
 
 	if (heap->min != node){
 
-		if (heap->min && node->key < heap->min->key)
-			uncacheMin(heap);
+		if (heap->min && node->key < heap->min->key) uncacheMin(heap);
+
 		parent = node->parent;
 
 		while (parent && node->key < parent->key){
@@ -300,6 +300,7 @@ void delete(BHeap* heap, Node* node)
 
 	if (heap->min != node){
 	  parent = node->parent;
+
 	  while (parent){
 	  	tmp           = parent->value;
 	  	tmp_key       = parent->key;
