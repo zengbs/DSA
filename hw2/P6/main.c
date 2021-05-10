@@ -13,7 +13,6 @@ typedef struct Node_t {
 	unsigned int 	degree;
 	int			    key;
 	const void*	   	value;
-	struct Node_t**	ref;
 }Node;
 
 typedef struct BHeap_t {
@@ -28,17 +27,6 @@ void init(BHeap* heap)
 	heap->min  = NULL;
 }
 
-void node_init_ref(Node** heap, int key, const void* value)
-{
-	Node* h     = *heap;
-	h->parent   = NULL;
-	h->sibling  = NULL;
-	h->child    = NULL;
-	h->degree   = INT_MAX;
-	h->value    = value;
-	h->ref      = heap;
-	h->key      = key;
-}
 
 void node_init(Node* h, int key, const void* value)
 {
@@ -47,7 +35,6 @@ void node_init(Node* h, int key, const void* value)
 	h->child    = NULL;
 	h->degree   = INT_MAX;
 	h->value    = value;
-	h->ref      = NULL;
 	h->key      = key;
 }
 
@@ -243,11 +230,10 @@ Node* take(BHeap* heap)
 void decrease(BHeap* heap, Node* node, int new_key)
 {
 	Node *parent;
-	Node** tmp_ref;
 	const void* tmp;
 	int   tmp_key;
 
-	if (!node->ref || new_key >= node->key) return;
+	if (new_key >= node->key) return;
 
 	node->key = new_key;
 
@@ -265,12 +251,6 @@ void decrease(BHeap* heap, Node* node, int new_key)
 			node->value   = tmp;
 			node->key     = tmp_key;
 
-			if (parent->ref) *(parent->ref) = node;
-
-			*(node->ref)   = parent;
-			tmp_ref        = parent->ref;
-			parent->ref    = node->ref;
-			node->ref      = tmp_ref;
 			node           = parent;
 			parent         = node->parent;
 		}
@@ -280,11 +260,9 @@ void decrease(BHeap* heap, Node* node, int new_key)
 void delete(BHeap* heap, Node* node)
 {
 	Node *parent, *prev, *pos;
-	Node** tmp_ref;
 	const void* tmp;
 	int tmp_key;
 
-	if (!node->ref) return;
 
 	if (heap->min != node){
 	  parent = node->parent;
@@ -297,12 +275,7 @@ void delete(BHeap* heap, Node* node)
 	  	node->value   = tmp;
 	  	node->key     = tmp_key;
 
-	  	if (parent->ref) *(parent->ref) = node;
 
-	  	*(node->ref)   = parent;
-	  	tmp_ref        = parent->ref;
-	  	parent->ref    = node->ref;
-	  	node->ref      = tmp_ref;
 	  	node   = parent;
 	  	parent = node->parent;
 	  }
