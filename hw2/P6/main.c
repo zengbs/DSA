@@ -51,23 +51,9 @@ void node_init(Node* h, int key, const void* value)
 	h->key      = key;
 }
 
-const void* node_value(Node* h)
-{
-	return h->value;
-}
 
-int node_in_heap(Node* h)
-{
-	return h->degree != INT_MAX;
-}
 
-int empty(BHeap* heap)
-{
-	return heap->head == NULL && heap->min == NULL;
-}
-
-void heapLink(Node* root,
-			       Node* child)
+void heapLink(Node* root, Node* child)
 {
 	child->parent = root;
 	child->sibling   = root->child;
@@ -188,6 +174,7 @@ void heapUnion(BHeap* heap, Node* h2)
 Node* extractMin(BHeap* heap)
 {
 	Node *prev, *node;
+
 	getMinNode(heap, &prev, &node);
 
 	if (!node) return NULL;
@@ -277,14 +264,15 @@ void decrease(BHeap* heap, Node* node, int new_key)
 			parent->key   = node->key;
 			node->value   = tmp;
 			node->key     = tmp_key;
-			if (parent->ref)
-				*(parent->ref) = node;
+
+			if (parent->ref) *(parent->ref) = node;
+
 			*(node->ref)   = parent;
 			tmp_ref        = parent->ref;
 			parent->ref    = node->ref;
 			node->ref      = tmp_ref;
-			node   = parent;
-			parent = node->parent;
+			node           = parent;
+			parent         = node->parent;
 		}
 	}
 }
