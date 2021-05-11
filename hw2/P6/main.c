@@ -477,16 +477,16 @@ int main(){
      }
 
      /* allocate heap memory for `L` production lines */
-     BHeap *heapLine = malloc(size_t(Lsize)*sizeof(BHeap));
+     BHeap *heapLine = malloc((size_t)(Lsize)*sizeof(BHeap));
 
      /* initialize heap memory */
      for (int i=0;i<Lsize;i++){
-       heapInit(heapLine[i]);
+       heapInit(&heapLine[i]);
      }
 
      /* allocate deque memory for `L` production lines */
-     Deque *dequeFirst = malloc(size_t(Lsize)*sizeof(Deque));
-     Deque *dequeLast  = malloc(size_t(Lsize)*sizeof(Deque));
+     Deque **dequeFirst = (Deque**)malloc((size_t)(Lsize)*sizeof(Deque));
+     Deque **dequeLast  = (Deque**)malloc((size_t)(Lsize)*sizeof(Deque));
 
      /* initialize deque pointer */
      for (int i=0;i<Lsize;i++){
@@ -509,9 +509,10 @@ int main(){
          packageHeight  = operation_1[o];
          productionLine = operation_2[o];
 
-         /* push into deque */
-         pushDeque(&first, packageHeight);
-         last = first;
+         /* push `packageHeight` into deque */
+         pushDeque(&dequeFirst[productionLine], packageHeight);
+         dequeLast[productionLine] = dequeFirst[productionLine];
+
          /* insert into heap */
 
        }
