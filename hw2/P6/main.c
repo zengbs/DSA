@@ -420,19 +420,24 @@ int main(){
 /*-------------------------*/
 
   /* number of test cases */
-  int T;
+  int Tsize;
 
   /* number of  packages*/
-  int N;
+  int Nsize;
 
   /* number of operations (merge and push)*/
-  int O;
+  int Osize;
 
   /* number of production line*/
-  int L;
+  int Lsize;
 
-  scanf("%d", &T);
-  scanf("%d %d %d", &N, &O, &L);
+  scanf("%d", &Tsize);
+  scanf("%d %d %d", &Nsize, &Osize, &Lsize);
+
+  /*store input parameters*/
+  int *operation_0 = (int*)malloc((size_t)Osize*sizeof(int));
+  int *operation_1 = (int*)malloc((size_t)Osize*sizeof(int));
+  int *operation_2 = (int*)malloc((size_t)Osize*sizeof(int));
 
   /*operations*/
   char operation[8];
@@ -441,20 +446,25 @@ int main(){
 
   while( t < T ){
 
-     int push_line, push_height, merge_broken, merge_running;
+     int packageHeight, productionLine, brokenLine, runningLine;
 
      for (int o=0;o<O;o++){
 
        scanf("%7s", operation);
 
-       if      (strcmp(operation, "push"  )== 0){
-         scanf("%d %d", &push_height, &push_line);
+       if      (strcmp(operation, "push")== 0){
+         scanf("%d %d", &packageHeight, &productionLine);
+         operation_0[o] = 0;
+         operation_1[o] = packageHeight;
+         operation_2[o] = productionLine;
        }
 
-       else if (strcmp(operation, "merge" )== 0){
-         scanf("%d %d", &merge_broken, &merge_running);
+       else if (strcmp(operation, "merge")== 0){
+         scanf("%d %d", &brokenLine, &runningLine);
+         operation_0[o] = 1;
+         operation_1[o] = brokenLine;
+         operation_2[o] = runningLine;
        }
-
      }
 
      t++;
