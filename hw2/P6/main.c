@@ -23,11 +23,13 @@ typedef struct BHeap_t {
 
 void removeMin(BHeap* heap);
 
+
 void init(BHeap* heap)
 {
 	heap->head = NULL;
 	heap->min  = NULL;
 }
+
 
 
 void node_init(Node* node, int key)
@@ -48,6 +50,8 @@ void heapLink(Node* root, Node* child)
 	root->child   = child;
 	root->degree++;
 }
+
+
 
 Node* heapMerge(Node* a, Node* b)
 {
@@ -209,7 +213,7 @@ void removeMin(BHeap* heap)
 }
 
 
-Node* peek(BHeap* heap)
+Node* heapPeekMin(BHeap* heap)
 {
 	if (!heap->min)  heap->min = extractMin(heap);
 
@@ -243,7 +247,7 @@ void heapDecrease(BHeap* heap, Node* node, int new_key)
 	}
 }
 
-void delete(BHeap* heap, Node* node)
+void heapDelete(BHeap* heap, Node* node)
 {
 	Node *parent, *prev, *pos;
 	int tmp_key;
@@ -406,10 +410,55 @@ int main(){
 
   //iheap_union(heapA, heapB);
 
-  minA = peek(heapA);
+  minA = heapPeekMin(heapA);
 
 
   printf("%d\n", minA->key);
+
+
+
+/*-------------------------*/
+
+  /* number of test cases */
+  int T;
+
+  /* number of  packages*/
+  int N;
+
+  /* number of operations (merge and push)*/
+  int O;
+
+  /* number of production line*/
+  int L;
+
+  scanf("%d", &T);
+  scanf("%d %d %d", &N, &O, &L);
+
+  /*operations*/
+  char operation[8];
+
+  int t=0;
+
+  while( t < T ){
+
+     int push_line, push_height, merge_broken, merge_running;
+
+     for (int o=0;o<O;o++){
+
+       scanf("%7s", operation);
+
+       if      (strcmp(operation, "push"  )== 0){
+         scanf("%d %d", &push_height, &push_line);
+       }
+
+       else if (strcmp(operation, "merge" )== 0){
+         scanf("%d %d", &merge_broken, &merge_running);
+       }
+
+     }
+
+     t++;
+  }
 
   return 0;
 }
