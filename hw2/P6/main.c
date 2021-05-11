@@ -322,7 +322,7 @@ void printList (struct Deque *endPoint)
 
 
 
-void push(struct Deque **endPoint, int data)
+void pushDeque(struct Deque **endPoint, int data)
 {
   struct Deque *newNode = (struct Deque *) malloc (sizeof (struct Deque) );
   newNode->data = data;
@@ -337,7 +337,7 @@ void push(struct Deque **endPoint, int data)
 }
 
 
-void pop(struct Deque **endPoint)
+void popDeque(struct Deque **endPoint)
 {
   struct Deque *siblingNode;
   struct Deque *siblingsiblingNode;
@@ -366,19 +366,19 @@ int main(){
 //  struct Deque *left  = NULL;
 //  struct Deque *right = NULL;
 //
-//  push(&left, 1);
+//  pushDeque(&left, 1);
 //
 //  right = left;
 //
-//  push(&left, 2);
-//  push(&left, 3);
-//  push(&right, 99);
-//  push(&left, 4);
-//  pop(&left);
-//  push(&right, -1);
-//  push(&right, 0);
-//  pop(&right);
-//  push(&right, 55);
+//  pushDeque(&left, 2);
+//  pushDeque(&left, 3);
+//  pushDeque(&right, 99);
+//  pushDeque(&left, 4);
+//  popDeque(&left);
+//  pushDeque(&right, -1);
+//  pushDeque(&right, 0);
+//  popDeque(&right);
+//  pushDeque(&right, 55);
 //
 //
 //  printList(left);
@@ -443,10 +443,10 @@ int main(){
      scanf("%d %d %d", &Nsize, &Osize, &Lsize);
 
      /*store input parameters*/
-     int *operation_0 = (int*)malloc((size_t)Osize*sizeof(int));
-     int *operation_1 = (int*)malloc((size_t)Osize*sizeof(int));
-     int *operation_2 = (int*)malloc((size_t)Osize*sizeof(int));
-     int *packages    = (int*)malloc((size_t)Nsize*sizeof(int));
+     int *operation_0    = (int*)malloc((size_t)Osize*sizeof(int));
+     int *operation_1    = (int*)malloc((size_t)Osize*sizeof(int));
+     int *operation_2    = (int*)malloc((size_t)Osize*sizeof(int));
+     int *packagesHeight = (int*)malloc((size_t)Nsize*sizeof(int));
 
      int packageHeight, productionLine, brokenLine, runningLine;
 
@@ -469,19 +469,16 @@ int main(){
        }
      }
 
-     /* read packages height */
+     /* read packages height and try to pop out from heap or deque*/
      for (int n=0;n<Nsize;n++){
-       scanf("%d", &packages[n]);
+
+       scanf("%d", &packagesHeight[n]);
+
+
+
+
+
      }
-
-
-
-
-
-
-
-
-
 
 
 
@@ -491,7 +488,7 @@ int main(){
      free(operation_0);
      free(operation_1);
      free(operation_2);
-     free(packages);
+     free(packagesHeight);
   }
 
   return 0;
