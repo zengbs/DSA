@@ -293,7 +293,7 @@ void heapDelete(BHeap* heap, Node* node)
 /* Deque */
 typedef struct Deque_t{
   int data;
-  struct Deque *npx;
+  struct Deque_t *npx;
 }Deque;
 
 
