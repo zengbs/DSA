@@ -181,7 +181,7 @@ Node* extractMin(BHeap* heap)
 	return node;
 }
 
-void insert(BHeap* heap, Node* node)
+void heapInsert(BHeap* heap, Node* node)
 {
 	Node *min;
 	node->child     = NULL;
@@ -208,7 +208,7 @@ void removeMin(BHeap* heap)
 	if (heap->min){
 		min = heap->min;
 		heap->min = NULL;
-		insert(heap, min);
+		heapInsert(heap, min);
 	}
 }
 
@@ -397,10 +397,10 @@ int main(){
 //  for (int i=0;i<N;i++){
 //    Node  *nodeA = (Node*)malloc(sizeof(Node));
 //    node_init(nodeA, A[i]);
-//    insert(heapA, nodeA);
+//    heapInsert(heapA, nodeA);
 //    Node  *nodeB = (Node*)malloc(sizeof(Node));
 //    node_init(nodeB, B[i]);
-//    insert(heapB, nodeB);
+//    heapInsert(heapB, nodeB);
 //  }
 //
 //  Node *minA = NULL;
@@ -477,16 +477,17 @@ int main(){
      }
 
      /* allocate heap memory for `L` production lines */
-     BHeap *heapLine = malloc((size_t)(Lsize)*sizeof(BHeap));
+     BHeap **heapLine = (BHeap **)malloc((size_t)(Lsize)*sizeof(BHeap*));
 
      /* initialize heap memory */
      for (int i=0;i<Lsize;i++){
-       heapInit(&heapLine[i]);
+       heapLine[i] = (BHeap*)malloc(sizeof(BHeap));
+       heapInit(heapLine[i]);
      }
 
      /* allocate deque memory for `L` production lines */
-     Deque **dequeFirst = (Deque**)malloc((size_t)(Lsize)*sizeof(Deque));
-     Deque **dequeLast  = (Deque**)malloc((size_t)(Lsize)*sizeof(Deque));
+     Deque **dequeFirst = (Deque**)malloc((size_t)(Lsize)*sizeof(Deque*));
+     Deque **dequeLast  = (Deque**)malloc((size_t)(Lsize)*sizeof(Deque*));
 
      /* initialize deque pointer */
      for (int i=0;i<Lsize;i++){
@@ -495,9 +496,7 @@ int main(){
      }
 
 
-     //pushDeque(&first, 1);
-     //last = first;
-
+     int firstPush = 0;
 
      /*
      * perform `push` or `merge` on deque or heaps
@@ -509,12 +508,17 @@ int main(){
          packageHeight  = operation_1[o];
          productionLine = operation_2[o];
 
-         /* push `packageHeight` into deque */
+         /* A. push `packageHeight` into deque */
          pushDeque(&dequeFirst[productionLine], packageHeight);
-         dequeLast[productionLine] = dequeFirst[productionLine];
 
-         /* insert into heap */
+         if (firstPush == 0) dequeLast[productionLine] = dequeFirst[productionLine];
 
+         /* B. insert into heap */
+         Node *node = malloc(sizeof(Node));
+         node_init(node, packageHeight);
+         heapInsert(heapLine[productionLine], node);
+
+         firstPush++;
        }
        else{                     // merge
          brokenLine     = operation_1[o];
