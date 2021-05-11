@@ -116,7 +116,7 @@ void getMinNode(BHeap *heap, Node **prev, Node **node)
 	}
 }
 
-void heapUnion(BHeap* heap, Node* h2)
+void heapUnion_internal(BHeap* heap, Node* h2)
 {
 	Node* h1;
 	Node *prev, *x, *sibling;
@@ -157,11 +157,11 @@ void heapUnion(BHeap* heap, Node* h2)
 }
 
 
-void iheap_union(BHeap *target, BHeap *addition)
+void heapUnion(BHeap *target, BHeap *addition)
 {
     removeMin(target);
     removeMin(addition);
-    heapUnion(target, addition->head);
+    heapUnion_internal(target, addition->head);
     addition->head = NULL;
 }
 
@@ -176,7 +176,7 @@ Node* extractMin(BHeap* heap)
 	if (prev) prev->sibling = node->sibling;
 	else      heap->head    = node->sibling;
 
-	heapUnion(heap, heapReverse(node->child));
+	heapUnion_internal(heap, heapReverse(node->child));
 
 	return node;
 }
@@ -196,10 +196,10 @@ void heapInsert(BHeap* heap, Node* node)
 	  min->parent    = NULL;
 	  min->sibling   = NULL;
 	  min->degree    = 0;
-	  heapUnion(heap, min);
+	  heapUnion_internal(heap, min);
 	  heap->min      = node;
 
-	} else heapUnion(heap, node);
+	} else heapUnion_internal(heap, node);
 }
 
 void removeMin(BHeap* heap)
@@ -277,7 +277,7 @@ void heapDelete(BHeap* heap, Node* node)
 	  if (prev) prev->sibling = node->sibling;
 	  else      heap->head    = node->sibling;
 
-	  heapUnion(heap, heapReverse(node->child));
+	  heapUnion_internal(heap, heapReverse(node->child));
 
 	} else heap->min = NULL;
 
@@ -358,7 +358,19 @@ void popDeque(Deque **endPoint)
   }
 }
 
+void mergeDeque(Deque *tail, Deque *head)
+{
+  if (tail != NULL && head != NULL){
+    Deque *tailPrev = XOR( tail->npx, NULL );
+    tail->npx = XOR( tailPrev, head );
 
+    Deque *headNext = XOR( NULL, head->npx );
+    head->npx = XOR( NULL, headNext );
+  }
+  else if (tail == NULL && head != NULL){
+    tail = head;
+  }
+}
 
 int main(){
 
@@ -408,7 +420,7 @@ int main(){
 //  //getMinNode(heapA, &minAprev, &minA);
 //  //printf("%d\n", minA->key);
 //
-//  //iheap_union(heapA, heapB);
+//  //heapUnion(heapA, heapB);
 //
 //  minA = heapPeekMin(heapA);
 //
@@ -476,6 +488,8 @@ int main(){
        scanf("%d", &packagesHeight[n]);
      }
 
+     /*==================================================*/
+
      /* allocate heap memory for `L` production lines */
      BHeap **heapLine = (BHeap **)malloc((size_t)(Lsize)*sizeof(BHeap*));
 
@@ -524,9 +538,11 @@ int main(){
          brokenLine     = operation_1[o];
          runningLine    = operation_2[o];
 
-         /* push into deque */
-         /* insert into heap */
+         /* merge deques */
+         mergeDeque(dequeLast[runningLine], dequeFirst[brokenLine]);
 
+         /* union heap */
+         heapUnion(heapLine[runningLine], heapLine[brokenLine]);
        }
 
      }
