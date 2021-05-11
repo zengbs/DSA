@@ -384,36 +384,36 @@ int main(){
 //  printList(left);
 
 
-  #define N 10
-
-  int A[N]   = {-1, 3, 5, 7, 2, 77, -3, 9, -25, -26};
-  int B[N] = {-5, 5, 6, 654, 852, -2, -43696, 1, 2, 3};
-
-  BHeap *heapA = (BHeap*)malloc(sizeof(BHeap));
-  BHeap *heapB = (BHeap*)malloc(sizeof(BHeap));
-  init(heapA);
-  init(heapB);
-
-  for (int i=0;i<N;i++){
-    Node  *nodeA = (Node*)malloc(sizeof(Node));
-    node_init(nodeA, A[i]);
-    insert(heapA, nodeA);
-    Node  *nodeB = (Node*)malloc(sizeof(Node));
-    node_init(nodeB, B[i]);
-    insert(heapB, nodeB);
-  }
-
-  Node *minA = NULL;
-
-  //getMinNode(heapA, &minAprev, &minA);
-  //printf("%d\n", minA->key);
-
-  //iheap_union(heapA, heapB);
-
-  minA = heapPeekMin(heapA);
-
-
-  printf("%d\n", minA->key);
+//  #define N 10
+//
+//  int A[N]   = {-1, 3, 5, 7, 2, 77, -3, 9, -25, -26};
+//  int B[N] = {-5, 5, 6, 654, 852, -2, -43696, 1, 2, 3};
+//
+//  BHeap *heapA = (BHeap*)malloc(sizeof(BHeap));
+//  BHeap *heapB = (BHeap*)malloc(sizeof(BHeap));
+//  init(heapA);
+//  init(heapB);
+//
+//  for (int i=0;i<N;i++){
+//    Node  *nodeA = (Node*)malloc(sizeof(Node));
+//    node_init(nodeA, A[i]);
+//    insert(heapA, nodeA);
+//    Node  *nodeB = (Node*)malloc(sizeof(Node));
+//    node_init(nodeB, B[i]);
+//    insert(heapB, nodeB);
+//  }
+//
+//  Node *minA = NULL;
+//
+//  //getMinNode(heapA, &minAprev, &minA);
+//  //printf("%d\n", minA->key);
+//
+//  //iheap_union(heapA, heapB);
+//
+//  minA = heapPeekMin(heapA);
+//
+//
+//  printf("%d\n", minA->key);
 
 
 
@@ -446,6 +446,7 @@ int main(){
      int *operation_0 = (int*)malloc((size_t)Osize*sizeof(int));
      int *operation_1 = (int*)malloc((size_t)Osize*sizeof(int));
      int *operation_2 = (int*)malloc((size_t)Osize*sizeof(int));
+     int *packages    = (int*)malloc((size_t)Nsize*sizeof(int));
 
      int packageHeight, productionLine, brokenLine, runningLine;
 
@@ -470,10 +471,8 @@ int main(){
 
      /* read packages height */
      for (int n=0;n<Nsize;n++){
-       int *packages = (int*)malloc((size_t)Nsize*sizeof(int));
        scanf("%d", &packages[n]);
      }
-
 
 
 
@@ -492,7 +491,7 @@ int main(){
      free(operation_0);
      free(operation_1);
      free(operation_2);
-     frre(packages);
+     free(packages);
   }
 
   return 0;
