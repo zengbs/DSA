@@ -455,6 +455,7 @@ int main(){
        scanf("%7s", operation);
 
        if      (strcmp(operation, "push")== 0){
+         /* read push parameters */
          scanf("%d %d", &packageHeight, &productionLine);
          operation_0[o] = 0;
          operation_1[o] = packageHeight;
@@ -462,6 +463,7 @@ int main(){
        }
 
        else if (strcmp(operation, "merge")== 0){
+         /* read merge parameters */
          scanf("%d %d", &brokenLine, &runningLine);
          operation_0[o] = 1;
          operation_1[o] = brokenLine;
@@ -469,19 +471,27 @@ int main(){
        }
      }
 
-     /* read packages height and try to pop out from heap or deque*/
+     /* read packages height */
      for (int n=0;n<Nsize;n++){
-
        scanf("%d", &packagesHeight[n]);
-
-
-
-
-
      }
 
 
+     /*
+     * perform `push` or `merge` on deque or heaps
+     * and try to `pop out` from heap or deque
+     *  */
+     for (int o=0;o<Osize;o++){
 
+       if (operation_0[o] == 0){ // push
+         brokenLine     = operation_1[o];
+         runningLine    = operation_2[o];
+       }
+       else{                     // merge
+         packageHeight  = operation_1[o];
+         productionLine = operation_2[o];
+       }
+     }
 
      t++;
 
