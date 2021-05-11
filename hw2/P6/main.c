@@ -24,7 +24,7 @@ typedef struct BHeap_t {
 void removeMin(BHeap* heap);
 
 
-void init(BHeap* heap)
+void heapInit(BHeap* heap)
 {
 	heap->head = NULL;
 	heap->min  = NULL;
@@ -291,24 +291,24 @@ void heapDelete(BHeap* heap, Node* node)
 
 
 /* Deque */
-struct Deque{
+typedef struct Deque_t{
   int data;
   struct Deque *npx;
-};
+}Deque;
 
 
-struct Deque* XOR(struct Deque *a, struct Deque *b)
+Deque* XOR(Deque *a, Deque *b)
 {
-  return (struct Deque*)((uintptr_t) (a) ^ (uintptr_t) (b));
+  return (Deque*)((uintptr_t) (a) ^ (uintptr_t) (b));
 }
 
 
-void printList (struct Deque *endPoint)
+void printList (Deque *endPoint)
 {
-    struct Deque *curr = endPoint;
+    Deque *curr = endPoint;
 
-    struct Deque *prev = NULL;
-    struct Deque *sibling;
+    Deque *prev = NULL;
+    Deque *sibling;
 
     while (curr != NULL)
     {
@@ -322,9 +322,9 @@ void printList (struct Deque *endPoint)
 
 
 
-void pushDeque(struct Deque **endPoint, int data)
+void pushDeque(Deque **endPoint, int data)
 {
-  struct Deque *newNode = (struct Deque *) malloc (sizeof (struct Deque) );
+  Deque *newNode = (Deque *) malloc (sizeof (Deque) );
   newNode->data = data;
   newNode->npx = *endPoint;
 
@@ -337,10 +337,10 @@ void pushDeque(struct Deque **endPoint, int data)
 }
 
 
-void popDeque(struct Deque **endPoint)
+void popDeque(Deque **endPoint)
 {
-  struct Deque *siblingNode;
-  struct Deque *siblingsiblingNode;
+  Deque *siblingNode;
+  Deque *siblingsiblingNode;
 
   siblingNode     = (*endPoint)->npx;
 
@@ -363,8 +363,8 @@ void popDeque(struct Deque **endPoint)
 int main(){
 
 
-//  struct Deque *left  = NULL;
-//  struct Deque *right = NULL;
+//  Deque *left  = NULL;
+//  Deque *right = NULL;
 //
 //  pushDeque(&left, 1);
 //
@@ -391,8 +391,8 @@ int main(){
 //
 //  BHeap *heapA = (BHeap*)malloc(sizeof(BHeap));
 //  BHeap *heapB = (BHeap*)malloc(sizeof(BHeap));
-//  init(heapA);
-//  init(heapB);
+//  heapInit(heapA);
+//  heapInit(heapB);
 //
 //  for (int i=0;i<N;i++){
 //    Node  *nodeA = (Node*)malloc(sizeof(Node));
@@ -476,6 +476,28 @@ int main(){
        scanf("%d", &packagesHeight[n]);
      }
 
+     /* allocate heap memory for `L` production lines */
+     BHeap *heapLine = malloc(size_t(Lsize)*sizeof(BHeap));
+
+     /* initialize heap memory */
+     for (int i=0;i<Lsize;i++){
+       heapInit(heapLine[i]);
+     }
+
+     /* allocate deque memory for `L` production lines */
+     Deque *dequeFirst = malloc(size_t(Lsize)*sizeof(Deque));
+     Deque *dequeLast  = malloc(size_t(Lsize)*sizeof(Deque));
+
+     /* initialize deque pointer */
+     for (int i=0;i<Lsize;i++){
+       dequeFirst[i] = NULL;
+       dequeLast[i]  = NULL;
+     }
+
+
+     //pushDeque(&first, 1);
+     //last = first;
+
 
      /*
      * perform `push` or `merge` on deque or heaps
@@ -484,13 +506,24 @@ int main(){
      for (int o=0;o<Osize;o++){
 
        if (operation_0[o] == 0){ // push
-         brokenLine     = operation_1[o];
-         runningLine    = operation_2[o];
-       }
-       else{                     // merge
          packageHeight  = operation_1[o];
          productionLine = operation_2[o];
+
+         /* push into deque */
+         pushDeque(&first, packageHeight);
+         last = first;
+         /* insert into heap */
+
        }
+       else{                     // merge
+         brokenLine     = operation_1[o];
+         runningLine    = operation_2[o];
+
+         /* push into deque */
+         /* insert into heap */
+
+       }
+
      }
 
      t++;
