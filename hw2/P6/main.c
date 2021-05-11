@@ -432,23 +432,24 @@ int main(){
   int Lsize;
 
   scanf("%d", &Tsize);
-  scanf("%d %d %d", &Nsize, &Osize, &Lsize);
-
-  /*store input parameters*/
-  int *operation_0 = (int*)malloc((size_t)Osize*sizeof(int));
-  int *operation_1 = (int*)malloc((size_t)Osize*sizeof(int));
-  int *operation_2 = (int*)malloc((size_t)Osize*sizeof(int));
 
   /*operations*/
   char operation[8];
 
   int t=0;
 
-  while( t < T ){
+  while( t < Tsize ){
+
+     scanf("%d %d %d", &Nsize, &Osize, &Lsize);
+
+     /*store input parameters*/
+     int *operation_0 = (int*)malloc((size_t)Osize*sizeof(int));
+     int *operation_1 = (int*)malloc((size_t)Osize*sizeof(int));
+     int *operation_2 = (int*)malloc((size_t)Osize*sizeof(int));
 
      int packageHeight, productionLine, brokenLine, runningLine;
 
-     for (int o=0;o<O;o++){
+     for (int o=0;o<Osize;o++){
 
        scanf("%7s", operation);
 
@@ -467,7 +468,31 @@ int main(){
        }
      }
 
+     /* read packages height */
+     for (int n=0;n<Nsize;n++){
+       int *packages = (int*)malloc((size_t)Nsize*sizeof(int));
+       scanf("%d", &packages[n]);
+     }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
      t++;
+
+     free(operation_0);
+     free(operation_1);
+     free(operation_2);
+     frre(packages);
   }
 
   return 0;
