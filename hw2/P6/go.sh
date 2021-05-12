@@ -7,4 +7,4 @@ gcc main.c -g  -O2 -Wall
 #./a.out < input1
 #./a.out < input2
 #./a.out < input3
-./a.out < input4
+./a.out < $1
