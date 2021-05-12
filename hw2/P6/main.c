@@ -303,73 +303,97 @@ Deque* XOR(Deque *a, Deque *b)
 }
 
 
-void printList (Deque *endPoint)
+//void printList (Deque *rightPoint)
+//{
+//    Deque *curr = rightPoint;
+//
+//    Deque *prev = NULL;
+//    Deque *next;
+//
+//    while (curr != NULL)
+//    {
+//        printf ("%d ", curr->data);
+//        next = XOR (prev, curr->npx);
+//        prev = curr;
+//        curr = next;
+//    }
+//  printf("\n");
+//}
+
+void printList (Deque *leftPoint)
 {
-    Deque *curr = endPoint;
+   Deque *curr = leftPoint;
 
-    Deque *prev = NULL;
-    Deque *sibling;
+   Deque *prev = NULL;
+   Deque *next;
 
-    while (curr != NULL)
-    {
-        printf ("%d ", curr->data);
-        sibling = XOR (prev, curr->npx);
-        prev = curr;
-        curr = sibling;
-    }
-  printf("\n");
+   while (curr != NULL)
+   {
+       printf ("%d ", curr->data);
+       next = XOR (prev, curr->npx);
+       prev = curr;
+       curr = next;
+   }
+
+   printf("\n");
 }
 
 
-
-void pushDeque(Deque **endPoint, int data)
+void pushDeque(Deque **rightPoint, Deque **leftPoint, int data)
 {
   Deque *newNode = (Deque *) malloc (sizeof (Deque) );
   newNode->data = data;
-  newNode->npx = *endPoint;
+  newNode->npx = XOR(NULL, *rightPoint);
 
-  if (*endPoint != NULL)
+  if (*rightPoint != NULL)
   {
-      (*endPoint)->npx = XOR(newNode, (*endPoint)->npx);
+      (*rightPoint)->npx = XOR(newNode, (*rightPoint)->npx);
+  }
+  else{
+      *leftPoint = newNode;
   }
 
-  *endPoint = newNode;
+  *rightPoint = newNode;
+
 }
 
 
-void popDeque(Deque **endPoint)
+void popDeque(Deque **rightPoint)
 {
   Deque *siblingNode;
   Deque *siblingsiblingNode;
 
-  siblingNode     = (*endPoint)->npx;
+  siblingNode     = (*rightPoint)->npx;
 
   if (siblingNode != NULL){
 
-    siblingsiblingNode = XOR(siblingNode->npx, *endPoint);
+    siblingsiblingNode = XOR(siblingNode->npx, *rightPoint);
     siblingNode->npx  = siblingsiblingNode;
 
-    free(*endPoint);
-    *endPoint = siblingNode;
+    free(*rightPoint);
+    *rightPoint = siblingNode;
   }
   else{
-    free(*endPoint);
-    *endPoint = NULL;
+    free(*rightPoint);
+    *rightPoint = NULL;
   }
 }
 
-void mergeDeque(Deque *tail, Deque *head)
+void mergeDeque(Deque **leftPoint_running, Deque **rightPoint_running,
+                Deque **leftPoint_broken,  Deque **rightPoint_broken )
 {
-  if (tail != NULL && head != NULL){
-    Deque *tailPrev = XOR( tail->npx, NULL );
-    tail->npx = XOR( tailPrev, head );
+    if (*rightPoint_running != NULL){
+      Deque *secondRightPoint_running = XOR( (*rightPoint_running)->npx, NULL );
+      (*rightPoint_running)->npx = XOR( secondRightPoint_running, *leftPoint_broken );
+    }
+    else{
+      *leftPoint_running = *leftPoint_broken;
+      *rightPoint_running = *rightPoint_broken;
 
-    Deque *headNext = XOR( NULL, head->npx );
-    head->npx = XOR( NULL, headNext );
-  }
-  else if (tail == NULL && head != NULL){
-    tail = head;
-  }
+      *leftPoint_broken = NULL;
+      *rightPoint_broken = NULL;
+    }
+
 }
 
 int main(){
@@ -500,17 +524,16 @@ int main(){
      }
 
      /* allocate deque memory for `L` production lines */
-     Deque **dequeFirst = (Deque**)malloc((size_t)(Lsize)*sizeof(Deque*));
-     Deque **dequeLast  = (Deque**)malloc((size_t)(Lsize)*sizeof(Deque*));
+     Deque **leftPoint = (Deque**)malloc((size_t)(Lsize)*sizeof(Deque*));
+     Deque **rightPoint  = (Deque**)malloc((size_t)(Lsize)*sizeof(Deque*));
 
      /* initialize deque pointer */
      for (int i=0;i<Lsize;i++){
-       dequeFirst[i] = NULL;
-       dequeLast[i]  = NULL;
+       leftPoint[i]   = NULL;
+       rightPoint[i]  = NULL;
      }
 
 
-     int firstPush = 0;
 
      /*
      * perform `push` or `merge` on deque or heaps
@@ -523,36 +546,39 @@ int main(){
          productionLine = operation_2[o];
 
          /* A. push `packageHeight` into deque */
-         pushDeque(&dequeFirst[productionLine], packageHeight);
+         pushDeque(&rightPoint[productionLine], &leftPoint[productionLine], packageHeight);
 
-         if (firstPush == 0) dequeLast[productionLine] = dequeFirst[productionLine];
 
          /* B. insert into heap */
          Node *node = malloc(sizeof(Node));
          node_init(node, packageHeight);
          heapInsert(heapLine[productionLine], node);
 
-         firstPush++;
        }
        else{                     // merge
          brokenLine     = operation_1[o];
          runningLine    = operation_2[o];
-
          /* merge deques */
-         mergeDeque(dequeLast[runningLine], dequeFirst[brokenLine]);
-
+         mergeDeque(&leftPoint[runningLine], &rightPoint[runningLine],
+                    &leftPoint[brokenLine], &rightPoint[brokenLine]);
          /* union heap */
          heapUnion(heapLine[runningLine], heapLine[brokenLine]);
        }
 
-     }
+     } // for (int o=0;o<Osize;o++)
 
+     for(int i=0;i<Lsize;i++){
+       printList(leftPoint[i]);
+     }
+     //printList(rightPoint[0]);
+     //printList(rightPoint[0]);
      t++;
 
      free(operation_0);
      free(operation_1);
      free(operation_2);
      free(packagesHeight);
+
   }
 
   return 0;
