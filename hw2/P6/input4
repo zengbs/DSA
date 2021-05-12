@@ -1,6 +1,7 @@
 1
-4 4 2
+4 5 2
 push 1 1
 push 2 0
 push 3 0
 push 4 0
+merge 0 1

@@ -349,12 +349,9 @@ void pushDeque(Deque **rightPoint, Deque **leftPoint, int data)
   {
       (*rightPoint)->npx = XOR(newNode, (*rightPoint)->npx);
   }
-  else{
-      *leftPoint = newNode;
-  }
+  else   *leftPoint = newNode;
 
   *rightPoint = newNode;
-
 }
 
 
@@ -384,15 +381,18 @@ void mergeDeque(Deque **leftPoint_running, Deque **rightPoint_running,
 {
     if (*rightPoint_running != NULL){
       Deque *secondRightPoint_running = XOR( (*rightPoint_running)->npx, NULL );
-      (*rightPoint_running)->npx = XOR( secondRightPoint_running, *leftPoint_broken );
+      (*rightPoint_running)->npx  = XOR( secondRightPoint_running, *leftPoint_broken );
+
+      Deque *secondLeftPoint_broken = XOR( NULL, (*leftPoint_broken)->npx );
+      (*leftPoint_broken)->npx    = XOR( *rightPoint_running, secondLeftPoint_broken );
     }
     else{
       *leftPoint_running = *leftPoint_broken;
       *rightPoint_running = *rightPoint_broken;
-
-      *leftPoint_broken = NULL;
-      *rightPoint_broken = NULL;
     }
+
+    *leftPoint_broken = NULL;
+    *rightPoint_broken = NULL;
 
 }
 
@@ -558,9 +558,11 @@ int main(){
        else{                     // merge
          brokenLine     = operation_1[o];
          runningLine    = operation_2[o];
+
          /* merge deques */
          mergeDeque(&leftPoint[runningLine], &rightPoint[runningLine],
                     &leftPoint[brokenLine], &rightPoint[brokenLine]);
+
          /* union heap */
          heapUnion(heapLine[runningLine], heapLine[brokenLine]);
        }
