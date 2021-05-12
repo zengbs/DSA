@@ -361,24 +361,45 @@ void pushDeque(Deque **leftPoint, Deque **rightPoint, int data)
 }
 
 
-void popDeque(Deque **rightPoint)
+void popRightDeque(Deque **rightPoint)
 {
-  Deque *siblingNode;
-  Deque *siblingsiblingNode;
+  Deque *nextNode;
+  Deque *nextnextNode;
 
-  siblingNode     = (*rightPoint)->npx;
+  nextNode     = (*rightPoint)->npx;
 
-  if (siblingNode != NULL){
+  if (nextNode != NULL){
 
-    siblingsiblingNode = XOR(siblingNode->npx, *rightPoint);
-    siblingNode->npx  = siblingsiblingNode;
+    nextnextNode = XOR(nextNode->npx, *rightPoint);
+    nextNode->npx  = nextnextNode;
 
     free(*rightPoint);
-    *rightPoint = siblingNode;
+    *rightPoint = nextNode;
   }
   else{
     free(*rightPoint);
     *rightPoint = NULL;
+  }
+}
+
+void popLeftDeque(Deque **leftPoint)
+{
+  Deque *nextNode;
+  Deque *nextnextNode;
+
+  nextNode     = (*leftPoint)->npx;
+
+  if (nextNode != NULL){
+
+    nextnextNode = XOR(nextNode->npx, *leftPoint);
+    nextNode->npx  = nextnextNode;
+
+    free(*leftPoint);
+    *leftPoint = nextNode;
+  }
+  else{
+    free(*leftPoint);
+    *leftPoint = NULL;
   }
 }
 
@@ -512,9 +533,9 @@ int main(){
 
 
          /* B. insert into heap */
-         //Node *node = malloc(sizeof(Node));
-         //node_init(node, packageHeight);
-         //heapInsert(heapLine[productionLine], node);
+         Node *node = malloc(sizeof(Node));
+         node_init(node, packageHeight);
+         heapInsert(heapLine[productionLine], node);
 
        }
        else{                     // merge
@@ -527,13 +548,12 @@ int main(){
                     &leftPoint[brokenLine],  &rightPoint[brokenLine]);
 
          /* union heap */
-         //heapUnion(heapLine[runningLine], heapLine[brokenLine]);
+         heapUnion(heapLine[runningLine], heapLine[brokenLine]);
        }
 
      } // for (int o=0;o<Osize;o++)
 
      for(int i=0;i<Lsize;i++)   printListLeft(leftPoint[i]);
-     //for(int i=0;i<Lsize;i++)   printListRight(rightPoint[i]);
 
      t++;
 
