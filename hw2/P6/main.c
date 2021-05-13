@@ -21,7 +21,7 @@ typedef struct BHeap_t {
 	struct Node_t*	min;
 }BHeap;
 
-void removeMin(BHeap* heap);
+void heapRemoveMin(BHeap* heap);
 
 
 void heapInit(BHeap* heap)
@@ -32,7 +32,7 @@ void heapInit(BHeap* heap)
 
 
 
-void node_init(Node* node, int key)
+void heapNodeInit(Node* node, int key)
 {
 	node->parent   = NULL;
 	node->sibling  = NULL;
@@ -97,7 +97,7 @@ Node* heapReverse(Node* h)
 	return h;
 }
 
-void getMinNode(BHeap *heap, Node **prev, Node **node)
+void heapGetMinNode(BHeap *heap, Node **prev, Node **node)
 {
 	Node *nodeCur = heap->head;
 
@@ -159,17 +159,17 @@ void heapUnion_internal(BHeap* heap, Node* h2)
 
 void heapUnion(BHeap *target, BHeap *addition)
 {
-    removeMin(target);
-    removeMin(addition);
+    heapRemoveMin(target);
+    heapRemoveMin(addition);
     heapUnion_internal(target, addition->head);
     addition->head = NULL;
 }
 
-Node* extractMin(BHeap* heap)
+Node* heapExtractMin(BHeap* heap)
 {
 	Node *prev, *node;
 
-	getMinNode(heap, &prev, &node);
+	heapGetMinNode(heap, &prev, &node);
 
 	if (!node) return NULL;
 
@@ -202,7 +202,7 @@ void heapInsert(BHeap* heap, Node* node)
 	} else heapUnion_internal(heap, node);
 }
 
-void removeMin(BHeap* heap)
+void heapRemoveMin(BHeap* heap)
 {
 	Node* min;
 	if (heap->min){
@@ -215,7 +215,7 @@ void removeMin(BHeap* heap)
 
 Node* heapPeekMin(BHeap* heap)
 {
-	if (!heap->min)  heap->min = extractMin(heap);
+	if (!heap->min)  heap->min = heapExtractMin(heap);
 
 	return heap->min;
 }
@@ -232,7 +232,7 @@ void heapDecrease(BHeap* heap, Node* node, int new_key)
 
 	if (heap->min != node){
 
-		if (heap->min && node->key < heap->min->key) removeMin(heap);
+		if (heap->min && node->key < heap->min->key) heapRemoveMin(heap);
 
 		parent = node->parent;
 
@@ -290,7 +290,7 @@ void heapDelete(BHeap* heap, Node* node)
 
 
 
-/* Deque */
+/*============================ Deque ===================================*/
 typedef struct Deque_t{
   int data;
   struct Deque_t *npx;
@@ -303,7 +303,7 @@ Deque* XOR(Deque *a, Deque *b)
 }
 
 
-void printListRight (Deque *rightPoint)
+void printDequeRight (Deque *rightPoint)
 {
     Deque *curr = rightPoint;
 
@@ -321,7 +321,7 @@ void printListRight (Deque *rightPoint)
   printf("\n");
 }
 
-void printListLeft (Deque *leftPoint)
+void printDequeLeft (Deque *leftPoint)
 {
    Deque *curr = leftPoint;
 
@@ -436,6 +436,32 @@ void mergeDeque(Deque **leftPoint_running, Deque **rightPoint_running,
 
 int main(){
 
+  //Deque *left  = NULL;
+  //Deque *right = NULL;
+
+  //pushDeque(&left, &right,-1);
+  //pushDeque(&left, &right, 1);
+  //pushDeque(&left, &right, 2);
+  //pushDeque(&left, &right, 3);
+  //popRightDeque(&right);
+  //popRightDeque(&right);
+  //popRightDeque(&left);
+  //pushDeque(&left, &right, 8);
+  //pushDeque(&left, &right, 9);
+  //pushDeque(&left, &right, 4);
+  //pushDeque(&left, &right, 5);
+  //popLeftDeque(&right);
+  //popLeftDeque(&left);
+  //popLeftDeque(&left);
+  //pushDeque(&left, &right, 6);
+
+  //printDequeLeft(left);
+
+  //popRightDeque();
+
+
+
+  //exit(0);
 
   /* number of test cases */
   int Tsize;
@@ -534,7 +560,7 @@ int main(){
 
          /* B. insert into heap */
          Node *node = malloc(sizeof(Node));
-         node_init(node, packageHeight);
+         heapNodeInit(node, packageHeight);
          heapInsert(heapLine[productionLine], node);
 
        }
@@ -553,7 +579,7 @@ int main(){
 
      } // for (int o=0;o<Osize;o++)
 
-     for(int i=0;i<Lsize;i++)   printListLeft(leftPoint[i]);
+     for(int i=0;i<Lsize;i++)   printDequeLeft(leftPoint[i]);
 
      t++;
 

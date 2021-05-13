@@ -6,5 +6,4 @@ rm a.out
 gcc main.c -g  -O2 #-Wall
 #./a.out < input1
 #./a.out < input2
-#./a.out < input3
-./a.out < $1
+./a.out < input3
