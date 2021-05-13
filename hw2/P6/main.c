@@ -21,32 +21,8 @@ typedef struct BHeap_t {
 	struct Node_t*	min;
 }BHeap;
 
-/*========== ok =====================*/
-void SwapInt(int *x, int *y);
-void heapInit(BHeap* heap);  
-void heapNodeInit(Node* node, int key);  
-void heapLink(Node* root, Node* child);  
+void heapRemoveMin(BHeap* heap);
 
-/*========== XX =====================*/
-Node* heapMerge(Node* a, Node* b);  
-Node* heapReverse(Node* root);
-
-void heapUnion_internal(BHeap* heap, Node* h2);  
-void heapUnion(BHeap *target, BHeap *addition);  
-void heapRemoveMin(BHeap* heap);  
-void heapInsert(BHeap* heap, Node* node);  
-void heapDecrease(BHeap* heap, Node* node, int new_key);
-void heapDelete(BHeap* heap, Node* node);
-
-void heapGetMinNode(BHeap *heap, Node **node);  
-Node* heapExtractMin(BHeap* heap);  
-
-void SwapInt(int *x, int *y)
-{
-    *x = (*x) ^ (*y);
-    *y = (*x) ^ (*y);
-    *x = (*x) ^ (*y);
-}
 
 void heapInit(BHeap* heap)
 {
@@ -69,9 +45,9 @@ void heapNodeInit(Node* node, int key)
 
 void heapLink(Node* root, Node* child)
 {
-	child->parent    = root;
+	child->parent = root;
 	child->sibling   = root->child;
-	root->child      = child;
+	root->child   = child;
 	root->degree++;
 }
 
@@ -99,45 +75,45 @@ Node* heapMerge(Node* a, Node* b)
 	return head;
 }
 
-Node* heapReverse(Node* root)
+Node* heapReverse(Node* h)
 {
 	Node* tail = NULL;
 	Node* sibling;
 
-	if (!root) return root;
+	if (!h) return h;
 
-	root->parent = NULL;
+	h->parent = NULL;
 
-	while (root->sibling){
-	  sibling    = root->sibling;
-	  root->sibling = tail;
-	  tail       = root;
-	  root          = sibling;
-	  root->parent  = NULL;
+	while (h->sibling){
+	  sibling    = h->sibling;
+	  h->sibling = tail;
+	  tail       = h;
+	  h          = sibling;
+	  h->parent  = NULL;
 	}
 
-	root->sibling = tail;
+	h->sibling = tail;
 
-	return root;
+	return h;
 }
 
-void heapGetMinNode(BHeap *heap, Node **node)
+void heapGetMinNode(BHeap *heap, Node **prev, Node **node)
 {
-	Node *curNode, *prevNode;
+	Node *nodeCur = heap->head;
 
-    *node = heap->head;
-    prevNode = heap->head;
-    curNode = heap->head->sibling;
+    int min = INT_MAX;
 
-	while (curNode){
-	  if (curNode->key < (*node)->key){
-        *node = curNode;
+
+	while (nodeCur){
+
+	  if (nodeCur->key < min){
+        min = nodeCur->key;
+        *node = nodeCur;
 	  }
 
-      prevNode  = curNode;
-	  curNode   = curNode->sibling;
+      *prev  = nodeCur;
+	  nodeCur  = nodeCur->sibling;
 	}
-
 }
 
 void heapUnion_internal(BHeap* heap, Node* h2)
@@ -191,11 +167,14 @@ void heapUnion(BHeap *target, BHeap *addition)
 
 Node* heapExtractMin(BHeap* heap)
 {
-	Node *node;
+	Node *prev, *node;
 
-	heapGetMinNode(heap, &node);
+	heapGetMinNode(heap, &prev, &node);
 
 	if (!node) return NULL;
+
+	if (prev) prev->sibling = node->sibling;
+	else      heap->head    = node->sibling;
 
 	heapUnion_internal(heap, heapReverse(node->child));
 
@@ -234,65 +213,76 @@ void heapRemoveMin(BHeap* heap)
 }
 
 
-
-
-void heapDecrease(BHeap* heap, Node* node, int newKey)
+Node* heapPeekMin(BHeap* heap)
 {
-    Node *parent;
+	if (!heap->min)  heap->min = heapExtractMin(heap);
 
-   /* do nothing if target node is the root */
-   if (node == heap->min) return;
+	return heap->min;
+}
 
-    parent = node->parent;
 
-    node->key = newKey;
+void heapDecrease(BHeap* heap, Node* node, int new_key)
+{
+	Node *parent;
+	int   tmp_key;
 
-    while( parent && node->key < parent->key ){
+	if (new_key >= node->key) return;
 
-      SwapInt( &(node->key), &(parent->key) );
+	node->key = new_key;
 
-      node    = parent;
-      parent  = node->parent;
-    }
+	if (heap->min != node){
 
+		if (heap->min && node->key < heap->min->key) heapRemoveMin(heap);
+
+		parent = node->parent;
+
+		while (parent && node->key < parent->key){
+			tmp_key       = parent->key;
+			parent->key   = node->key;
+			node->key     = tmp_key;
+
+			node           = parent;
+			parent         = node->parent;
+		}
+	}
 }
 
 void heapDelete(BHeap* heap, Node* node)
 {
-    Node *parent, *prev, *pos;
-    int tmp_key;
+	Node *parent, *prev, *pos;
+	int tmp_key;
 
-    if (heap->min != node){
-      parent = node->parent;
 
-      while (parent){
-        tmp_key       = parent->key;
-        parent->key   = node->key;
-        node->key     = tmp_key;
+	if (heap->min != node){
+	  parent = node->parent;
 
-        if (node==NULL) printf("Oooop 111!\n");
-        node   = parent;
-        parent = node->parent;
-      }
+	  while (parent){
+	  	tmp_key       = parent->key;
+	  	parent->key   = node->key;
+	  	node->key     = tmp_key;
 
-      prev = NULL;
-      pos  = heap->head;
 
-      while (pos != node){
-        prev = pos;
-        pos  = pos->sibling;
-      }
+	  	node   = parent;
+	  	parent = node->parent;
+	  }
 
-      if (prev) prev->sibling = node->sibling;
-      else      heap->head    = node->sibling;
+	  prev = NULL;
+	  pos  = heap->head;
 
-      if (node==NULL) printf("Oooopppp 222!\n");
-      heapUnion_internal(heap, heapReverse(node->child));
+	  while (pos != node){
+	  	prev = pos;
+	  	pos  = pos->sibling;
+	  }
 
-    } else heap->min = NULL;
+	  if (prev) prev->sibling = node->sibling;
+	  else      heap->head    = node->sibling;
 
-    if (node==NULL) printf("Oooop 3333!\n");
-    node->degree = INT_MAX;
+	  heapUnion_internal(heap, heapReverse(node->child));
+
+	} else heap->min = NULL;
+
+
+	node->degree = INT_MAX;
 }
 
 
@@ -531,24 +521,14 @@ int main(){
      }
 
      /*==================================================*/
-     BHeap* heap = (BHeap*)malloc(sizeof(BHeap));
-     heapInit(heap);
 
-     /* allocate heap memory for heaps */
-     Node **root = (Node**)malloc((size_t)Lsize*sizeof(Node*));
+     /* allocate heap memory for `L` production lines */
+     BHeap **heapLine = (BHeap **)malloc((size_t)(Lsize)*sizeof(BHeap*));
 
-     heap->head = root[0];
-     heap->min  = NULL;
-     
-     Node *curRoot = root[0];
-
-     /* make linked list for heaps */
+     /* initialize heap memory */
      for (int i=0;i<Lsize;i++){
-
-       if (i==Lsize-1) curRoot->sibling = NULL;
-       else            curRoot->sibling = root[i+1];
-
-       curRoot = curRoot->sibling;
+       heapLine[i] = (BHeap*)malloc(sizeof(BHeap));
+       heapInit(heapLine[i]);
      }
 
      /* allocate deque memory for `L` production lines */
@@ -569,8 +549,7 @@ int main(){
      *  */
      for (int o=0;o<Osize;o++){
 
-       /*=========== push =============*/
-       if (operation_0[o] == 0){
+       if (operation_0[o] == 0){ // push
          packageHeight  = operation_1[o];
          productionLine = operation_2[o];
 
@@ -582,12 +561,10 @@ int main(){
          /* B. insert into heap */
          Node *node = malloc(sizeof(Node));
          heapNodeInit(node, packageHeight);
-         heapInsert(root[productionLine], node);
+         heapInsert(heapLine[productionLine], node);
 
        }
-
-       /*=========== merge =============*/
-       else{
+       else{                     // merge
          brokenLine     = operation_1[o];
          runningLine    = operation_2[o];
 
@@ -597,29 +574,12 @@ int main(){
                     &leftPoint[brokenLine],  &rightPoint[brokenLine]);
 
          /* union heap */
-         heapUnion(root[runningLine], root[brokenLine]);
+         heapUnion(heapLine[runningLine], heapLine[brokenLine]);
        }
 
      } // for (int o=0;o<Osize;o++)
 
-
-     /* ============ print deque ================== */
      for(int i=0;i<Lsize;i++)   printDequeLeft(leftPoint[i]);
-
-     for(int i=0;i<Lsize;i++){
-       Node *minNode;
-
-       //minNode = heapExtractMin(heapLine[i]);
-       //heapGetMinNode(heapLine[i], &minNode);
-
-      // if (minNode && minNode->child){
-      //   //heapDecrease(heapLine[i],minNode->child, -1);
-      //   printf("%p\n", minNode->child);
-      // }
-       //minNode = heapPeekMin(heapLine[i]);
-
-     //  if ( minNode )  printf("Line=%d, min=%d, degree=%d, child=%p\n", i, minNode->key, minNode->degree, minNode->child);
-     }
 
      t++;
 
