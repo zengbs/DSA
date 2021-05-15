@@ -54,7 +54,7 @@ Node* heapMin(BHeap *heap)
 
   int min = INT_MAX;
 
-  while( curNode ){
+  while( root ){
     if ( min > root->key ){
       min     = root->key;
       curNode = root;
@@ -83,7 +83,37 @@ void heapLink(Node* root1, Node* root2)
   }
 }
 
+void heapMerge(BHeap heap1, BHeap heap2)
+{
+  BHeap *mergeHeap = (BHeap*)malloc(sizeof(BHeap));
+  heapInit(mergeHeap);
 
+  Node *root1 = heap1->head;
+  Node *root2 = heap2->head;
+
+  Mode *curNode = mergeHeap->head;
+
+  while( root1 && root2 ){
+
+    if ( root1->degree >= root2->deree ){
+     curNode->sibling  = root2;
+     root2             = root2->sibling;
+    }
+    else{
+     curNode->sibling  = root1;
+     root1             = root1->sibling;
+    }
+    curNode  = curNode->sibling;
+  }
+
+  while( root1 ){
+    curNode->sibling = root1->sibling;
+  }
+
+  while( root2 ){
+    curNode->sibling = root2->sibling;
+  }
+}
 
 
 
