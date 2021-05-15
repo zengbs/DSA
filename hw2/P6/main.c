@@ -21,7 +21,7 @@ typedef struct BHeap_t {
 }BHeap;
 
 void SwapInt(int *x, int *y);
-void heapInit(BHeap* heap);  
+void makeHeap(BHeap* heap);  
 void heapNodeInit(Node* node, int key);  
 
 
@@ -32,7 +32,7 @@ void SwapInt(int *x, int *y)
     *x = (*x) ^ (*y);
 }
 
-void heapInit(BHeap *heap)
+void makeHeap(BHeap *heap)
 {
 	heap->head = NULL;
 }
@@ -73,49 +73,49 @@ void heapLink(Node* root1, Node* root2)
      root1->parent = root2;
      root1->sibling = root2->child;
      root2->child = root1;
-     root2->degree++
+     root2->degree++;
   }
   else{
      root2->parent = root1;
      root2->sibling = root1->child;
      root1->child = root2;
-     root1->degree++
+     root1->degree++;
   }
 }
 
 Node* heapMerge(BHeap *heap1, BHeap *heap2)
 {
-  BHeap *mergeHeap = (BHeap*)malloc(sizeof(BHeap));
-  heapInit(mergeHeap);
+  Node *head = NULL;
 
   Node *root1 = heap1->head;
   Node *root2 = heap2->head;
 
-  Mode *curNode = mergeHeap->head;
+  Node **curNode = &head;
 
   while( root1 && root2 ){
 
-    if ( root1->degree >= root2->deree ){
-     curNode->sibling  = root2;
-     root2             = root2->sibling;
+    if ( root1->degree >= root2->degree ){
+     *curNode  = root2;
+      root2    = root2->sibling;
     }
     else{
-     curNode->sibling  = root1;
-     root1             = root1->sibling;
+     *curNode = root1;
+      root1   = root1->sibling;
     }
-    curNode  = curNode->sibling;
+
+    curNode  = &(*curNode)->sibling;
   }
 
-  if( root1 )  curNode->sibling = root1->sibling;
-  if( root2 )  curNode->sibling = root2->sibling;
+  if( root1 )  (*curNode)->sibling = root1->sibling;
+  if( root2 )  (*curNode)->sibling = root2->sibling;
 
-  return mergeHeap;
+  return head;
 }
 
 BHeap* heapUnion(BHeap *heap1, BHeap *heap2)
 {
   BHeap* unionHeap = (BHeap*)malloc(sizeof(BHeap));
-  heapInit(unionHeap);
+  makeHeap(unionHeap);
 
   unionHeap->head = heapMerge(heap1, heap2);
 
@@ -131,7 +131,7 @@ BHeap* heapUnion(BHeap *heap1, BHeap *heap2)
   Node *next = x->sibling;
 
   while( next ){
-    if ( x->degree != next->degree || (next->next && next->next->degree == x->degree) ){
+    if ( x->degree != next->degree || (next->sibling && next->sibling->degree == x->degree) ){
       prev = x;
       x    = x->sibling;
     }else if( x->key <= next->key ){
@@ -154,10 +154,24 @@ BHeap* heapUnion(BHeap *heap1, BHeap *heap2)
     next = x->sibling;
   }
 
-  return unionHeap->head;  
+
+  return unionHeap;
 }
 
+void heapInsert( BHeap **heap, Node *x )
+{
+  BHeap *h = NULL;  
 
+  makeHeap(h);  
+
+  x->parent = NULL;
+  x->child  = NULL;
+  x->sibling = NULL;
+  x->degree = 0;
+  h->head = x;
+
+  *heap = heapUnion(*heap, h);
+}
 
 
 
@@ -392,25 +406,24 @@ int main(){
      }
 
      /*==================================================*/
-     BHeap* heap = (BHeap*)malloc(sizeof(BHeap));
-     heapInit(heap);
+     //BHeap* heap = (BHeap*)malloc(sizeof(BHeap));
+     //makeHeap(heap);
 
-     /* allocate heap memory for heaps */
-     Node **root = (Node**)malloc((size_t)Lsize*sizeof(Node*));
+     ///* allocate heap memory for heaps */
+     //Node **root = (Node**)malloc((size_t)Lsize*sizeof(Node*));
 
-     heap->head = root[0];
-     heap->min  = NULL;
-     
-     Node *curRoot = root[0];
+     //heap->head = root[0];
+     //
+     //Node *curRoot = root[0];
 
-     /* make linked list for heaps */
-     for (int i=0;i<Lsize;i++){
+     ///* make linked list for heaps */
+     //for (int i=0;i<Lsize;i++){
 
-       if (i==Lsize-1) curRoot->sibling = NULL;
-       else            curRoot->sibling = root[i+1];
+     //  if (i==Lsize-1) curRoot->sibling = NULL;
+     //  else            curRoot->sibling = root[i+1];
 
-       curRoot = curRoot->sibling;
-     }
+     //  curRoot = curRoot->sibling;
+     //}
 
      /* allocate deque memory for `L` production lines */
      Deque **leftPoint   = (Deque**)malloc((size_t)(Lsize)*sizeof(Deque*));
