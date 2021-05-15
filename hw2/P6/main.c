@@ -173,6 +173,11 @@ void heapInsert( BHeap **heap, Node *x )
   *heap = heapUnion(*heap, h);
 }
 
+Node* heapExtractMin()
+{
+
+
+}
 
 
 /*============================ Deque ===================================*/
