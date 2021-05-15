@@ -83,7 +83,7 @@ void heapLink(Node* root1, Node* root2)
   }
 }
 
-void heapMerge(BHeap heap1, BHeap heap2)
+Node* heapMerge(BHeap *heap1, BHeap *heap2)
 {
   BHeap *mergeHeap = (BHeap*)malloc(sizeof(BHeap));
   heapInit(mergeHeap);
@@ -106,16 +106,56 @@ void heapMerge(BHeap heap1, BHeap heap2)
     curNode  = curNode->sibling;
   }
 
-  while( root1 ){
-    curNode->sibling = root1->sibling;
-  }
+  if( root1 )  curNode->sibling = root1->sibling;
+  if( root2 )  curNode->sibling = root2->sibling;
 
-  while( root2 ){
-    curNode->sibling = root2->sibling;
-  }
+  return mergeHeap;
 }
 
+BHeap* heapUnion(BHeap *heap1, BHeap *heap2)
+{
+  BHeap* unionHeap = (BHeap*)malloc(sizeof(BHeap));
+  heapInit(unionHeap);
 
+  unionHeap->head = heapMerge(heap1, heap2);
+
+  free(heap1);
+  free(heap2);
+
+  if (unionHeap->head ) return unionHeap;
+
+  Node *prev = NULL;
+
+  Node *x = unionHeap->head;
+
+  Node *next = x->sibling;
+
+  while( next ){
+    if ( x->degree != next->degree || (next->next && next->next->degree == x->degree) ){
+      prev = x;
+      x    = x->sibling;
+    }else if( x->key <= next->key ){
+      x->sibling = next->sibling;
+      heapLink( next, x );
+    }
+    else{
+
+      if( prev ){
+        prev->sibling = next;
+      }
+      else{ 
+        unionHeap->head = next;
+      }
+
+      heapLink( x, next );
+      x = next;
+    }
+
+    next = x->sibling;
+  }
+
+  return unionHeap->head;  
+}
 
 
 
