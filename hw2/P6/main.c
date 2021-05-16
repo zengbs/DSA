@@ -6,7 +6,7 @@
 #include<limits.h>
 
 
-#define DEBU
+#define DEBUG
 //#define VERBOSE
 
 void checkPtr(void *ptr, int line)
@@ -168,27 +168,22 @@ BHeap* heapUnion(BHeap *heap1, BHeap *heap2)
   checkPtr((void*)heap2, __LINE__);
 # endif
 
-  if (!heap1->head) return heap2;
-  if (!heap2->head) return heap2;
+  if (!heap1->head ) return heap2;
+  if (!heap2->head ) return heap2;
 
   BHeap* unionHeap = (BHeap*)malloc(sizeof(BHeap));
 
   makeHeap(unionHeap);
   unionHeap->head = heapMerge(heap1, heap2);
 
-
-  if (unionHeap->head ) return unionHeap;
-
   Node *prev = NULL;
-
-  Node *x = unionHeap->head;
-
+  Node *x    = unionHeap->head;
   Node *next = x->sibling;
 
   while( next ){
     if ( x->degree != next->degree || (next->sibling && next->sibling->degree == x->degree) ){
       prev = x;
-      x    = x->sibling;
+      x    = next;
     }else if( x->key <= next->key ){
       x->sibling = next->sibling;
       heapLink( next, x );
@@ -422,33 +417,6 @@ void mergeDeque(Deque **leftPoint_running, Deque **rightPoint_running,
 
 int main(){
 
-  //Deque *left  = NULL;
-  //Deque *right = NULL;
-
-  //pushDeque(&left, &right,-1);
-  //pushDeque(&left, &right, 1);
-  //pushDeque(&left, &right, 2);
-  //pushDeque(&left, &right, 3);
-  //popRightDeque(&right);
-  //popRightDeque(&right);
-  //popRightDeque(&left);
-  //pushDeque(&left, &right, 8);
-  //pushDeque(&left, &right, 9);
-  //pushDeque(&left, &right, 4);
-  //pushDeque(&left, &right, 5);
-  //popLeftDeque(&right);
-  //popLeftDeque(&left);
-  //popLeftDeque(&left);
-  //pushDeque(&left, &right, 6);
-
-  //printDequeLeft(left);
-
-  //popRightDeque();
-
-
-
-  //exit(0);
-
   /* number of test cases */
   int Tsize;
 
@@ -571,20 +539,21 @@ int main(){
      /* ============ print deque ================== */
      for(int i=0;i<Lsize;i++)   printDequeLeft(leftPoint[i]);
 
-     //for(int i=0;i<Lsize;i++){
-     //  Node *minNode;
+     for(int i=0;i<Lsize;i++){
+       Node *minNode, *prev;
 
-     //  minNode = heapExtractMin(heapLine[i]);
-     //  heapGetMinNode(heapLine[i], &minNode);
+      heapMin(heaps[i], &prev, &minNode);
 
-     //  if (minNode && minNode->child){
-     //    //heapDecrease(heapLine[i],minNode->child, -1);
-     //    printf("%p\n", minNode->child);
-     //  }
-     //  minNode = heapPeekMin(heapLine[i]);
+//       minNode = heapExtractMin(heaps[i]);
 
-     //  if ( minNode )  printf("Line=%d, min=%d, degree=%d, child=%p\n", i, minNode->key, minNode->degree, minNode->child);
-     //}
+//       if (minNode && minNode->child){
+//         //heapDecrease(heaps[i],minNode->child, -1);
+//         printf("%p\n", minNode->child);
+//       }
+
+       //if ( minNode )  printf("Line=%d, min=%d, degree=%d, child=%p\n", i, minNode->key, minNode->degree, minNode->child);
+       if ( minNode )  printf("Line=%d, min=%d\n", i, minNode->key);
+     }
 
      t++;
 
