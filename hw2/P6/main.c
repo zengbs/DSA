@@ -9,15 +9,6 @@
 #define DEBUG
 //#define VERBOSE
 
-void checkPtr(void *ptr, int line)
-{
-  if (!ptr){
-    printf("NULL at %d!!\n", line);
-    exit(0);
-  }
-}
-
-
 typedef struct Node_t {
 	struct Node_t* 	parent;
 	struct Node_t* 	sibling;
@@ -30,6 +21,45 @@ typedef struct Node_t {
 typedef struct BHeap_t {
 	struct Node_t* 	head;
 }BHeap;
+
+
+void binomialTreeTraversal( Node* root )
+{
+  if (!root) return;
+
+  Node* child      = root->child;
+  Node* sibling    = root->sibling;
+
+  printf("%d ", root->key);
+
+  binomialTreeTraversal(child);
+  binomialTreeTraversal(sibling);
+}
+
+void heapTraversal(BHeap *heap)
+{
+  if (!heap->head) return;
+
+  Node *root = heap->head;
+  int c = 0;
+  while(root){
+    printf("\n%d: ",c);
+    binomialTreeTraversal(root);
+    root = root->sibling;
+    c++;
+  }
+}
+
+
+void checkPtr(void *ptr, int line)
+{
+  if (!ptr){
+    printf("NULL at %d!!\n", line);
+    exit(0);
+  }
+}
+
+
 
 void SwapInt(int *x, int *y);
 void makeHeap(BHeap* heap);
@@ -64,6 +94,24 @@ void heapNodeInit(Node* node, int key)
 	node->key      = key;
 }
 
+
+void printHeapRoot(BHeap* heap)
+{
+  if(!heap)       return;
+  if(!heap->head) return;
+
+  Node *curNode = heap->head;
+
+  printf("========== print roots: ");
+
+  while(curNode){
+    printf("%d ", curNode->key);
+    curNode = curNode->sibling;
+  }
+
+  printf("==============\n");
+
+}
 
 void heapMin(BHeap *heap, Node** prev, Node** minNode)
 {
@@ -123,7 +171,7 @@ Node* heapMerge(BHeap *heap1, BHeap *heap2)
 
   while( root1 && root2 ){
 
-    if ( root1->degree >= root2->degree ){
+    if ( root1->degree > root2->degree ){
      *curNode  = root2;
       root2    = root2->sibling;
 #     ifdef VERBOSE
@@ -161,6 +209,8 @@ Node* heapMerge(BHeap *heap1, BHeap *heap2)
   return head;
 }
 
+
+
 BHeap* heapUnion(BHeap *heap1, BHeap *heap2)
 {
 # ifdef DEBUG
@@ -175,6 +225,9 @@ BHeap* heapUnion(BHeap *heap1, BHeap *heap2)
 
   makeHeap(unionHeap);
   unionHeap->head = heapMerge(heap1, heap2);
+
+  heap2->head = NULL;
+  heap1->head = NULL;
 
   Node *prev = NULL;
   Node *x    = unionHeap->head;
@@ -415,8 +468,75 @@ void mergeDeque(Deque **leftPoint_running, Deque **rightPoint_running,
     }
 }
 
+BHeap* makeHeap2degree(int rootKey, int childKey, int siblingKey, int gchildKey)
+{
+  BHeap *heap = (BHeap*)malloc(sizeof(BHeap));
+  makeHeap(heap);
+
+  Node* rootNode    = (Node*)malloc(sizeof(Node));
+  Node* childNode   = (Node*)malloc(sizeof(Node));
+  Node* siblingNode = (Node*)malloc(sizeof(Node));
+  Node* gchildNode  = (Node*)malloc(sizeof(Node));
+
+  heapNodeInit( rootNode, rootKey );
+  heapNodeInit( childNode, childKey );
+  heapNodeInit( siblingNode, siblingKey );
+  heapNodeInit( gchildNode, gchildKey );
+
+  rootNode->parent        = NULL;
+  rootNode->sibling       = NULL;
+  rootNode->degree        = 2;
+  rootNode->child         = childNode;
+
+  childNode->parent        = rootNode;
+  childNode->sibling       = siblingNode;
+  childNode->degree        = 1;
+  childNode->child         = gchildNode;
+
+  siblingNode->parent        = rootNode;
+  siblingNode->sibling       = NULL;
+  siblingNode->degree        = 0;
+  siblingNode->child         = NULL;
+
+  gchildNode->parent        = childNode;
+  gchildNode->sibling       = NULL;
+  gchildNode->degree        = 0;
+  gchildNode->child         = NULL;
+
+  heap->head = rootNode;
+
+  return heap;
+}
+
 int main(){
 
+//  BHeap *heap1 = makeHeap2degree(1, 2, 3, 4);
+//  BHeap *heap2 = makeHeap2degree(5, 6, 7, 8);
+//
+//  BHeap *heap3 = makeHeap2degree(9, 10, 11, 12);
+//  BHeap *heap4 = makeHeap2degree(13, 14, 15, 16);
+//
+//  heapLink(heap1->head, heap2->head);
+//  heapLink(heap3->head, heap4->head);
+//  heapLink(heap1->head, heap3->head);
+//
+//
+//  binomialTreeTraversal(heap1->head);
+//  printf("\n");
+//  exit(0);
+
+  BHeap *heap = (BHeap*)malloc(sizeof(BHeap));
+  makeHeap(heap);
+
+  BHeap *heap1 = makeHeap2degree(1, 2, 3, 4);
+  BHeap *heap2 = makeHeap2degree(5, 6, 7, 8);
+
+  heap->head = heapMerge(heap1, heap2);
+
+  heapTraversal(heap);
+
+  exit(0);
+  
   /* number of test cases */
   int Tsize;
 
@@ -530,30 +650,30 @@ int main(){
                     &leftPoint[brokenLine],  &rightPoint[brokenLine]);
 
          /* union heap */
-         heapUnion(heaps[runningLine], heaps[brokenLine]);
+         //heaps[runningLine] = heapUnion(heaps[runningLine], heaps[brokenLine]);
+         //heaps[brokenLine]->head  = NULL;
        }
 
      } // for (int o=0;o<Osize;o++)
 
 
      /* ============ print deque ================== */
-     for(int i=0;i<Lsize;i++)   printDequeLeft(leftPoint[i]);
-
-     for(int i=0;i<Lsize;i++){
-       Node *minNode, *prev;
-
-      heapMin(heaps[i], &prev, &minNode);
-
-//       minNode = heapExtractMin(heaps[i]);
-
-//       if (minNode && minNode->child){
-//         //heapDecrease(heaps[i],minNode->child, -1);
-//         printf("%p\n", minNode->child);
-//       }
-
-       //if ( minNode )  printf("Line=%d, min=%d, degree=%d, child=%p\n", i, minNode->key, minNode->degree, minNode->child);
-       if ( minNode )  printf("Line=%d, min=%d\n", i, minNode->key);
-     }
+     
+//     printf("deque traversal: "); 
+//     for(int i=0;i<Lsize;i++)   printDequeLeft(leftPoint[i]);
+//
+//     printf("heap traversal:"); 
+//     for(int i=0;i<Lsize;i++){
+//       Node *minNode = NULL;
+//       Node *prev;
+// 
+//      heapTraversal(heaps[i]);
+//      printf("\n\n");
+//      
+//      heapMin(heaps[i], &prev, &minNode);
+//
+//      if (minNode)    printf("min: %d\n", minNode->key);
+//     }
 
      t++;
 
