@@ -71,13 +71,13 @@ void checkPtr(void *ptr, int line)
 void SwapInt(int *x, int *y);
 void makeHeap(BHeap* heap);
 void heapNodeInit(Node* node, int key);
-void heapMin(BHeap *heap, Node** prev, Node** minNode);
+void heapMax(BHeap *heap, Node** prev, Node** maxNode);
 void heapLink(Node* root1, Node* root2);
 Node* heapMerge(BHeap *heap1, BHeap *heap2);
 BHeap* heapUnion(BHeap *heap1, BHeap *heap2);
 void heapInsert( BHeap **heap, Node *x );
 Node* heapReverse(Node* node);
-Node* heapExtractMin(BHeap** heap);
+Node* heapExtractMax(BHeap** heap);
 
 
 void SwapInt(int *x, int *y)
@@ -120,18 +120,18 @@ void printHeapRoot(BHeap* heap)
 
 }
 
-void heapMin(BHeap *heap, Node** prev, Node** minNode)
+void heapMax(BHeap *heap, Node** prev, Node** maxNode)
 {
   Node *root = heap->head;
   Node *prevRoot = NULL;
 
-  int min = INT_MAX;
+  int max = INT_MIN;
 
   while( root ){
 
-    if ( min > root->key ){
-      min     = root->key;
-     *minNode = root;
+    if ( max < root->key ){
+      max     = root->key;
+     *maxNode = root;
      *prev    = prevRoot;
     }
 
@@ -145,7 +145,7 @@ void heapMin(BHeap *heap, Node** prev, Node** minNode)
 /* Links binomial trees whose roots have the same degree */
 void heapLink(Node* root1, Node* root2)
 {
-  if (root1->key > root2->key){
+  if (root1->key < root2->key){
      root1->parent = root2;
      root1->sibling = root2->child;
      root2->child = root1;
@@ -256,8 +256,6 @@ BHeap* heapUnion(BHeap *heap1, BHeap *heap2)
 
 # ifdef DEBUG
   checkPtr((void*)unionHeap->head, __LINE__);
-
-  
 # endif
 
   Node *prev = NULL;
@@ -268,7 +266,7 @@ BHeap* heapUnion(BHeap *heap1, BHeap *heap2)
     if ( x->degree != next->degree || (next->sibling && next->sibling->degree == x->degree) ){
       prev = x;
       x    = next;
-    }else if( x->key <= next->key ){
+    }else if( x->key >= next->key ){
       x->sibling = next->sibling;
       heapLink( next, x );
     }
@@ -335,30 +333,30 @@ Node* heapReverse(Node* node)
     return node;
 }
 
-Node* heapExtractMin(BHeap** heap)
+Node* heapExtractMax(BHeap** heap)
 {
   if (!(*heap)->head) return NULL;
 
   Node* prev;
-  Node* min;
+  Node* max;
 
-  heapMin(*heap, &prev, &min);
+  heapMax(*heap, &prev, &max);
 
 # ifdef DEBUG
-  checkPtr((void*)min, __LINE__);
+  checkPtr((void*)max, __LINE__);
 //  checkPtr((void*)prev, __LINE__);
 # endif
 
-  if(prev)  prev->sibling    = min->sibling;
-  else      (*heap)->head    = min->sibling;
+  if(prev)  prev->sibling    = max->sibling;
+  else      (*heap)->head    = max->sibling;
 
   BHeap reverseHeap;
 
-  reverseHeap.head = heapReverse(min->child);
+  reverseHeap.head = heapReverse(max->child);
 
   *heap = heapUnion(*heap, &reverseHeap);
   
-  return min; 
+  return max; 
 }
 
 
@@ -766,7 +764,7 @@ int main(){
 
      printf("heap traversal:\n"); 
      for(int i=0;i<Lsize;i++){
-       Node *minNode = NULL;
+       Node *maxNode = NULL;
        Node *prev;
 
        //printf("heaps[%d]->head=%p\n", i, heaps[i]->head);
@@ -776,14 +774,15 @@ int main(){
        //printf("ooooo=%d\n", 
        //heaps[i]->head->child->child->key);
        heapTraversal(heaps[i]);
+       heapMax(heaps[i], &prev, &maxNode);
+       if (maxNode)    printf("max: %d\n", maxNode->key);
     
-       minNode = heapExtractMin(&heaps[i]);
+       printf("-----------------\n");
 
-       heapMin(heaps[i], &prev, &minNode);
-
+       maxNode = heapExtractMax(&heaps[i]);
+       heapMax(heaps[i], &prev, &maxNode);
        heapTraversal(heaps[i]);
-
-       if (minNode)    printf("min: %d\n", minNode->key);
+       if (maxNode)    printf("max: %d\n", maxNode->key);
 
 
      }
