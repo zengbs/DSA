@@ -337,12 +337,19 @@ Node* heapReverse(Node* node)
 
 Node* heapExtractMin(BHeap** heap)
 {
+  if (!(*heap)->head) return NULL;
+
   Node* prev;
   Node* min;
 
   heapMin(*heap, &prev, &min);
 
-  if(prev)  prev->sibling = min->sibling;
+# ifdef DEBUG
+  checkPtr((void*)min, __LINE__);
+//  checkPtr((void*)prev, __LINE__);
+# endif
+
+  if(prev)  prev->sibling    = min->sibling;
   else      (*heap)->head    = min->sibling;
 
   BHeap reverseHeap;
@@ -752,7 +759,7 @@ int main(){
 
      /* ============ print deque ================== */
      
-     printf("\ndeque traversal:\n"); 
+     printf("deque traversal:\n"); 
      for(int i=0;i<Lsize;i++)   printDequeLeft(leftPoint[i]);
 
      /* ============ print heap ================== */
@@ -763,15 +770,22 @@ int main(){
        Node *prev;
 
        //printf("heaps[%d]->head=%p\n", i, heaps[i]->head);
-       heapTraversal(heaps[i]);
-       printf("\n\n");
-  
+       //heapTraversal(heaps[i]);
+       //printf("\n\n");
+          
        //printf("ooooo=%d\n", 
        //heaps[i]->head->child->child->key);
-       
+       heapTraversal(heaps[i]);
+    
+       minNode = heapExtractMin(&heaps[i]);
+
        heapMin(heaps[i], &prev, &minNode);
 
+       heapTraversal(heaps[i]);
+
        if (minNode)    printf("min: %d\n", minNode->key);
+
+
      }
 
      t++;
