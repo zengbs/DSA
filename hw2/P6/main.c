@@ -482,6 +482,16 @@ void pushDeque(Deque **leftPoint, Deque **rightPoint, int data)
 }
 
 
+int peekRightDeque(Deque **rightPoint)
+{
+   return right = (*rightPoint)->data;
+}
+
+int peekLeftDeque(Deque **leftPoint)
+{
+   return left = (*leftPoint)->data;
+}
+
 void popRightDeque(Deque **rightPoint)
 {
   Deque *nextNode;
@@ -795,15 +805,15 @@ int main(){
 
      ///* ============ print heap ================== */
 
-     printf("heap traversal:\n"); 
-     for(int i=0;i<Lsize;i++){
-       Node* max, *prev;
-       heapMax(heaps[i], &prev, &max);
+     //printf("heap traversal:\n"); 
+     //for(int i=0;i<Lsize;i++){
+     //  Node* max, *prev;
+     //  heapMax(heaps[i], &prev, &max);
 
 
-       if (max)  heapDelete(&heaps[i], max); 
-       heapTraversal(heaps[i]);
-     }
+     //  if (max)  heapDelete(&heaps[i], max); 
+     //  heapTraversal(heaps[i]);
+     //}
 
      t++;
 
