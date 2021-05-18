@@ -1,0 +1,227 @@
+======= input1 ========================
+
+deque traversal:
+2 1 3 4 5 
+heap traversal:
+
+
+
+deque traversal:
+1 4 2 5 3 
+heap traversal:
+
+
+======= input2 ========================
+
+deque traversal:
+4 
+
+10 7 8 9 5 2 1 6 3 
+
+
+heap traversal:
+
+
+
+
+
+
+
+
+
+
+
+deque traversal:
+4 6 3 
+
+
+7 5 1 9 2 8 10 
+
+heap traversal:
+
+
+
+
+
+
+
+
+
+
+======= input3 ========================
+
+deque traversal:
+
+
+2 3 10 8 1 7 4 6 9 5 
+
+
+
+
+
+
+
+heap traversal:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+deque traversal:
+
+
+
+
+
+6 9 5 2 8 7 3 1 10 4 
+
+
+
+
+heap traversal:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+======= input4 ========================
+
+deque traversal:
+1 
+heap traversal:
+
+
+======= input5 ========================
+
+deque traversal:
+1 2 
+heap traversal:
+
+
+======= input6 ========================
+
+deque traversal:
+1 2 3 
+heap traversal:
+
+
+======= input7 ========================
+
+deque traversal:
+1 2 3 4 
+heap traversal:
+
+
+======= input8 ========================
+
+deque traversal:
+1 2 3 4 5 
+heap traversal:
+
+
+======= input9 ========================
+
+deque traversal:
+1 2 3 4 5 6 
+heap traversal:
+
+
+======= input10 ========================
+
+deque traversal:
+1 2 3 4 5 6 7 
+heap traversal:
+
+
+======= input11 ========================
+
+deque traversal:
+1 2 3 4 5 6 7 8 
+heap traversal:
+
+
+======= input12 ========================
+
+deque traversal:
+1 2 3 4 5 6 7 8 9 
+heap traversal:
+
+
+======= input13 ========================
+
+deque traversal:
+13 12 11 10 9 8 7 6 5 4 
+heap traversal:
+
+
+======= input14 ========================
+
+deque traversal:
+1 2 3 4 5 6 7 8 9 10 11 
+heap traversal:
+
+
+======= input15 ========================
+
+deque traversal:
+
+3 4 5 1 2 
+heap traversal:
+
+
+
+
+======= input16 ========================
+
+deque traversal:
+1 2 3 4 5 
+
+heap traversal:
+
+
+
+
+======= input17 ========================
+
+deque traversal:
+3 
+
+1 2 
+heap traversal:
+
+
+
+
+
+

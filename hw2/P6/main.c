@@ -164,9 +164,12 @@ Node* heapMerge(BHeap *heap1, BHeap *heap2)
 # ifdef DEBUG
   checkPtr((void*)heap1, __LINE__);
   checkPtr((void*)heap2, __LINE__);
-  checkPtr((void*)heap1->head, __LINE__);
-  checkPtr((void*)heap2->head, __LINE__);
+  //checkPtr((void*)heap1->head, __LINE__);
+  //checkPtr((void*)heap2->head, __LINE__);
 # endif
+
+  if (!heap1->head) return heap2->head;
+  if (!heap2->head) return heap1->head;
 
   Node *head  = NULL;
   Node *root1 = heap1->head;
@@ -216,6 +219,12 @@ Node* heapMerge(BHeap *heap1, BHeap *heap2)
   return head;
 }
 
+void SwapPtr(void**Ptr1, void**Ptr2)
+{
+  void* temp = *Ptr1;
+  *Ptr1 = *Ptr2;
+  *Ptr2 = temp;
+}
 
 
 BHeap* heapUnion(BHeap *heap1, BHeap *heap2)
@@ -225,16 +234,31 @@ BHeap* heapUnion(BHeap *heap1, BHeap *heap2)
   checkPtr((void*)heap2, __LINE__);
 # endif
 
-  if (!heap1->head ) return heap2;
-  if (!heap2->head ) return heap2;
+  //printf("heap1->head=%p\n", heap1->head);
+  //printf("heap2->head=%p\n", heap2->head);
+
+
+  if (!heap1->head ) SwapPtr((void**)&heap1->head, (void**)&heap2->head);
+
+  //printf("heap1->head=%p\n", heap1->head);
+  //printf("heap2->head=%p\n", heap2->head);
 
   BHeap* unionHeap = (BHeap*)malloc(sizeof(BHeap));
 
   makeHeap(unionHeap);
+
+  if (!heap1->head && !heap2->head) return heap1;
+
   unionHeap->head = heapMerge(heap1, heap2);
 
   heap2->head = NULL;
   heap1->head = NULL;
+
+# ifdef DEBUG
+  checkPtr((void*)unionHeap->head, __LINE__);
+
+  
+# endif
 
   Node *prev = NULL;
   Node *x    = unionHeap->head;
@@ -702,8 +726,25 @@ int main(){
                     &leftPoint[brokenLine],  &rightPoint[brokenLine]);
 
          /* union heap */
+         //printf("runningLine=%d, brokenLine=%d\n", runningLine, brokenLine);
+//printf("\n111111111111111\n");
+         //heapTraversal(heaps[runningLine]);
+//printf("\n222222222222222\n");
+         //heapTraversal(heaps[brokenLine]);
+
+         //printf("aaaa=%p\n", heaps[brokenLine]->head);
+         //printf("aaaa=%p\n", heaps[runningLine]->head);
          heaps[runningLine] = heapUnion(heaps[runningLine], heaps[brokenLine]);
-         heaps[brokenLine]->head  = NULL;
+         //printf("bbbbb=%p\n", heaps[brokenLine]->head);
+         //printf("bbbbb=%p\n", heaps[runningLine]->head);
+
+//printf("\n3333333333333333\n");
+         //heapTraversal(heaps[runningLine]);
+//printf("\n4444444444444444\n");
+         //heaps[brokenLine]->head  = NULL;
+         //heapTraversal(heaps[brokenLine]);
+//printf("\n5555555555555555\n");
+
        }
 
      } // for (int o=0;o<Osize;o++)
@@ -711,23 +752,26 @@ int main(){
 
      /* ============ print deque ================== */
      
-     printf("deque traversal: "); 
+     printf("\ndeque traversal:\n"); 
      for(int i=0;i<Lsize;i++)   printDequeLeft(leftPoint[i]);
 
-     printf("heap traversal:"); 
+     /* ============ print heap ================== */
+
+     printf("heap traversal:\n"); 
      for(int i=0;i<Lsize;i++){
        Node *minNode = NULL;
        Node *prev;
- 
-      heapTraversal(heaps[i]);
-      printf("\n\n");
- 
-      //printf("ooooo=%d\n", 
-      //heaps[i]->head->child->child->key);
-      
-      heapMin(heaps[i], &prev, &minNode);
 
-      if (minNode)    printf("min: %d\n", minNode->key);
+       //printf("heaps[%d]->head=%p\n", i, heaps[i]->head);
+       heapTraversal(heaps[i]);
+       printf("\n\n");
+  
+       //printf("ooooo=%d\n", 
+       //heaps[i]->head->child->child->key);
+       
+       heapMin(heaps[i], &prev, &minNode);
+
+       if (minNode)    printf("min: %d\n", minNode->key);
      }
 
      t++;
