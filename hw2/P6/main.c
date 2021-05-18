@@ -484,12 +484,12 @@ void pushDeque(Deque **leftPoint, Deque **rightPoint, int data)
 
 int peekRightDeque(Deque **rightPoint)
 {
-   return right = (*rightPoint)->data;
+   return (*rightPoint)->data;
 }
 
 int peekLeftDeque(Deque **leftPoint)
 {
-   return left = (*leftPoint)->data;
+   return (*leftPoint)->data;
 }
 
 void popRightDeque(Deque **rightPoint)
