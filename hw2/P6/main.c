@@ -7,7 +7,7 @@
 
 
 #define DEBUG
-#define VERBOSE
+//#define VERBOSE
 
 typedef struct Node_t {
 	struct Node_t* 	parent;
@@ -23,18 +23,29 @@ typedef struct BHeap_t {
 }BHeap;
 
 
-void binomialTreeTraversal( Node* root )
+void binomialTreeTraversal( Node* root)
 {
   if (!root) return;
+
+  static int depth = 0;
 
   Node* child      = root->child;
   Node* sibling    = root->sibling;
 
   printf("%d ", root->key);
 
-  binomialTreeTraversal(child);
-  if (child)  binomialTreeTraversal(sibling);
+  //printf("\ndepth=%d, key=%d\n", depth, root->key);
 
+  //if (root->key == 1) printf("root->child->key=%d\n", root->child->key);
+
+
+
+  if (depth!=0){
+    binomialTreeTraversal(sibling);
+  }
+
+  depth++;
+  binomialTreeTraversal(child);
 }
 
 void heapTraversal(BHeap *heap)
@@ -469,6 +480,50 @@ void mergeDeque(Deque **leftPoint_running, Deque **rightPoint_running,
     }
 }
 
+BHeap* makeHeap0degree(int rootKey)
+{
+  BHeap *heap = (BHeap*)malloc(sizeof(BHeap));
+  makeHeap(heap);
+
+  Node* rootNode    = (Node*)malloc(sizeof(Node));
+
+  heapNodeInit( rootNode, rootKey );
+
+  rootNode->parent        = NULL;
+  rootNode->sibling       = NULL;
+  rootNode->degree        = 0;
+  rootNode->child         = NULL;
+
+  heap->head = rootNode;
+  return heap;
+}
+
+
+BHeap* makeHeap1degree(int rootKey, int childKey)
+{
+  BHeap *heap = (BHeap*)malloc(sizeof(BHeap));
+  makeHeap(heap);
+
+  Node* rootNode    = (Node*)malloc(sizeof(Node));
+  Node* childNode   = (Node*)malloc(sizeof(Node));
+
+  heapNodeInit( rootNode, rootKey );
+  heapNodeInit( childNode, childKey );
+
+  rootNode->parent        = NULL;
+  rootNode->sibling       = NULL;
+  rootNode->degree        = 1;
+  rootNode->child         = childNode;
+
+  childNode->parent        = rootNode;
+  childNode->sibling       = NULL;
+  childNode->degree        = 0;
+  childNode->child         = NULL;
+
+  heap->head = rootNode;
+  return heap;
+}
+
 BHeap* makeHeap2degree(int rootKey, int childKey, int siblingKey, int gchildKey)
 {
   BHeap *heap = (BHeap*)malloc(sizeof(BHeap));
@@ -529,11 +584,11 @@ int main(){
 //  BHeap *heap = (BHeap*)malloc(sizeof(BHeap));
 //  makeHeap(heap);
 //
-//  BHeap *heap1 = makeHeap2degree(1, 2, 3, 4);
-//  BHeap *heap2 = makeHeap2degree(5, 6, 7, 8);
+//  BHeap *heap1 = makeHeap1degree(1, 2);
+//  BHeap *heap2 = makeHeap0degree(3);
 //
-//  //heap->head = heapMerge(heap1, heap2);
-//  heap = heapUnion(heap1, heap2);
+//  heap->head = heapMerge(heap1, heap2);
+//  //heap = heapUnion(heap1, heap2);
 //
 //  heapTraversal(heap);
 //
@@ -671,6 +726,9 @@ int main(){
  
       heapTraversal(heaps[i]);
       printf("\n\n");
+ 
+      //printf("ooooo=%d\n", 
+      //heaps[i]->head->child->child->key);
       
       heapMin(heaps[i], &prev, &minNode);
 
