@@ -78,7 +78,35 @@ BHeap* heapUnion(BHeap *heap1, BHeap *heap2);
 void heapInsert( BHeap **heap, Node *x );
 Node* heapReverse(Node* node);
 Node* heapExtractMax(BHeap** heap);
+void IncreaseKey(BHeap* heap, Node* node, int newKey);
+void heapDelete(BHeap **heap, Node* x);
 
+void IncreaseKey(BHeap* heap, Node* x, int newKey)
+{
+  if (newKey < x->key){
+    printf("“new key is smaller than current key");
+    exit(0);
+  }
+ 
+  x->key = newKey;
+  
+  Node* y = x;
+
+  Node* z = y->parent;
+
+  while( z && y->key > z->key ){
+    SwapInt(&y->key, &z->key);
+    y = z;
+    z = y->parent;
+  }
+}
+
+
+void heapDelete(BHeap **heap, Node* x)
+{
+  IncreaseKey(*heap, x, INT_MAX);
+  heapExtractMax(heap);
+}
 
 void SwapInt(int *x, int *y)
 {
@@ -757,7 +785,7 @@ int main(){
 
      /* ============ print deque ================== */
      
-     printf("deque traversal:\n"); 
+     printf("\ndeque traversal:\n"); 
      for(int i=0;i<Lsize;i++)   printDequeLeft(leftPoint[i]);
 
      /* ============ print heap ================== */
@@ -773,17 +801,26 @@ int main(){
           
        //printf("ooooo=%d\n", 
        //heaps[i]->head->child->child->key);
+
+
        heapTraversal(heaps[i]);
        heapMax(heaps[i], &prev, &maxNode);
-       if (maxNode)    printf("max: %d\n", maxNode->key);
+       if (maxNode) heapDelete(&heaps[i], maxNode);
+       
+       printf("\n== delete max ==\n");
+
+       heapTraversal(heaps[i]);
+       //heapTraversal(heaps[i]);
+       //heapMax(heaps[i], &prev, &maxNode);
+       //if (maxNode)    printf("max: %d\n", maxNode->key);
     
-       printf("-----------------\n");
+       printf("\n");
 
-       maxNode = heapExtractMax(&heaps[i]);
-       heapMax(heaps[i], &prev, &maxNode);
-       heapTraversal(heaps[i]);
-       if (maxNode)    printf("max: %d\n", maxNode->key);
-
+       //maxNode = heapExtractMax(&heaps[i]);
+       //heapMax(heaps[i], &prev, &maxNode);
+       //heapTraversal(heaps[i]);
+       //if (maxNode)    printf("max: %d\n", maxNode->key);
+       
 
      }
 
