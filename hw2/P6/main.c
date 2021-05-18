@@ -22,6 +22,30 @@ typedef struct BHeap_t {
 	struct Node_t* 	head;
 }BHeap;
 
+void checkPtr(void *ptr, int line);
+void SwapInt(int *x, int *y);
+void makeHeap(BHeap* heap);
+void heapNodeInit(Node* node, int key);
+void heapMax(BHeap *heap, Node** prev, Node** maxNode);
+void heapLink(Node* root1, Node* root2);
+Node* heapMerge(BHeap *heap1, BHeap *heap2);
+BHeap* heapUnion(BHeap *heap1, BHeap *heap2);
+void heapInsert( BHeap **heap, Node *x );
+Node* heapReverse(Node* node);
+Node* heapExtractMax(BHeap** heap);
+void IncreaseKey(BHeap* heap, Node* node, int newKey);
+void heapDelete(BHeap **heap, Node* x);
+
+
+void freeNode(Node* x)
+{
+# ifdef DEBUG
+  checkPtr((void*)x, __LINE__);
+# endif
+  free(x->parent);
+  free(x->sibling);
+  free(x->child);
+}
 
 void binomialTreeTraversal( Node* root, int depth)
 {
@@ -68,21 +92,12 @@ void checkPtr(void *ptr, int line)
 
 
 
-void SwapInt(int *x, int *y);
-void makeHeap(BHeap* heap);
-void heapNodeInit(Node* node, int key);
-void heapMax(BHeap *heap, Node** prev, Node** maxNode);
-void heapLink(Node* root1, Node* root2);
-Node* heapMerge(BHeap *heap1, BHeap *heap2);
-BHeap* heapUnion(BHeap *heap1, BHeap *heap2);
-void heapInsert( BHeap **heap, Node *x );
-Node* heapReverse(Node* node);
-Node* heapExtractMax(BHeap** heap);
-void IncreaseKey(BHeap* heap, Node* node, int newKey);
-void heapDelete(BHeap **heap, Node* x);
-
 void IncreaseKey(BHeap* heap, Node* x, int newKey)
 {
+# ifdef DEBUG
+  checkPtr((void*)x, __LINE__);
+# endif
+
   if (newKey < x->key){
     printf("“new key is smaller than current key");
     exit(0);
@@ -104,8 +119,16 @@ void IncreaseKey(BHeap* heap, Node* x, int newKey)
 
 void heapDelete(BHeap **heap, Node* x)
 {
-  IncreaseKey(*heap, x, INT_MAX);
-  heapExtractMax(heap);
+  if (!x){
+    IncreaseKey(*heap, x, INT_MAX);
+    Node* maxNode = heapExtractMax(heap);
+
+#   ifdef DEBUG
+    checkPtr((void*)maxNode, __LINE__);
+#   endif
+
+    freeNode(maxNode);
+  }
 }
 
 void SwapInt(int *x, int *y)
@@ -758,70 +781,28 @@ int main(){
          mergeDeque(&leftPoint[runningLine], &rightPoint[runningLine],
                     &leftPoint[brokenLine],  &rightPoint[brokenLine]);
 
-         /* union heap */
-         //printf("runningLine=%d, brokenLine=%d\n", runningLine, brokenLine);
-//printf("\n111111111111111\n");
-         //heapTraversal(heaps[runningLine]);
-//printf("\n222222222222222\n");
-         //heapTraversal(heaps[brokenLine]);
-
-         //printf("aaaa=%p\n", heaps[brokenLine]->head);
-         //printf("aaaa=%p\n", heaps[runningLine]->head);
          heaps[runningLine] = heapUnion(heaps[runningLine], heaps[brokenLine]);
-         //printf("bbbbb=%p\n", heaps[brokenLine]->head);
-         //printf("bbbbb=%p\n", heaps[runningLine]->head);
-
-//printf("\n3333333333333333\n");
-         //heapTraversal(heaps[runningLine]);
-//printf("\n4444444444444444\n");
-         //heaps[brokenLine]->head  = NULL;
-         //heapTraversal(heaps[brokenLine]);
-//printf("\n5555555555555555\n");
 
        }
 
      } // for (int o=0;o<Osize;o++)
 
 
-     /* ============ print deque ================== */
-     
-     printf("\ndeque traversal:\n"); 
-     for(int i=0;i<Lsize;i++)   printDequeLeft(leftPoint[i]);
+     ///* ============ print deque ================== */
+     //
+     //printf("\ndeque traversal:\n"); 
+     //for(int i=0;i<Lsize;i++)   printDequeLeft(leftPoint[i]);
 
-     /* ============ print heap ================== */
+     ///* ============ print heap ================== */
 
      printf("heap traversal:\n"); 
      for(int i=0;i<Lsize;i++){
-       Node *maxNode = NULL;
-       Node *prev;
-
-       //printf("heaps[%d]->head=%p\n", i, heaps[i]->head);
-       //heapTraversal(heaps[i]);
-       //printf("\n\n");
-          
-       //printf("ooooo=%d\n", 
-       //heaps[i]->head->child->child->key);
+       Node* max, *prev;
+       heapMax(heaps[i], &prev, &max);
 
 
+       if (max)  heapDelete(&heaps[i], max); 
        heapTraversal(heaps[i]);
-       heapMax(heaps[i], &prev, &maxNode);
-       if (maxNode) heapDelete(&heaps[i], maxNode);
-       
-       printf("\n== delete max ==\n");
-
-       heapTraversal(heaps[i]);
-       //heapTraversal(heaps[i]);
-       //heapMax(heaps[i], &prev, &maxNode);
-       //if (maxNode)    printf("max: %d\n", maxNode->key);
-    
-       printf("\n");
-
-       //maxNode = heapExtractMax(&heaps[i]);
-       //heapMax(heaps[i], &prev, &maxNode);
-       //heapTraversal(heaps[i]);
-       //if (maxNode)    printf("max: %d\n", maxNode->key);
-       
-
      }
 
      t++;
