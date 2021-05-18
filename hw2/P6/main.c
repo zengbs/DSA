@@ -23,29 +23,22 @@ typedef struct BHeap_t {
 }BHeap;
 
 
-void binomialTreeTraversal( Node* root)
+void binomialTreeTraversal( Node* root, int depth)
 {
   if (!root) return;
 
-  static int depth = 0;
 
   Node* child      = root->child;
   Node* sibling    = root->sibling;
 
   printf("%d ", root->key);
 
-  //printf("\ndepth=%d, key=%d\n", depth, root->key);
-
-  //if (root->key == 1) printf("root->child->key=%d\n", root->child->key);
-
-
 
   if (depth!=0){
-    binomialTreeTraversal(sibling);
+    binomialTreeTraversal(sibling, depth);
   }
 
-  depth++;
-  binomialTreeTraversal(child);
+  binomialTreeTraversal(child, ++depth);
 }
 
 void heapTraversal(BHeap *heap)
@@ -54,9 +47,11 @@ void heapTraversal(BHeap *heap)
 
   Node *root = heap->head;
   int c = 0;
+  static int depth;
   while(root){
+    depth = 0;
     printf("\n%d: ",c);
-    binomialTreeTraversal(root);
+    binomialTreeTraversal(root, depth);
     root = root->sibling;
     c++;
   }
