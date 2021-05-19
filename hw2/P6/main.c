@@ -9,6 +9,14 @@
 #define DEBUG
 //#define VERBOSE
 
+typedef struct Deque_t Deque;
+
+/* heaps */
+typedef struct BHeap_t {
+	struct Node_t* 	head;
+}BHeap;
+
+/* binomial tree */
 typedef struct Node_t {
 	struct Node_t* 	parent;
 	struct Node_t* 	sibling;
@@ -16,14 +24,22 @@ typedef struct Node_t {
 
 	unsigned int 	degree;
 	int			    key;
+
+    Deque*          dequeNode;
 }Node;
 
-typedef struct BHeap_t {
-	struct Node_t* 	head;
-}BHeap;
+
+/* deque */
+typedef struct Deque_t{
+  struct Node_t* heapNode;
+  struct Deque_t *prevNode;
+  int data;
+  struct Deque_t *npx;
+}Deque;
 
 void checkPtr(void *ptr, int line);
 void SwapInt(int *x, int *y);
+void SwapPtr(void**Ptr1, void**Ptr2);
 void makeHeap(BHeap* heap);
 void heapNodeInit(Node* node, int key);
 void heapMax(BHeap *heap, Node** prev, Node** maxNode);
@@ -111,6 +127,7 @@ void IncreaseKey(BHeap* heap, Node* x, int newKey)
 
   while( z && y->key > z->key ){
     SwapInt(&y->key, &z->key);
+    SwapPtr((void**)&y->dequeNode, (void**)&z->dequeNode);
     y = z;
     z = y->parent;
   }
@@ -130,6 +147,14 @@ void heapDelete(BHeap **heap, Node* x)
     freeNode(maxNode);
   }
 }
+
+void SwapPtr(void**Ptr1, void**Ptr2)
+{
+  void* temp = *Ptr1;
+  *Ptr1 = *Ptr2;
+  *Ptr2 = temp;
+}
+
 
 void SwapInt(int *x, int *y)
 {
@@ -215,8 +240,6 @@ Node* heapMerge(BHeap *heap1, BHeap *heap2)
 # ifdef DEBUG
   checkPtr((void*)heap1, __LINE__);
   checkPtr((void*)heap2, __LINE__);
-  //checkPtr((void*)heap1->head, __LINE__);
-  //checkPtr((void*)heap2->head, __LINE__);
 # endif
 
   if (!heap1->head) return heap2->head;
@@ -269,14 +292,6 @@ Node* heapMerge(BHeap *heap1, BHeap *heap2)
 
   return head;
 }
-
-void SwapPtr(void**Ptr1, void**Ptr2)
-{
-  void* temp = *Ptr1;
-  *Ptr1 = *Ptr2;
-  *Ptr2 = temp;
-}
-
 
 BHeap* heapUnion(BHeap *heap1, BHeap *heap2)
 {
@@ -395,7 +410,6 @@ Node* heapExtractMax(BHeap** heap)
 
 # ifdef DEBUG
   checkPtr((void*)max, __LINE__);
-//  checkPtr((void*)prev, __LINE__);
 # endif
 
   if(prev)  prev->sibling    = max->sibling;
@@ -412,11 +426,6 @@ Node* heapExtractMax(BHeap** heap)
 
 
 /*============================ Deque ===================================*/
-typedef struct Deque_t{
-  int data;
-  struct Deque_t *npx;
-}Deque;
-
 
 Deque* XOR(Deque *a, Deque *b)
 {
@@ -461,21 +470,22 @@ void printDequeLeft (Deque *leftPoint)
 }
 
 
-void pushDeque(Deque **leftPoint, Deque **rightPoint, int data)
+void pushDeque(Deque **leftPoint, Deque **prev_rightPoint, Deque **rightPoint, int data)
 {
-  Deque *newNode = (Deque *) malloc (sizeof (Deque) );
-  newNode->data = data;
-
+  Deque *newNode    = (Deque *) malloc (sizeof (Deque) );
+  newNode->data     = data;
 
   if (*rightPoint != NULL)
   {
     Deque *rightSecondPoint = XOR( (*rightPoint)->npx, NULL );
     newNode->npx = XOR(*rightPoint, NULL);
     (*rightPoint)->npx = XOR(rightSecondPoint, newNode);
+    *prev_rightPoint = XOR((*rightPoint)->npx, NULL);
   }
   else{
     newNode->npx = XOR(NULL, NULL);
     *leftPoint = newNode;
+    *prev_rightPoint = NULL;
   }
 
   *rightPoint = newNode;
@@ -531,6 +541,31 @@ void popLeftDeque(Deque **leftPoint)
   else{
     free(*leftPoint);
     *leftPoint = NULL;
+  }
+}
+
+void popNodeDeque(Deque **target, Deque **prev, Deque **leftPoint, Deque **rightPoint)
+{
+
+  if (*target == *leftPoint){
+    popLeftDeque(leftPoint);
+  }
+  else if (*target == *rightPoint){
+    popRightDeque(rightPoint);
+  }
+  else{
+
+#   ifdef DEBUG
+    checkPtr((void*)*prev, __LINE__);
+#   endif
+
+    Deque *next     = XOR((*target)->npx, *prev);
+    
+    Deque *nextnext = XOR( *target    , next->npx);
+    Deque *prevprev = XOR((*prev)->npx,   *target);
+
+    next->npx = XOR(*prev, nextnext);
+    (*prev)->npx = XOR(prevprev, next);
   }
 }
 
@@ -736,7 +771,7 @@ int main(){
        scanf("%d", &packagesHeight[n]);
      }
 
-     /*====================== Heap ============================*/
+     /*====================== Heap initialization ============================*/
      /* allocate memory for heaps */
      BHeap **heaps = (BHeap **)malloc(Lsize*sizeof(BHeap*));
      
@@ -747,12 +782,12 @@ int main(){
        makeHeap(heaps[i]);
      }
 
-     /*===================== Deque =============================*/
+     /*===================== Deque initialization =============================*/
      /* allocate deque memory for `L` production lines */
      Deque **leftPoint   = (Deque**)malloc((size_t)(Lsize)*sizeof(Deque*));
      Deque **rightPoint  = (Deque**)malloc((size_t)(Lsize)*sizeof(Deque*));
 
-     /* initialize deque pointer */
+     /* initialize end pointers in deque */
      for (int i=0;i<Lsize;i++){
        leftPoint[i]   = NULL;
        rightPoint[i]  = NULL;
@@ -769,15 +804,32 @@ int main(){
          packageHeight  = operation_1[o];
          productionLine = operation_2[o];
 
-         /* A. push `packageHeight` into deque */
-
-         pushDeque(&leftPoint[productionLine], &rightPoint[productionLine], packageHeight);
-
-
-         /* B. insert into heap */
+         /* A. insert into heap */
          Node *node = malloc(sizeof(Node));
          heapNodeInit(node, packageHeight);
          heapInsert(&heaps[productionLine], node);
+
+         /* B. push `packageHeight` into deque from right end*/
+         Deque *prevNode;
+         pushDeque(&leftPoint[productionLine], &prevNode, &rightPoint[productionLine], packageHeight);
+      
+         // store the addresss of previous node into current node
+         rightPoint[productionLine]->prevNode = prevNode;
+
+         /* C. store the address of heap node in deque */
+         rightPoint[productionLine]->heapNode = node;
+
+         /* D. store the address of deque node in heap */
+         node->dequeNode = rightPoint[productionLine];
+
+         ///* A1 extract from heaps */
+         //Node *maxNode, *prevNode;
+         //heapMax(heaps[productionLine], &prevNode, &maxNode);
+
+         ///* B1 pop from deque */
+         //int rightEnd, leftEnd;
+         //rightEnd = peekRightDeque(&rightPoint[productionLine]); 
+         //leftEnd  = peekLeftDeque ( &leftPoint[productionLine]); 
 
        }
 
@@ -800,20 +852,20 @@ int main(){
 
      ///* ============ print deque ================== */
      //
-     //printf("\ndeque traversal:\n"); 
-     //for(int i=0;i<Lsize;i++)   printDequeLeft(leftPoint[i]);
+     printf("\ndeque traversal:\n"); 
+     for(int i=0;i<Lsize;i++)   printDequeLeft(leftPoint[i]);
 
      ///* ============ print heap ================== */
 
-     //printf("heap traversal:\n"); 
-     //for(int i=0;i<Lsize;i++){
-     //  Node* max, *prev;
+     printf("heap traversal:\n"); 
+     for(int i=0;i<Lsize;i++){
+       Node* max, *prev;
      //  heapMax(heaps[i], &prev, &max);
 
 
-     //  if (max)  heapDelete(&heaps[i], max); 
-     //  heapTraversal(heaps[i]);
-     //}
+      // if (max)  heapDelete(&heaps[i], max); 
+       heapTraversal(heaps[i]);
+     }
 
      t++;
 
@@ -821,7 +873,6 @@ int main(){
      free(operation_1);
      free(operation_2);
      free(packagesHeight);
-
   }
 
   return 0;
