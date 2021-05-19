@@ -58,9 +58,13 @@ void freeNode(Node* x)
 # ifdef DEBUG
   checkPtr((void*)x, __LINE__);
 # endif
-  free(x->parent);
+  free(x->parent );
   free(x->sibling);
-  free(x->child);
+  free(x->child  );
+
+  x->parent   = NULL;    
+  x->sibling  = NULL;
+  x->child    = NULL;
 }
 
 void binomialTreeTraversal( Node* root, int depth)
@@ -136,6 +140,11 @@ void IncreaseKey(BHeap* heap, Node* x, int newKey)
 
 void heapDelete(BHeap **heap, Node* x)
 {
+    printf("x=%p\n", x);
+#   ifdef DEBUG
+    checkPtr((void*)x, __LINE__);
+#   endif
+
   if (!x){
     IncreaseKey(*heap, x, INT_MAX);
     Node* maxNode = heapExtractMax(heap);
@@ -145,6 +154,7 @@ void heapDelete(BHeap **heap, Node* x)
 #   endif
 
     freeNode(maxNode);
+    maxNode = NULL;
   }
 }
 
@@ -601,19 +611,25 @@ void mergeDeque(Deque **leftPoint_running, Deque **rightPoint_running,
 }
 
 
-void Checking( Deque **right, Deque **left, BHeap **heap, int *packagesHeight, int Nsize )
+int Checking( Deque **right, Deque **left, BHeap **heap, int *packagesHeight, int Nsize, int arrIdx )
 {
-  int height;
+  int  height;
+  bool matchRight = false;
+  bool matchLeft  = false;
+  bool matchMax   = false;
+  bool match      = false;
 
-  for(int n=1; n<=Nsize; n++){
+  for(int n=arrIdx; n<=Nsize && !match; n++){
     
     height = packagesHeight[n];
-  
 
  
     /* E. peek max height from heaps */
     Node *maxNode, *prevNode;
     heapPeekMax(*heap, &prevNode, &maxNode);
+#   ifdef DEBUG
+    checkPtr((void*)maxNode, __LINE__);
+#   endif
     int max = maxNode->key;
 
     /* F. peek left and right end in deque */
@@ -621,16 +637,27 @@ void Checking( Deque **right, Deque **left, BHeap **heap, int *packagesHeight, i
     rightEnd = peekRightDeque( right ); 
     leftEnd  = peekLeftDeque ( left ); 
 
+    matchRight = rightEnd == height;
+    matchLeft  = leftEnd  == height;
+    matchMax   =     max  == height;
 
-    if (rightEnd == height){
+    match      = matchRight || matchLeft || matchMax;
+
+    if (matchRight){
        popRightDeque(right);
+#      ifdef DEBUG
+       checkPtr((void*)*right, __LINE__);
+#      endif
        heapDelete(heap, (*right)->heapNode);
     }
-    else if(leftEnd == height){
+    else if(matchLeft){
        popLeftDeque(left);
+#      ifdef DEBUG
+       checkPtr((void*)*left, __LINE__);
+#      endif
        heapDelete(heap, (*left)->heapNode);
     }
-    else if(max == height){
+    else if(matchMax){
        maxNode              = heapExtractMax(heap);
 
        Deque* maxDeque      = maxNode->dequeNode;
@@ -639,8 +666,11 @@ void Checking( Deque **right, Deque **left, BHeap **heap, int *packagesHeight, i
        popNodeDeque( &maxDeque, &prev_maxDeque, left, right );
     }
 
-
+    arrIdx++;
   }
+
+
+  return arrIdx;
 }
 
 
@@ -842,6 +872,9 @@ int main(){
      * perform `push` or `merge` on deque or heaps
      * and try to `pop out` from heap or deque
      *  */
+
+     int arrIdx = 0;
+
      for (int o=0;o<Osize;o++){
 
        /*=========== push =============*/
@@ -867,7 +900,7 @@ int main(){
          /* D. store the address of deque node in heap */
          node->dequeNode = rightPoint[productionLine];
 
-
+         arrIdx = Checking(&rightPoint[productionLine], &leftPoint[productionLine], &heaps[productionLine], packagesHeight, Nsize, arrIdx);
        }
 
        /*=========== merge =============*/
@@ -882,28 +915,31 @@ int main(){
 
          heaps[runningLine] = heapUnion(heaps[runningLine], heaps[brokenLine]);
 
+         arrIdx = Checking(&rightPoint[productionLine], &leftPoint[productionLine], &heaps[productionLine], packagesHeight, Nsize, arrIdx);
        }
 
      } // for (int o=0;o<Osize;o++)
 
+     if (arrIdx == Nsize ) printf("possible\n");
+     else                  printf("impossible\n");
 
-     ///* ============ print deque ================== */
-     //
-     printf("\ndeque traversal:\n"); 
-     for(int i=0;i<Lsize;i++)   printDequeLeft(leftPoint[i]);
-
-     ///* ============ print heap ================== */
-
-     printf("heap traversal:\n"); 
-     for(int i=0;i<Lsize;i++){
-       Node* max, *prev;
-     //  heapPeekMax(heaps[i], &prev, &max);
-
-
-      // if (max)  heapDelete(&heaps[i], max); 
-       heapTraversal(heaps[i]);
-       printf("\n");
-     }
+//     /* ============ print deque ================== */
+//     
+//     printf("\ndeque traversal:\n"); 
+//     for(int i=0;i<Lsize;i++)   printDequeLeft(leftPoint[i]);
+//
+//     /* ============ print heap ================== */
+//
+//     printf("heap traversal:\n"); 
+//     for(int i=0;i<Lsize;i++){
+//       Node* max, *prev;
+//       heapPeekMax(heaps[i], &prev, &max);
+//
+//
+//       if (max)  heapDelete(&heaps[i], max); 
+//       heapTraversal(heaps[i]);
+//       printf("\n");
+//     }
 
      t++;
 
@@ -911,6 +947,12 @@ int main(){
      free(operation_1);
      free(operation_2);
      free(packagesHeight);
+
+     operation_0    = NULL; 
+     operation_1    = NULL;
+     operation_2    = NULL;
+     packagesHeight = NULL; 
+ 
   }
 
   return 0;
