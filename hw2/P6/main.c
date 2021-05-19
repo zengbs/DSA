@@ -42,7 +42,7 @@ void SwapInt(int *x, int *y);
 void SwapPtr(void**Ptr1, void**Ptr2);
 void makeHeap(BHeap* heap);
 void heapNodeInit(Node* node, int key);
-void heapMax(BHeap *heap, Node** prev, Node** maxNode);
+void heapPeekMax(BHeap *heap, Node** prev, Node** maxNode);
 void heapLink(Node* root1, Node* root2);
 Node* heapMerge(BHeap *heap1, BHeap *heap2);
 BHeap* heapUnion(BHeap *heap1, BHeap *heap2);
@@ -196,7 +196,7 @@ void printHeapRoot(BHeap* heap)
 
 }
 
-void heapMax(BHeap *heap, Node** prev, Node** maxNode)
+void heapPeekMax(BHeap *heap, Node** prev, Node** maxNode)
 {
   Node *root = heap->head;
   Node *prevRoot = NULL;
@@ -406,7 +406,7 @@ Node* heapExtractMax(BHeap** heap)
   Node* prev;
   Node* max;
 
-  heapMax(*heap, &prev, &max);
+  heapPeekMax(*heap, &prev, &max);
 
 # ifdef DEBUG
   checkPtr((void*)max, __LINE__);
@@ -599,6 +599,51 @@ void mergeDeque(Deque **leftPoint_running, Deque **rightPoint_running,
       *rightPoint_broken = NULL;
     }
 }
+
+
+void Checking( Deque **right, Deque **left, BHeap **heap, int *packagesHeight, int Nsize )
+{
+  int height;
+
+  for(int n=1; n<=Nsize; n++){
+    
+    height = packagesHeight[n];
+  
+
+ 
+    /* E. peek max height from heaps */
+    Node *maxNode, *prevNode;
+    heapPeekMax(*heap, &prevNode, &maxNode);
+    int max = maxNode->key;
+
+    /* F. peek left and right end in deque */
+    int rightEnd, leftEnd;
+    rightEnd = peekRightDeque( right ); 
+    leftEnd  = peekLeftDeque ( left ); 
+
+
+    if (rightEnd == height){
+       popRightDeque(right);
+       heapDelete(heap, (*right)->heapNode);
+    }
+    else if(leftEnd == height){
+       popLeftDeque(left);
+       heapDelete(heap, (*left)->heapNode);
+    }
+    else if(max == height){
+       maxNode              = heapExtractMax(heap);
+
+       Deque* maxDeque      = maxNode->dequeNode;
+       Deque* prev_maxDeque = maxDeque->prevNode;
+
+       popNodeDeque( &maxDeque, &prev_maxDeque, left, right );
+    }
+
+
+  }
+}
+
+
 
 BHeap* makeHeap0degree(int rootKey)
 {
@@ -822,14 +867,6 @@ int main(){
          /* D. store the address of deque node in heap */
          node->dequeNode = rightPoint[productionLine];
 
-         ///* A1 extract from heaps */
-         //Node *maxNode, *prevNode;
-         //heapMax(heaps[productionLine], &prevNode, &maxNode);
-
-         ///* B1 pop from deque */
-         //int rightEnd, leftEnd;
-         //rightEnd = peekRightDeque(&rightPoint[productionLine]); 
-         //leftEnd  = peekLeftDeque ( &leftPoint[productionLine]); 
 
        }
 
@@ -860,7 +897,7 @@ int main(){
      printf("heap traversal:\n"); 
      for(int i=0;i<Lsize;i++){
        Node* max, *prev;
-     //  heapMax(heaps[i], &prev, &max);
+     //  heapPeekMax(heaps[i], &prev, &max);
 
 
       // if (max)  heapDelete(&heaps[i], max); 
