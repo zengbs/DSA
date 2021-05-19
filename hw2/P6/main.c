@@ -813,7 +813,7 @@ int main(){
          Deque *prevNode;
          pushDeque(&leftPoint[productionLine], &prevNode, &rightPoint[productionLine], packageHeight);
       
-         // store the addresss of previous node into current node
+         // B-1. store the addresss of previous node into the current node
          rightPoint[productionLine]->prevNode = prevNode;
 
          /* C. store the address of heap node in deque */
@@ -865,6 +865,7 @@ int main(){
 
       // if (max)  heapDelete(&heaps[i], max); 
        heapTraversal(heaps[i]);
+       printf("\n");
      }
 
      t++;
