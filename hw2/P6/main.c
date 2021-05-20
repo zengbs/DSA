@@ -54,19 +54,16 @@ void IncreaseKey(BHeap* heap, Node* node, int newKey);
 void heapDelete(BHeap **heap, Node* x);
 
 
-void freeNode(Node* x)
-{
-# ifdef DEBUG
-  checkPtr((void*)x, __LINE__);
-# endif
-  free(x->parent );
-  free(x->sibling);
-  free(x->child  );
-
-  x->parent   = NULL;    
-  x->sibling  = NULL;
-  x->child    = NULL;
-}
+//void freeNode(Node* x)
+//{
+//# ifdef DEBUG
+//  checkPtr((void*)x, __LINE__);
+//# endif
+// 
+//  if (x->dequeNode) free(x->dequeNode);
+//
+//  x->dequeNode  = NULL;    
+//}
 
 void binomialTreeTraversal( Node* root, int depth)
 {
@@ -153,7 +150,7 @@ void heapDelete(BHeap **heap, Node* x)
     checkPtr((void*)maxNode, __LINE__);
 #   endif
 
-    //freeNode(maxNode);
+    free(maxNode);
     maxNode = NULL;
   }
 }
@@ -512,7 +509,7 @@ int peekLeftDeque(Deque **leftPoint)
    return (*leftPoint)->data;
 }
 
-void popRightDeque(Deque **rightPoint)
+void popRightDeque(Deque **leftPoint, Deque **rightPoint)
 {
   Deque *nextNode;
   Deque *nextnextNode;
@@ -525,15 +522,23 @@ void popRightDeque(Deque **rightPoint)
     nextNode->npx  = nextnextNode;
 
     free(*rightPoint);
+    *rightPoint = NULL;
     *rightPoint = nextNode;
+  }
+  else if ( *leftPoint != *rightPoint ){
+    free(*rightPoint);
+    *rightPoint = NULL;
   }
   else{
     free(*rightPoint);
     *rightPoint = NULL;
+   
+    if (!*leftPoint) free(*leftPoint);
+    *leftPoint = NULL;
   }
 }
 
-void popLeftDeque(Deque **leftPoint)
+void popLeftDeque(Deque **leftPoint, Deque **rightPoint)
 {
   Deque *nextNode;
   Deque *nextnextNode;
@@ -546,11 +551,18 @@ void popLeftDeque(Deque **leftPoint)
     nextNode->npx  = nextnextNode;
 
     free(*leftPoint);
+    *leftPoint = NULL;
     *leftPoint = nextNode;
+  }
+  else if ( *leftPoint != *rightPoint ){
+    free(*leftPoint);
+    *leftPoint = NULL;
   }
   else{
     free(*leftPoint);
+    if(!*rightPoint) free(*rightPoint);
     *leftPoint = NULL;
+    *rightPoint = NULL;
   }
 }
 
@@ -558,31 +570,26 @@ void popNodeDeque(Deque **target, Deque **prev, Deque **leftPoint, Deque **right
 {
 
   if (*target == *leftPoint){
-    popLeftDeque(leftPoint);
+    popLeftDeque(leftPoint, rightPoint);
   }
   else if (*target == *rightPoint){
-    popRightDeque(rightPoint);
+    popRightDeque(leftPoint, rightPoint);
   }
   else{
 
 #   ifdef DEBUG
-    checkPtr((void*)*prev, __LINE__);
     checkPtr((void*)*target, __LINE__);
 #   endif
 
     Deque *next     = XOR((*target)->npx, *prev);
 
 #   ifdef DEBUG
+    checkPtr((void*)*target, __LINE__);
     checkPtr((void*)next, __LINE__);
+    checkPtr((void*)*prev, __LINE__);
 #   endif
-    
     Deque *nextnext = XOR( *target    , next->npx);
     Deque *prevprev = XOR((*prev)->npx,   *target);
-
-#   ifdef DEBUG
-    checkPtr((void*)next, __LINE__);
-#   endif
-
     next->npx = XOR(*prev, nextnext);
     (*prev)->npx = XOR(prevprev, next);
   }
@@ -603,6 +610,10 @@ void mergeDeque(Deque **leftPoint_running, Deque **rightPoint_running,
       *rightPoint_broken = NULL;
     }
     else if ( *rightPoint_running == NULL && *leftPoint_broken != NULL ) {
+#     ifdef DEBUG
+      checkPtr((void*)*rightPoint_broken, __LINE__);
+#     endif
+
       Deque *secondRightPoint_broken = XOR( (*rightPoint_broken)->npx, NULL );
       Deque *secondLeftPoint_broken = XOR( NULL, (*leftPoint_broken)->npx );
 
@@ -631,6 +642,7 @@ void Checking( Deque **right, Deque **left, BHeap **heap, int *packagesHeight, i
   int n = *arrIdx;
 
   do{
+
     if (!*right || !*left) break;
     
     if (match)    height = packagesHeight[++n];
@@ -676,7 +688,7 @@ void Checking( Deque **right, Deque **left, BHeap **heap, int *packagesHeight, i
        printf("  rightEnd(%d) == height(%d) !!\n", rightEnd, height);
 #      endif
 
-       popRightDeque(right);
+       popRightDeque(left, right);
 
        heapDelete(heap, deleteNode);
 
@@ -690,7 +702,7 @@ void Checking( Deque **right, Deque **left, BHeap **heap, int *packagesHeight, i
        printf("  leftEnd(%d) == height(%d) !!\n", leftEnd, height);
 #      endif
 
-       popLeftDeque(left);
+       popLeftDeque(left, right);
 
        heapDelete(heap, deleteNode);
 
@@ -718,7 +730,6 @@ void Checking( Deque **right, Deque **left, BHeap **heap, int *packagesHeight, i
        (*arrIdx)++;
     }
 
-  //  n++;
 
   }while(n<=Nsize && match);
 
