@@ -7,7 +7,8 @@
 
 
 #define DEBUG
-//#define VERBOSE
+#define VERBOSE_0
+//#define VERBOSE_1
 
 typedef struct Deque_t Deque;
 
@@ -140,7 +141,6 @@ void IncreaseKey(BHeap* heap, Node* x, int newKey)
 
 void heapDelete(BHeap **heap, Node* x)
 {
-    printf("x=%p\n", x);
 #   ifdef DEBUG
     checkPtr((void*)x, __LINE__);
 #   endif
@@ -268,7 +268,7 @@ Node* heapMerge(BHeap *heap1, BHeap *heap2)
     if ( root1->degree > root2->degree ){
      *curNode  = root2;
       root2    = root2->sibling;
-#     ifdef VERBOSE
+#     ifdef VERBOSE_1
       printf("root1->degree > root2->degree\n" );
       checkPtr((void*)*curNode, __LINE__);
 #     endif
@@ -276,7 +276,7 @@ Node* heapMerge(BHeap *heap1, BHeap *heap2)
     else{
      *curNode = root1;
       root1   = root1->sibling;
-#     ifdef VERBOSE
+#     ifdef VERBOSE_1
       printf("root1->degree <= root2->degree\n" );
       checkPtr((void*)*curNode, __LINE__);
 #     endif
@@ -567,12 +567,21 @@ void popNodeDeque(Deque **target, Deque **prev, Deque **leftPoint, Deque **right
 
 #   ifdef DEBUG
     checkPtr((void*)*prev, __LINE__);
+    checkPtr((void*)*target, __LINE__);
 #   endif
 
     Deque *next     = XOR((*target)->npx, *prev);
+
+#   ifdef DEBUG
+    checkPtr((void*)next, __LINE__);
+#   endif
     
     Deque *nextnext = XOR( *target    , next->npx);
     Deque *prevprev = XOR((*prev)->npx,   *target);
+
+#   ifdef DEBUG
+    checkPtr((void*)next, __LINE__);
+#   endif
 
     next->npx = XOR(*prev, nextnext);
     (*prev)->npx = XOR(prevprev, next);
@@ -611,7 +620,7 @@ void mergeDeque(Deque **leftPoint_running, Deque **rightPoint_running,
 }
 
 
-int Checking( Deque **right, Deque **left, BHeap **heap, int *packagesHeight, int Nsize, int arrIdx )
+void Checking( Deque **right, Deque **left, BHeap **heap, int *packagesHeight, int Nsize, int *arrIdx )
 {
   int  height;
   bool matchRight = false;
@@ -619,9 +628,14 @@ int Checking( Deque **right, Deque **left, BHeap **heap, int *packagesHeight, in
   bool matchMax   = false;
   bool match      = false;
 
-  for(int n=arrIdx; n<=Nsize && !match; n++){
+  int n = *arrIdx;
+
+  do{
+//printf("n=%d, arrIdx=%d\n", n, *arrIdx);
+    if (!*right || !*left) break;
     
-    height = packagesHeight[n];
+    if (match)    height = packagesHeight[++n];
+    else          height = packagesHeight[  n];
 
  
     /* E. peek max height from heaps */
@@ -634,8 +648,18 @@ int Checking( Deque **right, Deque **left, BHeap **heap, int *packagesHeight, in
 
     /* F. peek left and right end in deque */
     int rightEnd, leftEnd;
+#   ifdef DEBUG
+    checkPtr((void*)*right, __LINE__);
+    checkPtr((void*)*left,  __LINE__);
+#   endif
+
     rightEnd = peekRightDeque( right ); 
     leftEnd  = peekLeftDeque ( left ); 
+
+#   ifdef VERBOSE_0
+    printf("    Compare the %d-th pop package(%d) with the right(%d)/left(%d)/max(%d) package...\n\n",
+                n, height, rightEnd, leftEnd, max);
+#   endif
 
     matchRight = rightEnd == height;
     matchLeft  = leftEnd  == height;
@@ -643,34 +667,56 @@ int Checking( Deque **right, Deque **left, BHeap **heap, int *packagesHeight, in
 
     match      = matchRight || matchLeft || matchMax;
 
+
     if (matchRight){
+#      ifdef VERBOSE_0
+       printf("  rightEnd(%d) == height(%d) !!\n", rightEnd, height);
+#      endif
        popRightDeque(right);
 #      ifdef DEBUG
-       checkPtr((void*)*right, __LINE__);
+       //checkPtr((void*)*right, __LINE__);
 #      endif
-       heapDelete(heap, (*right)->heapNode);
+       if (*right) heapDelete(heap, (*right)->heapNode);
+       (*arrIdx)++;
     }
     else if(matchLeft){
+#      ifdef VERBOSE_0
+       printf("  leftEnd(%d) == height(%d) !!\n", leftEnd, height);
+#      endif
        popLeftDeque(left);
 #      ifdef DEBUG
-       checkPtr((void*)*left, __LINE__);
+       //checkPtr((void*)*left, __LINE__);
 #      endif
-       heapDelete(heap, (*left)->heapNode);
+       if (*left) heapDelete(heap, (*left)->heapNode);
+       (*arrIdx)++;
     }
     else if(matchMax){
+#      ifdef VERBOSE_0
+       printf("  Max(%d) == height(%d) !!\n", max, height);
+#      endif
        maxNode              = heapExtractMax(heap);
 
+#      ifdef DEBUG
+       checkPtr((void*)maxNode, __LINE__);
+#      endif
+
        Deque* maxDeque      = maxNode->dequeNode;
+
+#      ifdef DEBUG
+       checkPtr((void*)maxDeque, __LINE__);
+#      endif
+
        Deque* prev_maxDeque = maxDeque->prevNode;
 
        popNodeDeque( &maxDeque, &prev_maxDeque, left, right );
+       (*arrIdx)++;
     }
 
-    arrIdx++;
-  }
+    n++;
+
+  }while(n<=Nsize && match);
 
 
-  return arrIdx;
 }
 
 
@@ -900,7 +946,7 @@ int main(){
          /* D. store the address of deque node in heap */
          node->dequeNode = rightPoint[productionLine];
 
-         arrIdx = Checking(&rightPoint[productionLine], &leftPoint[productionLine], &heaps[productionLine], packagesHeight, Nsize, arrIdx);
+
        }
 
        /*=========== merge =============*/
@@ -915,10 +961,29 @@ int main(){
 
          heaps[runningLine] = heapUnion(heaps[runningLine], heaps[brokenLine]);
 
-         arrIdx = Checking(&rightPoint[productionLine], &leftPoint[productionLine], &heaps[productionLine], packagesHeight, Nsize, arrIdx);
        }
 
+#      ifdef VERBOSE_0
+       if (operation_0[o] == 0 )   printf("\n\npush %d into %d-th line:\n", operation_1[o], operation_2[o]);
+       if (operation_0[o] == 1 )   printf("\n\nmerge %d-th into %d-th line:\n", operation_1[o], operation_2[o]);
+#      endif
+
+       for (int Line=0; Line<Lsize; Line++){
+         if (rightPoint[Line]){
+#          ifdef VERBOSE_0
+           printf("  Check the %d-th line...(arrIdx=%d)\n", Line, arrIdx);
+#          endif
+
+#          ifdef DEBUG
+           checkPtr((void*)rightPoint[Line], __LINE__);
+#          endif
+           Checking(&rightPoint[Line], &leftPoint[Line], &heaps[Line], packagesHeight, Nsize, &arrIdx);
+         }
+       }
+
+
      } // for (int o=0;o<Osize;o++)
+
 
      if (arrIdx == Nsize ) printf("possible\n");
      else                  printf("impossible\n");
