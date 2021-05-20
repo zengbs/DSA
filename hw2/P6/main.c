@@ -484,10 +484,15 @@ void pushDeque(Deque **leftPoint, Deque **prev_rightPoint, Deque **rightPoint, i
 
   if (*rightPoint != NULL)
   {
+    //Deque *rightSecondPoint = XOR( (*rightPoint)->npx, NULL );
+    //newNode->npx = XOR(*rightPoint, NULL);
+    //(*rightPoint)->npx = XOR(rightSecondPoint, newNode);
+    //*prev_rightPoint = XOR((*rightPoint)->npx, NULL);
+
+    *prev_rightPoint        = *rightPoint;
     Deque *rightSecondPoint = XOR( (*rightPoint)->npx, NULL );
-    newNode->npx = XOR(*rightPoint, NULL);
-    (*rightPoint)->npx = XOR(rightSecondPoint, newNode);
-    *prev_rightPoint = XOR((*rightPoint)->npx, NULL);
+    newNode->npx            = XOR(*rightPoint, NULL);
+    (*prev_rightPoint)->npx = XOR(rightSecondPoint, newNode);
   }
   else{
     newNode->npx = XOR(NULL, NULL);
@@ -589,8 +594,9 @@ void popNodeDeque(Deque **target, Deque **prev, Deque **leftPoint, Deque **right
     checkPtr((void*)*prev, __LINE__);
 #   endif
     Deque *nextnext = XOR( *target    , next->npx);
-    Deque *prevprev = XOR((*prev)->npx,   *target);
     next->npx = XOR(*prev, nextnext);
+    
+    Deque *prevprev = XOR((*prev)->npx,   *target);
     (*prev)->npx = XOR(prevprev, next);
   }
 }
@@ -715,18 +721,16 @@ void Checking( Deque **right, Deque **left, BHeap **heap, int *packagesHeight, i
        maxNode              = heapExtractMax(heap);
 
 #      ifdef DEBUG
-       checkPtr((void*)maxNode, __LINE__);
+       checkPtr((void*) maxNode                          , __LINE__);
+       checkPtr((void*) maxNode->dequeNode               , __LINE__);
+       checkPtr((void*) maxNode->dequeNode->prevNode     , __LINE__);
+       printf("maxNode=%p\n", maxNode);
+       printf("maxNode->dequeNode=%p\n", maxNode->dequeNode);
+       printf("maxNode->dequeNode->prevNode=%p\n", maxNode->dequeNode->prevNode);
+       //checkPtr((void*) maxNode->dequeNode->prevNode->npx, __LINE__);
 #      endif
 
-       Deque* maxDeque      = maxNode->dequeNode;
-
-#      ifdef DEBUG
-       checkPtr((void*)maxDeque, __LINE__);
-#      endif
-
-       Deque* prev_maxDeque = maxDeque->prevNode;
-
-       popNodeDeque( &maxDeque, &prev_maxDeque, left, right );
+       popNodeDeque( &maxNode->dequeNode, &maxNode->dequeNode->prevNode, left, right );
        (*arrIdx)++;
     }
 
@@ -950,19 +954,28 @@ int main(){
          heapNodeInit(node, packageHeight);
          heapInsert(&heaps[productionLine], node);
 
+#        ifdef VERBOSE_0
+         if (operation_0[o] == 0 )   printf("\n\npush %d into %d-th line:\n", operation_1[o], operation_2[o]);
+#        endif
+
          /* B. push `packageHeight` into deque from right end*/
-         Deque *prevNode;
+         Deque *prevNode = (Deque*)malloc(sizeof(Deque));
+
          pushDeque(&leftPoint[productionLine], &prevNode, &rightPoint[productionLine], packageHeight);
       
          // B-1. store the addresss of previous node into the current node
          rightPoint[productionLine]->prevNode = prevNode;
+         printf("prevNode=%p\n", prevNode);
+         printf("rightPoint[productionLine]=%p\n", rightPoint[productionLine]);
+         printf("rightPoint[productionLine]->prevNode=%p\n", rightPoint[productionLine]->prevNode);
+         //printf("rightPoint[productionLine]->prevNode->npx=%p\n", rightPoint[productionLine]->prevNode->npx);
 
-         /* C. store the address of heap node in deque */
+         /* C. store the address of heap node into deque */
          rightPoint[productionLine]->heapNode = node;
 
-         /* D. store the address of deque node in heap */
+         /* D. store the address of deque node into heap */
          node->dequeNode = rightPoint[productionLine];
-
+         node->dequeNode->prevNode = rightPoint[productionLine]->prevNode;
 
        }
 
@@ -971,6 +984,9 @@ int main(){
          brokenLine     = operation_1[o];
          runningLine    = operation_2[o];
 
+#        ifdef VERBOSE_0
+         if (operation_0[o] == 1 )   printf("\n\nmerge %d-th into %d-th line:\n", operation_1[o], operation_2[o]);
+#        endif
 
          /* merge deques */
          mergeDeque(&leftPoint[runningLine], &rightPoint[runningLine],
@@ -980,13 +996,10 @@ int main(){
 
        }
 
-#      ifdef VERBOSE_0
-       if (operation_0[o] == 0 )   printf("\n\npush %d into %d-th line:\n", operation_1[o], operation_2[o]);
-       if (operation_0[o] == 1 )   printf("\n\nmerge %d-th into %d-th line:\n", operation_1[o], operation_2[o]);
-#      endif
 
        for (int Line=0; Line<Lsize; Line++){
          if (rightPoint[Line]){
+
 #          ifdef VERBOSE_0
            printf("  Check the %d-th line...\n", Line);
 #          endif
@@ -994,6 +1007,7 @@ int main(){
 #          ifdef DEBUG
            checkPtr((void*)rightPoint[Line], __LINE__);
 #          endif
+
            Checking(&rightPoint[Line], &leftPoint[Line], &heaps[Line], packagesHeight, Nsize, &arrIdx);
          }
        }
