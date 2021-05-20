@@ -7,7 +7,7 @@
 
 
 #define DEBUG
-#define VERBOSE_0
+//#define VERBOSE_0
 //#define VERBOSE_1
 
 typedef struct Deque_t Deque;
@@ -724,10 +724,6 @@ void Checking( Deque **right, Deque **left, BHeap **heap, int *packagesHeight, i
        checkPtr((void*) maxNode                          , __LINE__);
        checkPtr((void*) maxNode->dequeNode               , __LINE__);
        checkPtr((void*) maxNode->dequeNode->prevNode     , __LINE__);
-       printf("maxNode=%p\n", maxNode);
-       printf("maxNode->dequeNode=%p\n", maxNode->dequeNode);
-       printf("maxNode->dequeNode->prevNode=%p\n", maxNode->dequeNode->prevNode);
-       //checkPtr((void*) maxNode->dequeNode->prevNode->npx, __LINE__);
 #      endif
 
        popNodeDeque( &maxNode->dequeNode, &maxNode->dequeNode->prevNode, left, right );
@@ -965,10 +961,6 @@ int main(){
       
          // B-1. store the addresss of previous node into the current node
          rightPoint[productionLine]->prevNode = prevNode;
-         printf("prevNode=%p\n", prevNode);
-         printf("rightPoint[productionLine]=%p\n", rightPoint[productionLine]);
-         printf("rightPoint[productionLine]->prevNode=%p\n", rightPoint[productionLine]->prevNode);
-         //printf("rightPoint[productionLine]->prevNode->npx=%p\n", rightPoint[productionLine]->prevNode->npx);
 
          /* C. store the address of heap node into deque */
          rightPoint[productionLine]->heapNode = node;
