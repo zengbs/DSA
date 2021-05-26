@@ -7,7 +7,7 @@
 
 
 #define DEBUG
-//#define VERBOSE_0
+#define VERBOSE_0
 //#define VERBOSE_1
 
 typedef struct Deque_t Deque;
@@ -574,7 +574,7 @@ void popLeftDeque(Deque **leftPoint, Deque **rightPoint)
 void popNodeDeque(Deque **target, Deque **prev, Deque **leftPoint, Deque **rightPoint)
 {
 
-  if (*target == *leftPoint){
+  if (*target == *leftPoint || !*prev){
     popLeftDeque(leftPoint, rightPoint);
   }
   else if (*target == *rightPoint){
@@ -723,7 +723,7 @@ void Checking( Deque **right, Deque **left, BHeap **heap, int *packagesHeight, i
 #      ifdef DEBUG
        checkPtr((void*) maxNode                          , __LINE__);
        checkPtr((void*) maxNode->dequeNode               , __LINE__);
-       checkPtr((void*) maxNode->dequeNode->prevNode     , __LINE__);
+       //checkPtr((void*) maxNode->dequeNode->prevNode     , __LINE__);
 #      endif
 
        popNodeDeque( &maxNode->dequeNode, &maxNode->dequeNode->prevNode, left, right );
@@ -955,7 +955,7 @@ int main(){
 #        endif
 
          /* B. push `packageHeight` into deque from right end*/
-         Deque *prevNode = (Deque*)malloc(sizeof(Deque));
+         Deque *prevNode;
 
          pushDeque(&leftPoint[productionLine], &prevNode, &rightPoint[productionLine], packageHeight);
       
@@ -967,7 +967,6 @@ int main(){
 
          /* D. store the address of deque node into heap */
          node->dequeNode = rightPoint[productionLine];
-         node->dequeNode->prevNode = rightPoint[productionLine]->prevNode;
 
        }
 
