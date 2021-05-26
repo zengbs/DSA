@@ -16,4 +16,8 @@ if [ ! -f "a.out" ]; then
     exit
 fi
 
-./a.out < input
+./a.out < input1
+echo "============================="
+./a.out < input2
+echo "============================="
+./a.out < input3
