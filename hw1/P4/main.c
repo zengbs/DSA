@@ -52,13 +52,13 @@ long int main(){
     if ((postFix = (char*)calloc((size_t)(MAX_STACKS_SIZE),sizeof(char))) == NULL)
         { printf("is NULL at %d!\n", __LINE__); exit(0); }
  
-  
+   int kk=0;
     while(scanf("%s", inFix) != EOF){
 
       //displayString(inFix);
 
       Infix2Postfix(inFix, postFix);
-    
+      printf("kk=%d\n", kk);
       //displayString(postFix);
     
       answer = postfixEvaluation(postFix);
@@ -74,6 +74,8 @@ long int main(){
           { printf("is NULL at %d!\n", __LINE__); exit(0); }
       if ((postFix = (char*)calloc((size_t)(MAX_STACKS_SIZE),sizeof(char))) == NULL)
           { printf("is NULL at %d!\n", __LINE__); exit(0); }
+
+      kk++;
     }
 
 
