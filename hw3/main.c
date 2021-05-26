@@ -24,53 +24,58 @@ void checkPtr(void *ptr, int line)
 
 int main(){
 
-   int T;
-   scanf("%d", &T);
+  int T;
+  scanf("%d", &T);
 
-   char *String  = (char*)calloc((size_t)(MAX_STRING_SIZE),sizeof(char));
-   char *Pattern = (char*)calloc((size_t)(MAX_STRING_SIZE),sizeof(char));
+  char *String  = (char*)calloc((size_t)(MAX_STRING_SIZE),sizeof(char));
+  char *Pattern = (char*)calloc((size_t)(MAX_STRING_SIZE),sizeof(char));
  
-   checkPtr(String , __LINE__);
-   checkPtr(Pattern, __LINE__);
+  checkPtr(String , __LINE__);
+  checkPtr(Pattern, __LINE__);
 
-    int t = 0;
+  int t = 0;
 
-    while(t<T){
-    
-       scanf("%s", String);
-       scanf("%s", Pattern);
+  while(t<T){
+  
+     scanf("%s", String);
+     scanf("%s", Pattern);
 
-       int Accumulation[ALPHEBET_SIZE] = {0};
+     int Accumulation[ALPHEBET_SIZE] = {0};
 
-       getAccumulation(Pattern, Accumulation);
+     getAccumulation(Pattern, Accumulation);
 
-       int nonZero = 0;
+     int nonZero = 0;
 
-       for(int i=0;i<ALPHEBET_SIZE;i++){
-         if (Accumulation[i] > 0) nonZero++;
+     for(int i=0;i<ALPHEBET_SIZE;i++){
+       if (Accumulation[i] > 0) nonZero++;
+     }
+
+     bool keepSearching = false;
+
+     for(int s=0; String[s] != '\0';s++){
+
+       if ( Accumulation[String[s]-'A'] > 0 || keepSearching ){
+
+         Accumulation[String[s]-'A']--;
+
+         if (Accumulation[String[s]-'A'] == 0) nonZero--;
+
+         String[s] = '=';
+
+         keepSearching = true;
        }
 
-       bool keepSearching = false;
+       if (nonZero == 0) keepSearching = false;
 
-       for(int s=0; String[s] != '\0';s++){
+     }
 
-         if ( Accumulation[String[s]-'A'] > 0 || keepSearching ){
-
-           Accumulation[String[s]-'A']--;
-
-           if (Accumulation[String[s]-'A'] == 0) nonZero--;
-
-           String[s] = '0';
-
-           keepSearching = true;
-         }
-
-         if (nonZero == 0) keepSearching = false;
-
-       }
-
-      t++;
-    }
+     for(int s=0; String[s] != '\0';s++){
+       if (String[s] != '=') printf("%c", String[s]);
+     }
+     printf("\n");
+  
+    t++;
+  }
 
 
   return 0;

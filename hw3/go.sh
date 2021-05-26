@@ -9,7 +9,7 @@ else
     rm a.out
 fi
 
-gcc main.c
+gcc main.c -g -Wall
 
 if [ ! -f "a.out" ]; then
     echo "a.out does not exist!"
