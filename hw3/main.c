@@ -50,20 +50,24 @@ int main(){
          if (Accumulation[i] > 0) nonZero++;
        }
 
+       bool keepSearching = false;
+
        for(int s=0; String[s] != '\0';s++){
-         if ( Accumulation[String[s]-'A'] > 0 ){
+
+         if ( Accumulation[String[s]-'A'] > 0 || keepSearching ){
 
            Accumulation[String[s]-'A']--;
 
-           if (Accumulation[String[s]-'A'] == 0){
+           if (Accumulation[String[s]-'A'] == 0) nonZero--;
 
-             nonZero--;
+           String[s] = '0';
 
-             if (nonZero == 0) String[s] = '0';
-           }
+           keepSearching = true;
          }
-       }
 
+         if (nonZero == 0) keepSearching = false;
+
+       }
 
       t++;
     }
