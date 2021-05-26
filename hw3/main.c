@@ -10,6 +10,9 @@
 #define DEBUG
 
 #define MAX_STRING_SIZE 100000
+#define ALPHEBET_SIZE       58
+
+void getAccumulation(char string[], int Accumulation[]);
 
 void checkPtr(void *ptr, int line)
 {    
@@ -37,10 +40,28 @@ int main(){
        scanf("%s", String);
        scanf("%s", Pattern);
 
-       int Accumulation[52] = {0};
+       int Accumulation[ALPHEBET_SIZE] = {0};
 
-       for(int j=0; String[j] !='\0';j++){
-         printf("%d\n", (int)String[j]);
+       getAccumulation(Pattern, Accumulation);
+
+       int nonZero = 0;
+
+       for(int i=0;i<ALPHEBET_SIZE;i++){
+         if (Accumulation[i] > 0) nonZero++;
+       }
+
+       for(int s=0; String[s] != '\0';s++){
+         if ( Accumulation[String[s]-'A'] > 0 ){
+
+           Accumulation[String[s]-'A']--;
+
+           if (Accumulation[String[s]-'A'] == 0){
+
+             nonZero--;
+
+             if (nonZero == 0) String[s] = '0';
+           }
+         }
        }
 
 
@@ -53,117 +74,10 @@ int main(){
 }
 
 
-getAccumulation(char string[], int Accumulation[])
-{
-  
-  for(int j=0; Pattern[j] !='\0';j++){
-    switch (Pattern[j]){
-      case 'a':
-        Accumulate[0]++;
-      case 'b':
-        Accumulate[1]++;
-      case 'c':
-        Accumulate[2]++;
-      case 'd':
-        Accumulate[3]++;
-      case 'e':
-        Accumulate[4]++;
-      case 'f':
-        Accumulate[5]++;
-      case 'g':
-        Accumulate[6]++;
-      case 'h':
-        Accumulate[7]++;
-      case 'i':
-        Accumulate[8]++;
-      case 'j':
-        Accumulate[9]++;
-      case 'k':
-        Accumulate[10]++;
-      case 'l':
-        Accumulate[11]++;
-      case 'm':
-        Accumulate[12]++;
-      case 'n':
-        Accumulate[13]++;
-      case 'o':
-        Accumulate[14]++;
-      case 'p':
-        Accumulate[15]++;
-      case 'q':
-        Accumulate[16]++;
-      case 'r':
-        Accumulate[17]++;
-      case 's':
-        Accumulate[18]++;
-      case 't':
-        Accumulate[19]++;
-      case 'u':     
-        Accumulate[20]++;
-      case 'v':     
-        Accumulate[21]++;
-      case 'w':     
-        Accumulate[22]++;
-      case 'x':     
-        Accumulate[23]++;
-      case 'y':     
-        Accumulate[24]++;
-      case 'z':     
-        Accumulate[25]++;
-      case 'A':     
-        Accumulate[26]++;
-      case 'B':     
-        Accumulate[27]++;
-      case 'C':     
-        Accumulate[28]++;
-      case 'D':     
-        Accumulate[29]++;
-      case 'E':
-        Accumulate[30]++;
-      case 'F': 
-        Accumulate[31]++;
-      case 'G': 
-        Accumulate[32]++;
-      case 'H': 
-        Accumulate[33]++;
-      case 'I': 
-        Accumulate[34]++;
-      case 'J': 
-        Accumulate[35]++;
-      case 'K': 
-        Accumulate[36]++;
-      case 'L': 
-        Accumulate[37]++;
-      case 'M': 
-        Accumulate[38]++;
-      case 'N': 
-        Accumulate[39]++;
-      case 'O':
-        Accumulate[40]++;
-      case 'P': 
-        Accumulate[41]++;
-      case 'Q': 
-        Accumulate[42]++;
-      case 'R': 
-        Accumulate[43]++;
-      case 'S': 
-        Accumulate[44]++;
-      case 'T': 
-        Accumulate[45]++;
-      case 'U': 
-        Accumulate[46]++;
-      case 'V': 
-        Accumulate[47]++;
-      case 'W': 
-        Accumulate[48]++;
-      case 'X':
-        Accumulate[49]++;
-      case 'Y':
-        Accumulate[50]++;
-      case 'Z':
-        Accumulate[51]++;
-    }
-  }
-  
 
+void getAccumulation(char string[], int Accumulation[])
+{
+  for(int j=0; string[j] !='\0';j++){
+    Accumulation[string[j]-'A']++;
+  }
 }
