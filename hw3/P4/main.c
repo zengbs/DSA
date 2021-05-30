@@ -72,10 +72,11 @@ int main(){
      /* ============== main loop started ===================== */
      for(int s=0; String[s] != '\0';s++){
 
-       if (Ptr == NULL || Ptr == head){
+       if (counter!=0 && Ptr == head ){
          counter = 0;
          Ptr++;
        }
+
 
        histogramString[String[s]-'A']++;
 
@@ -94,15 +95,17 @@ int main(){
          head = Ptr;
          Ptr  = tail;
 
+         *Ptr = '=';
+
          while( Ptr != head ){
-           *Ptr = '=';
            Ptr++;
            *Ptr = '=';
          }
 
+
          for (int i=0;i<ALPHEBET_SIZE;i++) histogramString[i] = 0;
 
-         Ptr = head-1;
+         continue;
        }
 
        Ptr++;
