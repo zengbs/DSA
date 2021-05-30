@@ -58,7 +58,6 @@ int main(){
      int lengthString = 0;
      int histogramPattern[ALPHEBET_SIZE] = {0};
 
-
      for(int p=0; Pattern[p] != '\0';p++){
        histogramPattern[Pattern[p]-'A']++;
        lengthPattern++;
@@ -68,11 +67,17 @@ int main(){
        lengthString++;
      }
      
-
+     /* ============================== */
      if (lengthPattern == 0 || lengthString < lengthPattern  ){
        printString(String);
        return 0;
      }
+
+     /* ============================== */
+     int *histogramGarblelength = NULL;
+
+     if ( lengthPattern < lengthString )  histogramGarblelength = (int*)calloc(lengthPattern, sizeof(int));
+
 
      /* ========================================= */
      /* =========== remove garble =============== */
@@ -84,6 +89,8 @@ int main(){
 
      int counter = 0;
 
+     int garbleLength = 0;
+
      int histogramString[ALPHEBET_SIZE]  = {0};
 
      Ptr = &String[0];
@@ -93,6 +100,7 @@ int main(){
 
        if (counter!=0 && Ptr == head ){
          counter = 0;
+         garbleLength = 0;
          Ptr++;
        }
 
@@ -114,15 +122,26 @@ int main(){
          head = Ptr;
          Ptr  = tail;
 
-         *Ptr = '=';
 
-         while( Ptr != head ){
-           Ptr++;
+         garbleLength = ( (head) - (tail) )/sizeof(char) +1;
+
+         if( histogramGarblelength[garbleLength] == 0 ){
+
            *Ptr = '=';
+
+           while( Ptr != head ){
+             Ptr++;
+             *Ptr = '=';
+           }
+
          }
 
 
+
          for (int i=0;i<ALPHEBET_SIZE;i++) histogramString[i] = 0;
+
+
+         histogramGarblelength[garbleLength]++;
 
          continue;
        }
