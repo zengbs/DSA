@@ -21,6 +21,13 @@ void checkPtr(void *ptr, int line)
   }  
 }
 
+void printString(char String[])
+{
+  for(int s=0; String[s] != '\0';s++){
+    if (String[s] != '=') printf("%c", String[s]);
+  }
+  printf("\n");
+}
 
 
 int main(){
@@ -41,19 +48,31 @@ int main(){
      scanf("%s", String);
      scanf("%s", Pattern);
 
+     checkPtr(String , __LINE__);
+     checkPtr(Pattern, __LINE__);
 
      /* ======================================================== */
      /* =========== get the histogram of pattern =============== */
      /* ======================================================== */
      int lengthPattern = 0;
+     int lengthString = 0;
      int histogramPattern[ALPHEBET_SIZE] = {0};
+
 
      for(int p=0; Pattern[p] != '\0';p++){
        histogramPattern[Pattern[p]-'A']++;
        lengthPattern++;
      }
  
-     //if (lengthPattern == 0) ...;
+     for(int s=0; String[s] != '\0';s++){
+       lengthString++;
+     }
+     
+
+     if (lengthPattern == 0 || lengthString < lengthPattern  ){
+       printString(String);
+       return 0;
+     }
 
      /* ========================================= */
      /* =========== remove garble =============== */
@@ -113,10 +132,7 @@ int main(){
 
 
      /* =========== print result =============== */
-     for(int s=0; String[s] != '\0';s++){
-       if (String[s] != '=') printf("%c", String[s]);
-     }
-     printf("\n");
+     printString(String);
   
     t++;
   }
