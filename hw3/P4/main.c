@@ -8,7 +8,7 @@
 #include<stdint.h> // The maximum size of size_t is provided via SIZE_MAX
 
 #define DEBUG
-
+//#define VERBOSE
 #define MAX_STRING_SIZE 100000
 #define ALPHEBET_SIZE       58
 
@@ -86,7 +86,7 @@ int main(){
 
      char *Ptr = NULL;
      char *tail = NULL;
-     char *head = NULL;
+     char *head = &String[0];
 
      int counter = 0;
 
@@ -96,58 +96,136 @@ int main(){
 
      Ptr = &String[0];
 
+     bool resetCounter = true;
+
      /* ============== main loop started ===================== */
      for(int s=0; String[s] != '\0';s++){
 
-       if (counter!=0 && Ptr == head ){
+#      ifdef VERBOSE
+       printf("============================= next char! =====================================\n");
+#      endif
+
+       if ( resetCounter ){
+
+#        ifdef VERBOSE
+         printf("Reset counter and garbleLength...\n");
+#        endif
+
          counter = 0;
          garbleLength = 0;
-         Ptr++;
        }
 
+#      ifdef VERBOSE
+       printf("%c\n", String[s]);
+       printf("Add 1 to histogram of string (%c)\n", String[s]);
+#      endif
 
        histogramString[String[s]-'A']++;
 
-
+       
        /* ============== advance counter when matching charactor  ================== */
        if ( histogramString[String[s]-'A'] <= histogramPattern[String[s]-'A'] ){
 
-         if (counter == 0) tail = Ptr;
- 
+         if (counter == 0){
+           tail = Ptr;
+#          ifdef VERBOSE
+           printf("Move tail to (%c)...\n", *tail);
+#          endif
+         }
+
          counter++;
+#        ifdef VERBOSE
+         printf("advance counter to (%d)...\n", counter); 
+#        endif
        }
 
-       /* =========== Go back to tail =============== */
-       if( counter == lengthPattern ){
+
+       if (counter == lengthPattern ){
 
          head = Ptr;
          Ptr  = tail;
 
-
          garbleLength = ( (head) - (tail) )/sizeof(char) +1;
 
-         if( histogramGarblelength[garbleLength] == 0 ){
+#        ifdef VERBOSE
+         printf("garble length is %d\n", garbleLength);
+#        endif
+
+         Ptr = head;
+       }
+
+       /* =========== Go back to tail =============== */
+       if( counter == lengthPattern && histogramGarblelength[garbleLength] == 0){
+
+#        ifdef VERBOSE
+         printf("From head(%c) going back to tail(%c)...\n", *head, *tail);
+#        endif
+
+         head = Ptr;
+         Ptr  = tail;
+
+#        ifdef VERBOSE
+         printf("Replace (%c) with '='\n", *Ptr);
+#        endif
+
+         *Ptr = '=';
+
+         while( Ptr != head ){
+           Ptr++;
+
+#          ifdef VERBOSE
+           printf("Replace (%c) with '='\n", *Ptr);
+#          endif
 
            *Ptr = '=';
-
-           while( Ptr != head ){
-             Ptr++;
-             *Ptr = '=';
-           }
-
          }
 
+       }
 
+       if( counter == lengthPattern ){
+
+#        ifdef VERBOSE
+         printf("Reset histogram of string...\n");
+#        endif
 
          for (int i=0;i<ALPHEBET_SIZE;i++) histogramString[i] = 0;
 
+#        ifdef VERBOSE
+         printf("Add 1 to histogram of garble lengh (%d)...\n", garbleLength);
+#        endif
 
          histogramGarblelength[garbleLength]++;
+
+#        ifdef VERBOSE
+         printf("Reset counter...\n");
+#        endif
+
+         resetCounter = true;
+
+#        ifdef VERBOSE
+         printf("Advance Ptr from (%c)", *Ptr);
+#        endif
+
+         Ptr++;
+
+#        ifdef VERBOSE
+         printf(" to (%c)\n", *Ptr);
+#        endif
 
          continue;
        }
 
+       resetCounter = false;
+
+#      ifdef VERBOSE
+       printf("Advance Ptr from (%c)", *Ptr);
+#      endif
+
        Ptr++;
+
+#      ifdef VERBOSE
+       printf(" to (%c)\n", *Ptr);
+#      endif
      }
 
 
