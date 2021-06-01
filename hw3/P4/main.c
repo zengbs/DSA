@@ -75,9 +75,8 @@ int main(){
      /* ============================== */
      int *histogramGarblelength = NULL;
 
-     if ( lengthPattern < lengthString )  histogramGarblelength = (int*)calloc(lengthString, sizeof(int));
+     histogramGarblelength = (int*)calloc(lengthString, sizeof(int));
 
-     checkPtr(histogramGarblelength, __LINE__);
 
      /* ========================================= */
      /* =========== remove garble =============== */

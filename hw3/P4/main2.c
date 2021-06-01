@@ -7,6 +7,7 @@
 #include<string.h>
 #include<stdint.h> // The maximum size of size_t is provided via SIZE_MAX
 
+//#define VERBOSE
 #define MAX_STRING_SIZE 100000
 #define ALPHEBET_SIZE       58
 
@@ -110,7 +111,9 @@ int main()
 
     int tail;
     int head;
-    ////printf("%c\n", String[i]);
+#     ifdef VERBOSE
+    printf("%c\n", String[i]);
+#     endif
 
     if (Garbles[i] != 0){
 
@@ -125,17 +128,21 @@ int main()
 
         head--;
       }
-      //printf("tail=%d, head=%d\n", tail, head);
+#     ifdef VERBOSE
+      printf("tail=%d, head=%d\n", tail, head);
+#     endif
 
       bool reserve = false;
 
       for (int ii=0;ii<tail;ii++){
-        if (Garbles[ii] == Garbles[tail]){
+        if (abs(Garbles[ii]) == abs(Garbles[tail])){
           reserve |= true;
         }
       }
 
-      //printf("reserve=%d\n", reserve);
+#     ifdef VERBOSE
+      printf("reserve=%d\n", reserve);
+#     endif
 
         for ( int j=tail;j<head+1;j++ ){
           if (reserve) Remove[j] = 0;
@@ -147,25 +154,32 @@ int main()
 
   }
 
-//  for (int m=0;m<lengthString;m++){
-//    printf("%3d", Remove[m]);
-//  }
-//  printf("\n");
-//
-//
-//  for (int m=0;m<lengthString;m++){
-//    printf("%3d", Garbles[m]);
-//  }
-//  printf("\n");
-//
-//
-//  for (int m=0;m<lengthString;m++){
-//    printf("%3d", Match[m]);
-//  }
-//  printf("\n");
+#     ifdef VERBOSE
+  for (int m=0;m<lengthString;m++){
+    printf("%3d", Remove[m]);
+  }
+  printf("\n");
+
+
+  for (int m=0;m<lengthString;m++){
+    printf("%3d", Garbles[m]);
+  }
+  printf("\n");
+
+
+  for (int m=0;m<lengthString;m++){
+    printf("%3d", Match[m]);
+  }
+  printf("\n");
+
+
+  for (int m=0;m<lengthString;m++){
+    printf("%3c", String[m]);
+  }
+  printf("\n");
+#     endif
 
 
   printString(String, Remove);
-//  printString(Pattern2);
 
 }
