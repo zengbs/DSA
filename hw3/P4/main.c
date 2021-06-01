@@ -7,7 +7,6 @@
 #include<string.h>
 #include<stdint.h> // The maximum size of size_t is provided via SIZE_MAX
 
-#define DEBUG
 //#define VERBOSE
 #define MAX_STRING_SIZE 100000
 #define ALPHEBET_SIZE       58
@@ -239,12 +238,3 @@ int main(){
   return 0;
 
 }
-
-
-
-//void getAccumulation(char string[], int Accumulation[])
-//{
-//  for(int j=0; string[j] !='\0';j++){
-//    Accumulation[string[j]-'A']++;
-//  }
-//}
