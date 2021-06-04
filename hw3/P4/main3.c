@@ -78,18 +78,21 @@ int main(){
      int garbleLength = 0;
 
      int histogramWindow[ALPHEBET_SIZE] = {0};
-     int *histogramWindowSize           = (int*)calloc((size_t)100000, sizeof(int));
      
 
      bool resetCounter = true;
 
      int winSize = 0;
+     int minWin = 0;
 
      /* ============== main loop started ===================== */
 
  
      // the number of matched char in the window
      int totalMatchCharInWindow = 0; 
+
+     // the number of distinct matched char in the window
+     int distinctMatchCharInWindow = 0; 
 
      /* Advance the head pointer */
      while( *head != '\0' ){
@@ -98,49 +101,23 @@ int main(){
        winSize++;
 
        
-       if ( histogramPattern[(*head)-'A']  > 0 ){
+       if ( histogramPattern[(*head)-'A']  > 0 )
             totalMatchCharInWindow++;
-       }
 
 
-       if (totalMatchCharInWindow == lengthPattern){
+       if ( histogramPattern[(*head)-'A']  > 0 && histogramWindow[(*head)-'A'] <= histogramPattern[(*head)-'A'] )
+            distinctMatchCharInWindow++;
 
-         if ( histogramWindowSize[winSize] == 0 ){
+
+       if ( distinctMatchCharInWindow == lengthPattern ){
  
-           char *ptr = tail;
+         while(tail != head+1){
 
-           while(ptr != head+1){
-             *ptr = '=';
-             ptr++;
-           }
+             if ( totalMatchCharInWindow == lengthPattern ) *tail = '=';
+
+             tail++;
          }
-
-         /* record the length of window */
-         histogramWindowSize[winSize]++;
-
-         /* Advance the head pointer */
-         do{
-            head++;
-            winSize++;
-         }while(histogramPattern[(*head)-'A'] == 0 || head != &Sting[lengthString-1]);
-
-         totalMatchCharInWindow++;
        }
-
-
-       /* Advance the tail pointer */
-       while( lengthPattern                == totalMatchCharInWindow &&
-              histogramWindow[(*tail)-'A']  > histogramPattern[(*tail)-'A'] ){
-
-
-          if (histogramWindow[(*tail)-'A']  > histogramPattern[(*tail)-'A'] && histogramPattern[(*tail)-'A'] > 0)
-              totalMatchCharInWindow--;
-
-          histogramWindow[(*tail)-'A']--;
-          winSize--;
-          tail++;
-       }
-
 
        head++;
      }
