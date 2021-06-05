@@ -1,3 +1,5 @@
+// https://www.geeksforgeeks.org/find-the-smallest-window-in-a-string-containing-all-characters-of-another-string/?fbclid=IwAR0WlnOCByoHjm79ikuJOqhwCwj7mfXc6hWqTNU1WjAh4ZVeWI_II_IAxHU
+
 #include<stdlib.h>
 #include<limits.h>
 #include<stdbool.h>
@@ -84,21 +86,23 @@ int main(){
 
        if ( distinctMachedChar == lengthPattern ){
 
-         while( histogramString[String[finger]-'A'] > histogramPattern[String[finger]-'A'] || histogramPattern[String[finger]-'A'] == 0 ){
+         // try to minimize the length of window
+         while( histogramString [String[finger]-'A'] > histogramPattern[String[finger]-'A'] ||
+                histogramPattern[String[finger]-'A'] == 0 ){
            
-           if( histogramString[String[finger]-'A'] > histogramPattern[String[finger]-'A'] ) histogramString[String[finger]-'A']--;
+           if( histogramString[String[finger]-'A'] > histogramPattern[String[finger]-'A'] ) 
+               histogramString[String[finger]-'A']--;
 
            finger++;
          }
 
-         // get the length of shortest window
+         // get the length of current window
          int winSize = j-finger+1;
 
          if (minWin > winSize) minWin = winSize;
        }
      }
 
-     printf("minWin=%d\n", minWin);
 
      /* =========== print result =============== */
      printString(String);
