@@ -7,7 +7,7 @@ if [ -f "a1.out" ]; then
     rm a1.out
 fi
 
-gcc main.c -g -Wall -o a1.out
+gcc main3.c -g -Wall -o a1.out
 
 if [ ! -f "a1.out" ]; then
     echo "a1.out does not exist!"
