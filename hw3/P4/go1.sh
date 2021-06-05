@@ -3,20 +3,14 @@ export LD_LIBRARY_PATH=/software/gcc/9.3.0/lib:$LD_LIBRARY_PATH
 export LD_LIBRARY_PATH=/software/gcc/9.3.0/lib64:$LD_LIBRARY_PATH
 
 
-if [ -f "a1.out" ]; then
-    rm a1.out
-fi
 
-gcc main3.c -g -Wall -o a1.out
-
-if [ ! -f "a1.out" ]; then
-    echo "a1.out does not exist!"
-    exit
-fi
+gcc main2.c -g -Wall -o a2.out
+gcc main.c -g -Wall  -o a.out
 
 
-#./a1.out < input1
+
+./a.out < input1
 #echo "============================="
-#./a1.out < input2
+./a2.out < input1
 #echo "============================="
-#./a1.out < input3
+#./a.out < input3
