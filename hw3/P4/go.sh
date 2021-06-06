@@ -1,26 +1,15 @@
-#!/bin/bash
+export PATH=/software/gcc/9.3.0/bin:$PATH
+export LD_LIBRARY_PATH=/software/gcc/9.3.0/lib:$LD_LIBRARY_PATH
+export LD_LIBRARY_PATH=/software/gcc/9.3.0/lib64:$LD_LIBRARY_PATH
 
 
-C=0
+
+gcc main.c -g -Wall  -o a.out
 
 
-while true
-do
 
-python generate.py -s $1 -p $2 > input
-
-ans1=`./a1.out < input | sha1sum|awk '{print $1}'`
-#ans2=`./a2.out < input|sha1sum|awk '{print $1}'`
-ans3=`python check.py < input|sha1sum|awk '{print $1}'`
-
-
-if [[ "$ans1" != "$ans3" ]]; then
-  echo "Oppp!"
-  break
-else
-  echo "Pass! ${C}"
-fi
-
-C=$((C+1))
-
-done
+#./a.out < input1
+#echo "============================="
+./a.out < input
+#echo "============================="
+#./a.out < input3

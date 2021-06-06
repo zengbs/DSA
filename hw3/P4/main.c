@@ -37,6 +37,7 @@ int main(){
   scanf("%d", &T);
 
   char *String  = (char*)calloc((size_t)(MAX_STRING_SIZE),sizeof(char));
+  char *String2 = (char*)calloc((size_t)(MAX_STRING_SIZE),sizeof(char));
   char *Pattern = (char*)calloc((size_t)(MAX_STRING_SIZE),sizeof(char));
  
   checkPtr(String , __LINE__);
@@ -101,7 +102,6 @@ int main(){
          }
 
          // get the length of current window
-         //int winSize = j-finger+1;
          int winSize = head-tail+1;
  
          if (minWin > winSize){
@@ -110,6 +110,7 @@ int main(){
            targetWintail = tail;
          }
        }
+
        head++;
      }
 
@@ -130,9 +131,42 @@ int main(){
        *ptr = '=';
      }
 
+     /*======= copy String to String2 =========*/
+
+     char *ptr = &String[0];
+     int idx = 0;
+
+
+     while ( *ptr != '\0' ){
+
+       if (*ptr != '='){
+         String2[idx] = *ptr;
+         idx++;
+       }
+
+       ptr++;
+     }
+
+     String2[idx] = '\0';
+
+     //int sizeString = idx+1;
+
+     /*==================== split string into multiple blocks ===============*/
+
+     //int leftSum = 0;
+     //int rightSum = 0;
+
+     //while(){
+ 
+     //  leftSum += String2[]
+     //       
+
+     //}
+
 
      /* =========== print result =============== */
-     printString(String);
+     //printString(String);
+     printString(String2);
   
     t++;
   }
