@@ -36,10 +36,12 @@ int main(){
   int T;
   scanf("%d", &T);
 
-  char *String  = (char*)calloc((size_t)(MAX_STRING_SIZE),sizeof(char));
-  char *String2 = (char*)calloc((size_t)(MAX_STRING_SIZE),sizeof(char));
-  char *Pattern = (char*)calloc((size_t)(MAX_STRING_SIZE),sizeof(char));
+  char  *String  = (char* )calloc((size_t)(MAX_STRING_SIZE),sizeof(char));
+  char  *String2 = (char* )calloc((size_t)(MAX_STRING_SIZE),sizeof(char));
+  int   *Split   = (int*  )calloc((size_t)(MAX_STRING_SIZE),sizeof(int));
+  char  *Pattern = (char* )calloc((size_t)(MAX_STRING_SIZE),sizeof(char));
  
+
   checkPtr(String , __LINE__);
   checkPtr(Pattern, __LINE__);
 
@@ -134,34 +136,62 @@ int main(){
      /*======= copy String to String2 =========*/
 
      char *ptr = &String[0];
-     int idx = 0;
+     int lastIdx = 0;
 
 
      while ( *ptr != '\0' ){
 
        if (*ptr != '='){
-         String2[idx] = *ptr;
-         idx++;
+         String2[lastIdx] = *ptr;
+         lastIdx++;
        }
 
        ptr++;
      }
 
-     String2[idx] = '\0';
+     String2[lastIdx] = '\0';
 
-     //int sizeString = idx+1;
+     free(String);
+     free(Pattern);
 
-     /*==================== split string into multiple blocks ===============*/
+     /*==================== split string by dividers ===============*/
 
-     //int leftSum = 0;
-     //int rightSum = 0;
+     int hashUpperBound = INT_MAX - (int)'z' - 100;
 
-     //while(){
+     int leftSum  = -(int)'A';
+     int rightSum = -(int)'A';
+
+     if (lastIdx%2==0) middleIdxInString = lastIdx/2;
+     else              middleIdxInString = (lastIdx+1)/2;
+
+
+     int idxForSplitArray = 0;
+
+     for( int i=0; i<middleIdxInString; i++ ){
  
-     //  leftSum += String2[]
-     //       
+       leftSum  += (int)String2[i];
+       rightSum += (int)String2[lastIdx-i];
 
-     //}
+       if (leftSum  > hashUpperBound) leftSum  = leftSum  % hashUpperBound;
+       if (rightSum > hashUpperBound) rightSum = rightSum % hashUpperBound;
+
+       if (leftSum == rightSum){
+
+         bool GotIt = true;
+
+         /* check the left and right sub-string one-by-one */
+         for ( int j=Split[idxForSplitArray];j<=i;j++ ){
+
+           GatIt &= String2[j] == String2[lastIdx-j-1];
+
+         }
+
+         if (GotIt){
+           Split[idxForSplitArray]=i+1;
+           idxForSplitArray++;
+         }
+       }
+     }
 
 
      /* =========== print result =============== */
