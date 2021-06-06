@@ -4,13 +4,12 @@ export LD_LIBRARY_PATH=/software/gcc/9.3.0/lib64:$LD_LIBRARY_PATH
 
 
 
-gcc main2.c -g -Wall -o a2.out
 gcc main.c -g -Wall  -o a.out
 
 
 
-./a.out < input1
+#./a.out < input1
 #echo "============================="
-./a2.out < input1
+./a.out < input
 #echo "============================="
 #./a.out < input3

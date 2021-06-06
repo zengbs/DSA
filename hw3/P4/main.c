@@ -74,33 +74,60 @@ int main(){
 
      int distinctMachedChar = 0;
 
-     int finger = 0;
+     char *head = &String[0];
+     char *tail = head;
+
+     char *targetWinhead = NULL;
+     char *targetWintail = NULL;
 
      int minWin = INT_MAX;
  
-     for ( int j=0;String[j] != '\0';j++ ){
+     while(*head != '\0'){
 
-       histogramString[String[j]-'A']++;
+       histogramString[(*head)-'A']++;
 
-       if (histogramString[String[j]-'A'] <= histogramPattern[String[j]-'A']) distinctMachedChar++;
+       if (histogramString[(*head)-'A'] <= histogramPattern[(*head)-'A']) distinctMachedChar++;
 
        if ( distinctMachedChar == lengthPattern ){
 
          // try to minimize the length of window
-         while( histogramString [String[finger]-'A'] > histogramPattern[String[finger]-'A'] ||
-                histogramPattern[String[finger]-'A'] == 0 ){
+         while( histogramString [(*tail)-'A'] > histogramPattern[(*tail)-'A'] ||
+                histogramPattern[(*tail)-'A'] == 0 ){
            
-           if( histogramString[String[finger]-'A'] > histogramPattern[String[finger]-'A'] ) 
-               histogramString[String[finger]-'A']--;
+           if( histogramString[(*tail)-'A'] > histogramPattern[(*tail)-'A'] ) 
+               histogramString[(*tail)-'A']--;
 
-           finger++;
+           tail++;
          }
 
          // get the length of current window
-         int winSize = j-finger+1;
-
-         if (minWin > winSize) minWin = winSize;
+         //int winSize = j-finger+1;
+         int winSize = head-tail+1;
+ 
+         if (minWin > winSize){
+           minWin        = winSize;
+           targetWinhead = head;
+           targetWintail = tail;
+         }
        }
+       head++;
+     }
+
+     if (minWin == INT_MAX) minWin = 0;
+
+
+     /* ======== remove the leftmost and the shortest window =========== */
+
+     if ( targetWinhead && targetWintail ){
+
+       char *ptr = targetWintail;
+
+       do{
+         *ptr = '=';
+         ptr++;
+       }while(ptr != targetWinhead);
+
+       *ptr = '=';
      }
 
 
