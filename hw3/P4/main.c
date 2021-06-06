@@ -182,14 +182,21 @@ int main(){
          /* check the left and right sub-string one-by-one */
          for ( int j=Split[idxForSplitArray];j<=i;j++ ){
 
-           GatIt &= String2[j] == String2[lastIdx-j-1];
+           GotIt &= String2[j] == String2[lastIdx-j-1];
 
          }
 
          if (GotIt){
            Split[idxForSplitArray]=i+1;
            idxForSplitArray++;
+
+           leftSum  = -(int)'A';
+           rightSum = -(int)'A';
          }
+         //else{
+
+         //}
+
        }
      }
 
