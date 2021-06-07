@@ -201,23 +201,26 @@ int main(){
 
        if (leftSum  > hashUpperBound) leftSum  = leftSum  % hashUpperBound;
        if (rightSum > hashUpperBound) rightSum = rightSum % hashUpperBound;
-printf("leftSum=%d, rightSum=%d\n", leftSum, rightSum);
+//printf("leftSum=%d, rightSum=%d\n", leftSum, rightSum);
        if (leftSum == rightSum){
-printf("%d\n", __LINE__);
+//printf("%d\n", __LINE__);
          bool GotIt = true;
 
          /* check the char in the left and right sub-string one-by-one */
          for ( int j=Split[idxForSplitArray];j<=i;j++ ){
 
-           int shift = middleIdxInString-i+middleIdxInString-1+j-Split[idxForSplitArray];
+           int shift;
+           
+           if (lengthString2%2==0)    shift = middleIdxInString-i+middleIdxInString-1+j-Split[idxForSplitArray];
+           else                       shift = middleIdxInString-i+middleIdxInString+j-Split[idxForSplitArray];
 
-printf("String2[%d]=%d, String2[%d]=%d\n", j, String2[j], shift, String2[shift]);
-printf("Split[%d]=%d\n", idxForSplitArray, Split[idxForSplitArray]);
+//printf("String2[%d]=%c, String2[%d]=%c\n", j, String2[j], shift, String2[shift]);
+//printf("Split[%d]=%d\n", idxForSplitArray, Split[idxForSplitArray]);
            GotIt &= String2[j] == String2[shift];
          }
 
          if (GotIt){
-printf("%d\n", __LINE__);
+//printf("%d\n", __LINE__);
            idxForSplitArray++;
            Split[idxForSplitArray]=i+1;
            lengthSplit++;
