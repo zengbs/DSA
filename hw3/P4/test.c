@@ -4,11 +4,8 @@ int main()
 {
   char a = 'A';
 
-  int b = 0;
 
-  b = (int)a;
-
-  printf("b=%d\n", b);
+  printf("a=%d\n", a+100);
 
 
   return 0;

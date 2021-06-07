@@ -30,17 +30,39 @@ void printString(char String[])
   printf("\n");
 }
 
+void printString2(unsigned char String[], int Split[])
+{
+  for(int s=0; String[s] != '\0';s++){
+
+     if (String[s]>=65 && String[s]<=122){
+       printf("%c", String[s]);
+     }
+     else{
+       printf("|");
+       printf("%c", String[s]-100);
+     }
+
+
+  }
+  printf("\n");
+}
+
 
 int main(){
+
+  if (UCHAR_MAX < 255){
+    printf("CHAR_MAX=%d!\n", CHAR_MAX);
+    exit(0);
+  }
 
   int T;
   scanf("%d", &T);
 
   char  *String  = (char* )calloc((size_t)(MAX_STRING_SIZE),sizeof(char));
-  char  *String2 = (char* )calloc((size_t)(MAX_STRING_SIZE),sizeof(char));
   int   *Split   = (int*  )calloc((size_t)(MAX_STRING_SIZE),sizeof(int));
   char  *Pattern = (char* )calloc((size_t)(MAX_STRING_SIZE),sizeof(char));
  
+  unsigned char  *String2 = (unsigned char* )calloc((size_t)(MAX_STRING_SIZE),sizeof(unsigned char));
 
   checkPtr(String , __LINE__);
   checkPtr(Pattern, __LINE__);
@@ -136,23 +158,23 @@ int main(){
      /*======= copy String to String2 =========*/
 
      char *ptr = &String[0];
-     int lastIdx = 0;
+     int lengthString2 = 0;
 
 
      while ( *ptr != '\0' ){
 
        if (*ptr != '='){
-         String2[lastIdx] = *ptr;
-         lastIdx++;
+         String2[lengthString2] = *ptr;
+         lengthString2++;
        }
 
        ptr++;
      }
 
-     String2[lastIdx] = '\0';
+     String2[lengthString2] = '\0';
 
-     free(String);
-     free(Pattern);
+     //free(String);
+     //free(Pattern);
 
      /*==================== split string by dividers ===============*/
 
@@ -160,17 +182,20 @@ int main(){
 
      int leftSum  = -(int)'A';
      int rightSum = -(int)'A';
+     int middleIdxInString;
 
-     if (lastIdx%2==0) middleIdxInString = lastIdx/2;
-     else              middleIdxInString = (lastIdx+1)/2;
+     if ((lengthString2-1)%2==0) middleIdxInString = (lengthString2-1)/2;
+     else                        middleIdxInString =  lengthString2/2;
 
 
      int idxForSplitArray = 0;
 
+     int lengthSplit = 0;
+
      for( int i=0; i<middleIdxInString; i++ ){
  
        leftSum  += (int)String2[i];
-       rightSum += (int)String2[lastIdx-i];
+       rightSum += (int)String2[lengthString2-i-1];
 
        if (leftSum  > hashUpperBound) leftSum  = leftSum  % hashUpperBound;
        if (rightSum > hashUpperBound) rightSum = rightSum % hashUpperBound;
@@ -179,31 +204,28 @@ int main(){
 
          bool GotIt = true;
 
-         /* check the left and right sub-string one-by-one */
+         /* check the char in the left and right sub-string one-by-one */
          for ( int j=Split[idxForSplitArray];j<=i;j++ ){
 
-           GotIt &= String2[j] == String2[lastIdx-j-1];
+           int shift = i-Split[idxForSplitArray]+1;
 
+           GotIt &= String2[j] == String2[lengthString2-shift+j];
          }
 
          if (GotIt){
            Split[idxForSplitArray]=i+1;
            idxForSplitArray++;
-
+           lengthSplit++;
+           String2[i+1] += 100;
+           if (i+1 != lengthString2-i-1) String2[lengthString2-i-1] += 100;
            leftSum  = -(int)'A';
            rightSum = -(int)'A';
          }
-         //else{
-
-         //}
 
        }
      }
 
-
-     /* =========== print result =============== */
-     //printString(String);
-     printString(String2);
+     printString2(String2, Split);
   
     t++;
   }
