@@ -14,22 +14,24 @@
 #define ALPHEBET_SIZE       58
 
 
-unsigned long long ipow(unsigned long long base, unsigned long long power)
+int lastIdxInPwer;
+
+unsigned long long ipow(int power, unsigned long long PowerArray[], unsigned long long hashUpperBound )
 {
-    unsigned long long ans = 1;
+  if (PowerArray[power] == 0){
 
-    for (;;){
-      if (power & 1)
-          ans *= base;
+    PowerArray[0] = 1;
 
-      power >>= 1;
-      if (!power)
-          break;
-
-      base *= base;
+    for (int i=lastIdxInPwer+1;i<power+1;i++){
+      PowerArray[i] = (unsigned long long)ALPHEBET_SIZE*PowerArray[i-1];
+      PowerArray[i] = PowerArray[i] % hashUpperBound;
+      lastIdxInPwer++;
     }
-
-    return ans;
+    return PowerArray[lastIdxInPwer];
+  }
+  else{
+    return PowerArray[power];
+  }
 }
 
 void checkPtr(void *ptr, int line)
@@ -68,6 +70,7 @@ void printString2(char String[])
 
 int main(){
 
+
   if (UCHAR_MAX < 255){
     printf("CHAR_MAX=%d!\n", CHAR_MAX);
     exit(0);
@@ -79,6 +82,13 @@ int main(){
   char  *String  = (char* )calloc((size_t)(MAX_STRING_SIZE),sizeof(char));
   int   *Split   = (int*  )calloc((size_t)(MAX_STRING_SIZE),sizeof(int));
   char  *Pattern = (char* )calloc((size_t)(MAX_STRING_SIZE),sizeof(char));
+
+
+
+  unsigned long long hashUpperBound = ((unsigned long long)LLONG_MAX+1)/128;
+
+  unsigned long long *PowerArray = (unsigned long long *)calloc((size_t)(MAX_STRING_SIZE/2+1),sizeof(unsigned long long));
+
  
   unsigned char  *String2 = (unsigned char* )calloc((size_t)(MAX_STRING_SIZE),sizeof(unsigned char));
 
@@ -197,7 +207,6 @@ int main(){
 
      /*==================== split string by dividers ===============*/
 
-     unsigned long long hashUpperBound = ((unsigned long long)LLONG_MAX+1)/128;
 
 
      unsigned long long leftSum ;
@@ -238,7 +247,9 @@ int main(){
          printf("Computing checksum...\n");
 #        endif
          leftIdx++;
-         leftSum  = leftSum  + String2[leftIdx]*ipow((unsigned long long)ALPHEBET_SIZE, leftIdx);
+         
+         
+         leftSum  = leftSum  + String2[leftIdx]*ipow(leftIdx, PowerArray, hashUpperBound);
          rightSum = rightSum * (unsigned long long)ALPHEBET_SIZE + (unsigned long long)String2[lengthString2-i-1];
 
          leftSum  = leftSum  % hashUpperBound;
