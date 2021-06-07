@@ -14,6 +14,24 @@
 #define ALPHEBET_SIZE       58
 
 
+int ipow(int base, int power)
+{
+    int ans = 1;
+
+    for (;;){
+      if (power & 1)
+          ans *= base;
+
+      power >>= 1;
+      if (!power)
+          break;
+
+      base *= base;
+    }
+
+    return ans;
+}
+
 void checkPtr(void *ptr, int line)
 {    
   if (!ptr){
@@ -179,10 +197,11 @@ int main(){
 
      /*==================== split string by dividers ===============*/
 
-     int hashUpperBound = INT_MAX - (int)'z' - 100;
+     unsigned long long hashUpperBound = (LLONG_MAX+1)/128;
 
-     int leftSum  = -(int)'A';
-     int rightSum = -(int)'A';
+     unsigned long long leftSum  = (unsigned long long)String2[0]-(unsigned long long)'A';
+     unsigned long long rightSum = (unsigned long long)String2[0]-(unsigned long long)'A';
+
      int middleIdxInString;
 
      if ((lengthString2-1)%2==0) middleIdxInString = (lengthString2-1)/2;
@@ -195,13 +214,14 @@ int main(){
 
      for( int i=0; i<middleIdxInString; i++ ){
 
-       leftSum  += (int)String2[i];
-       rightSum += (int)String2[lengthString2-i-1];
+       leftSum  *= (unsigned long long)ALPHEBET_SIZE+(unsigned long long)String2[i];
+       rightSum *= (unsigned long long)ALPHEBET_SIZE+(unsigned long long)String2[lengthString2-i-1];
 
-       if (leftSum  > hashUpperBound) leftSum  = leftSum  % hashUpperBound;
-       if (rightSum > hashUpperBound) rightSum = rightSum % hashUpperBound;
-//printf("leftSum=%d, rightSum=%d\n", leftSum, rightSum);
+       leftSum  = leftSum  % hashUpperBound;
+       rightSum = rightSum % hashUpperBound;
+
        if (leftSum == rightSum){
+
          bool GotIt = true;
 
          /* check the char in the left and right sub-string one-by-one */
@@ -221,8 +241,8 @@ int main(){
            lengthSplit++;
            String[i+1] += 100;
            if (i+1 != lengthString2-i-1) String[lengthString2-i-1] += 100;
-           leftSum  = -(int)'A';
-           rightSum = -(int)'A';
+           leftSum  = (unsigned long long)String2[i+1]-(unsigned long long)'A';
+           rightSum = (unsigned long long)String2[i+1]-(unsigned long long)'A';
          }
 
        }
