@@ -30,7 +30,7 @@ void printString(char String[])
   printf("\n");
 }
 
-void printString2(unsigned char String[], int Split[])
+void printString2(char String[], int Split[])
 {
   for(int s=0; String[s] != '\0';s++){
 
@@ -155,7 +155,7 @@ int main(){
        *ptr = '=';
      }
 
-     /*======= copy String to String2 =========*/
+     /*======= copy removed String to String2 =========*/
 
      char *ptr = &String[0];
      int lengthString2 = 0;
@@ -165,12 +165,14 @@ int main(){
 
        if (*ptr != '='){
          String2[lengthString2] = *ptr;
+         String [lengthString2] = *ptr;
          lengthString2++;
        }
 
        ptr++;
      }
 
+     String [lengthString2] = '\0';
      String2[lengthString2] = '\0';
 
      //free(String);
@@ -193,31 +195,34 @@ int main(){
      int lengthSplit = 0;
 
      for( int i=0; i<middleIdxInString; i++ ){
- 
+
        leftSum  += (int)String2[i];
        rightSum += (int)String2[lengthString2-i-1];
 
        if (leftSum  > hashUpperBound) leftSum  = leftSum  % hashUpperBound;
        if (rightSum > hashUpperBound) rightSum = rightSum % hashUpperBound;
-
+printf("leftSum=%d, rightSum=%d\n", leftSum, rightSum);
        if (leftSum == rightSum){
-
+printf("%d\n", __LINE__);
          bool GotIt = true;
 
          /* check the char in the left and right sub-string one-by-one */
          for ( int j=Split[idxForSplitArray];j<=i;j++ ){
 
-           int shift = i-Split[idxForSplitArray]+1;
+           int shift = middleIdxInString-i+middleIdxInString-1+j-Split[idxForSplitArray];
 
-           GotIt &= String2[j] == String2[lengthString2-shift+j];
+printf("String2[%d]=%d, String2[%d]=%d\n", j, String2[j], shift, String2[shift]);
+printf("Split[%d]=%d\n", idxForSplitArray, Split[idxForSplitArray]);
+           GotIt &= String2[j] == String2[shift];
          }
 
          if (GotIt){
-           Split[idxForSplitArray]=i+1;
+printf("%d\n", __LINE__);
            idxForSplitArray++;
+           Split[idxForSplitArray]=i+1;
            lengthSplit++;
-           String2[i+1] += 100;
-           if (i+1 != lengthString2-i-1) String2[lengthString2-i-1] += 100;
+           String[i+1] += 100;
+           if (i+1 != lengthString2-i-1) String[lengthString2-i-1] += 100;
            leftSum  = -(int)'A';
            rightSum = -(int)'A';
          }
@@ -225,7 +230,7 @@ int main(){
        }
      }
 
-     printString2(String2, Split);
+     printString2(String, Split);
   
     t++;
   }
