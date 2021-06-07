@@ -200,7 +200,7 @@ int main(){
 
        if (leftSum  > hashUpperBound) leftSum  = leftSum  % hashUpperBound;
        if (rightSum > hashUpperBound) rightSum = rightSum % hashUpperBound;
-
+//printf("leftSum=%d, rightSum=%d\n", leftSum, rightSum);
        if (leftSum == rightSum){
          bool GotIt = true;
 
