@@ -42,6 +42,8 @@ void printString(char String[])
 }
 
 
+int lastIdxInPowerArray;
+
 int main(){
 
 
@@ -61,7 +63,9 @@ int main(){
 
   unsigned int hashUpperBound = ((unsigned int)INT_MAX+1)/128;
 
-  //unsigned int *PowerArray = (unsigned int *)calloc((size_t)(MAX_STRING_SIZE/2+1),sizeof(unsigned int));
+  unsigned int *PowerArray = (unsigned int *)calloc((size_t)(MAX_STRING_SIZE/2+1),sizeof(unsigned int));
+  lastIdxInPowerArray = 0;
+  PowerArray[lastIdxInPowerArray] = 1;
 
  
   unsigned char  *String2 = (unsigned char* )calloc((size_t)(MAX_STRING_SIZE),sizeof(unsigned char));
@@ -200,7 +204,7 @@ int main(){
 
      int leftIdx = 0;
 
-     unsigned int Power = 1;
+     int PowerIdx; 
 
      for( int i=0; i<middleIdxInString; i++ ){
 
@@ -213,7 +217,7 @@ int main(){
          leftSum  = (unsigned int)String2[leftIdx];
          rightSum = (unsigned int)String2[lengthString2-i-1];
          GotIt = false;
-         Power = 1;
+         PowerIdx = 0;
 #        ifdef VERBOSE
          printf("%d, %d\n", leftIdx, lengthString2-i-1);
          printf("leftSum=%lld, rightSum=%lld\n", leftSum, rightSum);
@@ -224,11 +228,15 @@ int main(){
          printf("Computing checksum...\n");
 #        endif
          leftIdx++;
-         
-         Power *= (unsigned int)ALPHEBET_SIZE;
-         Power = Power % hashUpperBound;
-         
-         leftSum  = leftSum  + String2[leftIdx]*Power;
+         PowerIdx++; 
+
+         for(int idx=lastIdxInPowerArray+1; lastIdxInPowerArray<PowerIdx; idx++){
+           PowerArray[idx] = (unsigned int)ALPHEBET_SIZE * PowerArray[idx-1];
+           PowerArray[idx] = PowerArray[idx] % hashUpperBound;
+           lastIdxInPowerArray++;
+         }
+
+         leftSum  = leftSum  + String2[leftIdx]*PowerArray[PowerIdx];
          rightSum = rightSum * (unsigned int)ALPHEBET_SIZE + (unsigned int)String2[lengthString2-i-1];
 
          leftSum  = leftSum  % hashUpperBound;
