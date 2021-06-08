@@ -14,25 +14,6 @@
 #define ALPHEBET_SIZE       58
 
 
-int lastIdxInPwer;
-
-unsigned long long ipow(int power, unsigned long long PowerArray[], unsigned long long hashUpperBound )
-{
-  if (PowerArray[power] == 0){
-
-    PowerArray[0] = 1;
-
-    for (int i=lastIdxInPwer+1;i<power+1;i++){
-      PowerArray[i] = (unsigned long long)ALPHEBET_SIZE*PowerArray[i-1];
-      PowerArray[i] = PowerArray[i] % hashUpperBound;
-      lastIdxInPwer++;
-    }
-    return PowerArray[lastIdxInPwer];
-  }
-  else{
-    return PowerArray[power];
-  }
-}
 
 void checkPtr(void *ptr, int line)
 {    
@@ -87,7 +68,7 @@ int main(){
 
   unsigned long long hashUpperBound = ((unsigned long long)LLONG_MAX+1)/128;
 
-  unsigned long long *PowerArray = (unsigned long long *)calloc((size_t)(MAX_STRING_SIZE/2+1),sizeof(unsigned long long));
+  //unsigned long long *PowerArray = (unsigned long long *)calloc((size_t)(MAX_STRING_SIZE/2+1),sizeof(unsigned long long));
 
  
   unsigned char  *String2 = (unsigned char* )calloc((size_t)(MAX_STRING_SIZE),sizeof(unsigned char));
@@ -226,6 +207,8 @@ int main(){
 
      int leftIdx = 0;
 
+     unsigned long long Power = 1;
+
      for( int i=0; i<middleIdxInString; i++ ){
 
        if (GotIt){
@@ -236,7 +219,8 @@ int main(){
 
          leftSum  = (unsigned long long)String2[leftIdx];
          rightSum = (unsigned long long)String2[lengthString2-i-1];
-         GotIt = false; 
+         GotIt = false;
+         Power = 1;
 #        ifdef VERBOSE
          printf("%d, %d\n", leftIdx, lengthString2-i-1);
          printf("leftSum=%lld, rightSum=%lld\n", leftSum, rightSum);
@@ -248,12 +232,15 @@ int main(){
 #        endif
          leftIdx++;
          
+         Power *= (unsigned long long)ALPHEBET_SIZE;
+         Power = Power % hashUpperBound;
          
-         leftSum  = leftSum  + String2[leftIdx]*ipow(leftIdx, PowerArray, hashUpperBound);
+         leftSum  = leftSum  + String2[leftIdx]*Power;
          rightSum = rightSum * (unsigned long long)ALPHEBET_SIZE + (unsigned long long)String2[lengthString2-i-1];
 
          leftSum  = leftSum  % hashUpperBound;
          rightSum = rightSum % hashUpperBound;
+
 
 #        ifdef VERBOSE
          printf("%d, %d\n", leftIdx, rightIdx);
