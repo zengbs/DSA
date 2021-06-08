@@ -16,11 +16,13 @@ int main(){
   scanf("%d %d", &N, &Q);
 
   /* priority array*/
-  int *priorityArray = (int*)calloc((size_t)N*sizeof(int));
+  int *priorityArray = (int*)calloc((size_t)N, sizeof(int));
 
   for(int i=0;i<N;i++){
     scanf("%d", &priorityArray[i]);
+    printf("%d ", priorityArray[i]);
   }
+  printf("\n");
 
   /*operations*/
   int operation;
@@ -37,7 +39,6 @@ int main(){
   int k;
 
 
-
   switch(operation)
   {
     case 1:
@@ -50,14 +51,12 @@ int main(){
     /* delete */
       scanf("%d", &k);
 
-
       break;
     case 3:
     /* increase priority */
       scanf("%d", &l);
       scanf("%d", &r);
       scanf("%d", &p);
-
 
       break;
     case 4:
@@ -72,7 +71,6 @@ int main(){
       scanf("%d", &l);
       scanf("%d", &r);
 
-
       break;
     case 6:
     /* remove the book with the largest prioriy */
@@ -80,3 +78,5 @@ int main(){
 
       break;
   }
+  return 0;
+}
