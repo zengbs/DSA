@@ -267,6 +267,8 @@ int main(){
            else                       shift = middleIdxInString-i+middleIdxInString+j-Split[idxForSplitArray];
 
            GotIt &= String2[j] == String2[shift];
+
+           if (!GotIt) break;
          }
 
          if (GotIt){
