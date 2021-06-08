@@ -60,6 +60,22 @@ int QueryPriority(int l, int r, int *priorityArray)
   return largest;
 }
 
+void Remove(int *sizePriorityArray, int *priorityArray)
+{
+
+  int largest = INT_MIN;
+  int largestIdx;
+
+  for (int i=l-1;i<r;i++){
+    if (largest < priorityArray[i]){
+      largest    = priorityArray[i];
+      largestIdx = i;
+    }
+  }
+
+  Delete(largestIdx+1, sizePriorityArray, priorityArray);
+}
+
 void Swap(int *a, int *b)
 {
   int temp = *a;
@@ -146,13 +162,13 @@ int main(){
         scanf("%d", &l);
         scanf("%d", &r);
         scanf("%d", &p);
-
+        increasePriority(l, r, p, priorityArray);
         break;
       case 4:
       /* query the largest priority */
         scanf("%d", &l);
         scanf("%d", &r);
-
+        QueryPriority(l, r, priorityArray);
 
         break;
       case 5:
@@ -163,7 +179,7 @@ int main(){
         break;
       case 6:
       /* remove the book with the largest prioriy */
-
+        Remove(&sizePriorityArray, priorityArray);
 
         break;
     }
