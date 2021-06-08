@@ -23,15 +23,8 @@ void checkPtr(void *ptr, int line)
   }  
 }
 
-void printString(char String[])
-{
-  for(int s=0; String[s] != '\0';s++){
-    if (String[s] != '=') printf("%c", String[s]);
-  }
-  printf("\n");
-}
 
-void printString2(char String[])
+void printString(char String[])
 {
   for(int s=0; String[s] != '\0';s++){
 
@@ -66,9 +59,9 @@ int main(){
 
 
 
-  unsigned long long hashUpperBound = ((unsigned long long)LLONG_MAX+1)/128;
+  unsigned int hashUpperBound = ((unsigned int)INT_MAX+1)/128;
 
-  //unsigned long long *PowerArray = (unsigned long long *)calloc((size_t)(MAX_STRING_SIZE/2+1),sizeof(unsigned long long));
+  //unsigned int *PowerArray = (unsigned int *)calloc((size_t)(MAX_STRING_SIZE/2+1),sizeof(unsigned int));
 
  
   unsigned char  *String2 = (unsigned char* )calloc((size_t)(MAX_STRING_SIZE),sizeof(unsigned char));
@@ -190,8 +183,8 @@ int main(){
 
 
 
-     unsigned long long leftSum ;
-     unsigned long long rightSum;
+     unsigned int leftSum ;
+     unsigned int rightSum;
 
      int middleIdxInString;
 
@@ -207,7 +200,7 @@ int main(){
 
      int leftIdx = 0;
 
-     unsigned long long Power = 1;
+     unsigned int Power = 1;
 
      for( int i=0; i<middleIdxInString; i++ ){
 
@@ -217,8 +210,8 @@ int main(){
          printf("Start to compute checksum!\n");
 #        endif
 
-         leftSum  = (unsigned long long)String2[leftIdx];
-         rightSum = (unsigned long long)String2[lengthString2-i-1];
+         leftSum  = (unsigned int)String2[leftIdx];
+         rightSum = (unsigned int)String2[lengthString2-i-1];
          GotIt = false;
          Power = 1;
 #        ifdef VERBOSE
@@ -232,11 +225,11 @@ int main(){
 #        endif
          leftIdx++;
          
-         Power *= (unsigned long long)ALPHEBET_SIZE;
+         Power *= (unsigned int)ALPHEBET_SIZE;
          Power = Power % hashUpperBound;
          
          leftSum  = leftSum  + String2[leftIdx]*Power;
-         rightSum = rightSum * (unsigned long long)ALPHEBET_SIZE + (unsigned long long)String2[lengthString2-i-1];
+         rightSum = rightSum * (unsigned int)ALPHEBET_SIZE + (unsigned int)String2[lengthString2-i-1];
 
          leftSum  = leftSum  % hashUpperBound;
          rightSum = rightSum % hashUpperBound;
@@ -279,14 +272,12 @@ int main(){
            lengthSplit++;
            String[i+1] += 100;
            if (i+1 != lengthString2-i-1) String[lengthString2-i-1] += 100;
-           leftSum  = (unsigned long long)String2[i+1];
-           rightSum = (unsigned long long)String2[i+1];
          }
        }
 
      }
 
-     printString2(String);
+     printString(String);
   
     t++;
   }
