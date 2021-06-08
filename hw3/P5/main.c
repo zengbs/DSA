@@ -41,6 +41,53 @@ void Delete(int k, int *sizePriorityArray, int *priorityArray)
 }
 
 
+void increasePriority(int l, int r, int p, int *priorityArray)
+{
+  for (int i=l-1;i<r;i++){
+    priorityArray[i] += p;
+  }
+}
+
+
+int QueryPriority(int l, int r, int *priorityArray)
+{
+  int largest = INT_MIN;
+
+  for (int i=l-1;i<r;i++){
+    if (largest < priorityArray[i]) largest = priorityArray[i];
+  }
+
+  return largest;
+}
+
+void Swap(int *a, int *b)
+{
+  int temp = *a;
+  *a   = *b;
+  *b   = temp;
+}
+
+
+void Reverse(int l, int r, int *priorityArray)
+{
+
+  int rr = r-1;
+  int ll = l-1;
+
+  if ((rr-ll)%2==0){ // odd
+
+        for (int i=ll;i<(rr-ll)/2+ll;i++){
+          Swap(&priorityArray[i], &priorityArray[rr-i+ll]);
+        }
+  }
+  else{ //even
+
+      for (int i=ll;i<(rr-ll+1)/2+ll;i++){
+        Swap(&priorityArray[i], &priorityArray[rr-i+ll]);
+      }
+  }
+}
+
 int main(){
 
 
@@ -65,7 +112,6 @@ int main(){
   /*operations*/
   int operation;
 
-  scanf("%d", &operation);
 
   /*priority of book*/
   int p;
@@ -76,52 +122,55 @@ int main(){
   /*position*/
   int k;
 
- 
+  for (int q = 0;q<Q;q++){ 
 
-  switch(operation)
-  {
-    case 1:
-    /* insert */
-      scanf("%d", &p);
-      scanf("%d", &k);
-      Insert(p, k, &sizePriorityArray, priorityArray);
-      break;
+    scanf("%d", &operation);
 
-    case 2:
-    /* delete */
-      scanf("%d", &k);
-      Delete(k, &sizePriorityArray, priorityArray);
-      break;
+    switch(operation)
+    {
+      case 1:
+      /* insert */
+        scanf("%d", &p);
+        scanf("%d", &k);
+        Insert(p, k, &sizePriorityArray, priorityArray);
+        break;
 
-    case 3:
-    /* increase priority */
-      scanf("%d", &l);
-      scanf("%d", &r);
-      scanf("%d", &p);
+      case 2:
+      /* delete */
+        scanf("%d", &k);
+        Delete(k, &sizePriorityArray, priorityArray);
+        break;
 
-      break;
-    case 4:
-    /* query the largest priority */
-      scanf("%d", &l);
-      scanf("%d", &r);
+      case 3:
+      /* increase priority */
+        scanf("%d", &l);
+        scanf("%d", &r);
+        scanf("%d", &p);
 
-
-      break;
-    case 5:
-    /* reverse books */
-      scanf("%d", &l);
-      scanf("%d", &r);
-
-      break;
-    case 6:
-    /* remove the book with the largest prioriy */
+        break;
+      case 4:
+      /* query the largest priority */
+        scanf("%d", &l);
+        scanf("%d", &r);
 
 
-      break;
+        break;
+      case 5:
+      /* reverse books */
+        scanf("%d", &l);
+        scanf("%d", &r);
+        Reverse(l, r, priorityArray);
+        break;
+      case 6:
+      /* remove the book with the largest prioriy */
+
+
+        break;
+    }
+
+
+    printPriority(&sizePriorityArray, priorityArray);
   }
-
-
-  printPriority(&sizePriorityArray, priorityArray);
 
   return 0;
 }
