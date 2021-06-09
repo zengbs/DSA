@@ -12,7 +12,7 @@
 //#define VERBOSE
 #define MAX_STRING_SIZE 100000
 #define ALPHEBET_SIZE       58
-
+#define METHOD 2
 
 
 void checkPtr(void *ptr, int line)
@@ -216,11 +216,12 @@ int main(){
 
          leftSum  = (unsigned int)String2[leftIdx];
          rightSum = (unsigned int)String2[lengthString2-i-1];
+
          GotIt = false;
          PowerIdx = 0;
 #        ifdef VERBOSE
          printf("%d, %d\n", leftIdx, lengthString2-i-1);
-         printf("leftSum=%lld, rightSum=%lld\n", leftSum, rightSum);
+         printf("leftSum=%u, rightSum=%u\n", leftSum, rightSum);
 #        endif
        }
        else{
@@ -236,16 +237,23 @@ int main(){
            lastIdxInPowerArray++;
          }
 
+#        if ( METHOD == 1 )
          leftSum  = leftSum  + String2[leftIdx]*PowerArray[PowerIdx];
          rightSum = rightSum * (unsigned int)ALPHEBET_SIZE + (unsigned int)String2[lengthString2-i-1];
 
          leftSum  = leftSum  % hashUpperBound;
          rightSum = rightSum % hashUpperBound;
-
+#        else
+         leftSum  += (unsigned int)String2[i];
+         rightSum += (unsigned int)String2[lengthString2-i-1];
+   
+         if (leftSum  > hashUpperBound) leftSum  = leftSum  % hashUpperBound;
+         if (rightSum > hashUpperBound) rightSum = rightSum % hashUpperBound;
+#        endif
 
 #        ifdef VERBOSE
-         printf("%d, %d\n", leftIdx, rightIdx);
-         printf("leftSum=%lld, rightSum=%lld\n", leftSum, rightSum);
+         printf("%d, %d\n", leftIdx, lengthString2-i-1);
+         printf("leftSum=%u, rightSum=%u\n", leftSum, rightSum);
 #        endif
        }
 
