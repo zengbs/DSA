@@ -8,5 +8,9 @@ rm a.out
 gcc main.c -g -Wall  -o a.out
 
 
-
-./a.out < input
+echo "======================"
+./a.out < input1
+echo "======================"
+./a.out < input2
+echo "======================"
+./a.out < input3

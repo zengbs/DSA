@@ -5,10 +5,20 @@
 #include<stdint.h>
 #include<limits.h>
 
-#define MAX_BOOKS 100000
+#define MAX_BOOKS 1000000
+
+void checkPtr(void *ptr, int line)
+{    
+  if (!ptr){
+    printf("NULL at %d!!\n", line);
+    exit(0);
+  }  
+}
 
 void printPriority(int *sizePriorityArray, int *priorityArray)
 {
+  checkPtr(sizePriorityArray, __LINE__);
+
   for (int i=0;i<*sizePriorityArray; i++){
     printf("%d ", priorityArray[i]);
   }
@@ -18,10 +28,8 @@ void printPriority(int *sizePriorityArray, int *priorityArray)
 
 void Insert(int p, int k, int *sizePriorityArray, int *priorityArray)
 {
-  if (k > *sizePriorityArray+1){
-    printf("k(%d) > sizePriorityArray(%d)\n", k, *sizePriorityArray);
-    exit(0);
-  }
+  checkPtr(sizePriorityArray, __LINE__);
+
 
   for(int i=*sizePriorityArray ;i>k; i--){
     priorityArray[i] = priorityArray[i-1];
@@ -33,6 +41,8 @@ void Insert(int p, int k, int *sizePriorityArray, int *priorityArray)
 
 void Delete(int k, int *sizePriorityArray, int *priorityArray)
 {
+  checkPtr(sizePriorityArray, __LINE__);
+
   for(int i=k ;i<*sizePriorityArray; i++){
     priorityArray[i-1] = priorityArray[i];
   }
@@ -43,6 +53,8 @@ void Delete(int k, int *sizePriorityArray, int *priorityArray)
 
 void increasePriority(int l, int r, int p, int *priorityArray)
 {
+  checkPtr(priorityArray, __LINE__);
+
   for (int i=l-1;i<r;i++){
     priorityArray[i] += p;
   }
@@ -51,6 +63,7 @@ void increasePriority(int l, int r, int p, int *priorityArray)
 
 int QueryPriority(int l, int r, int *priorityArray)
 {
+  checkPtr(priorityArray, __LINE__);
   int largest = INT_MIN;
 
   for (int i=l-1;i<r;i++){
@@ -62,11 +75,13 @@ int QueryPriority(int l, int r, int *priorityArray)
 
 void Remove(int *sizePriorityArray, int *priorityArray)
 {
+  checkPtr(priorityArray, __LINE__);
+  checkPtr(sizePriorityArray, __LINE__);
 
   int largest = INT_MIN;
   int largestIdx;
 
-  for (int i=l-1;i<r;i++){
+  for (int i=0;i<*sizePriorityArray;i++){
     if (largest < priorityArray[i]){
       largest    = priorityArray[i];
       largestIdx = i;
@@ -78,6 +93,10 @@ void Remove(int *sizePriorityArray, int *priorityArray)
 
 void Swap(int *a, int *b)
 {
+
+  checkPtr(a, __LINE__);
+  checkPtr(b, __LINE__);
+
   int temp = *a;
   *a   = *b;
   *b   = temp;
@@ -87,6 +106,7 @@ void Swap(int *a, int *b)
 void Reverse(int l, int r, int *priorityArray)
 {
 
+  checkPtr(priorityArray, __LINE__);
   int rr = r-1;
   int ll = l-1;
 
@@ -168,7 +188,7 @@ int main(){
       /* query the largest priority */
         scanf("%d", &l);
         scanf("%d", &r);
-        QueryPriority(l, r, priorityArray);
+        printf("%d\n", QueryPriority(l, r, priorityArray));
 
         break;
       case 5:
@@ -185,7 +205,7 @@ int main(){
     }
 
 
-    printPriority(&sizePriorityArray, priorityArray);
+    //printPriority(&sizePriorityArray, priorityArray);
   }
 
   return 0;
