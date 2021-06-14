@@ -42,7 +42,7 @@ int main(){
 
     for (int j=0;j<numVertex[i];j++){
       scanf("%d", &head[i][j]);
-//      head[i][j]--;
+      head[i][j]--;
     }
 
     lastIdx[i] = 0;
@@ -73,7 +73,7 @@ bool jump_brown,    jump_green;
       printf("%d %d\n", head[brown_p][brown_j], head[green_p][green_j]);
 
      while(c < lengthAdjList){
-       /* ============probe brown for advancing ============*/
+       /* STEP-A: ============probe brown for advancing ============*/
        
 #      ifdef VERBOSE1
        printf("\n\n%d-th iteration...\n", c);
@@ -93,7 +93,7 @@ bool jump_brown,    jump_green;
        printf("brown_p_advance_probing=%d, brown_j_advance_probing=%d\n\n", brown_p_advance_probing, brown_j_advance_probing);
 #      endif
 
-       /* ============probe green for advancing ============*/
+       /* STEP-B: ============probe green for advancing ============*/
        if (green_j+1 < numVertex[green_p]){
          green_p_advance_probing = green_p;
          green_j_advance_probing = green_j+1;
