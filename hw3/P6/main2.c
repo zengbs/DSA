@@ -64,13 +64,13 @@ bool jump_brown,    jump_green;
      int c = 0;
 
 
-       brown_p = i;
-       green_p = head[i][0];
+     brown_p = i;
+     green_p = head[i][0];
 
-       brown_j = 0;
-       green_j = 0;
+     brown_j = 0;
+     green_j = 0;
 
-      printf("%d %d\n", head[brown_p][brown_j]+1, head[green_p][green_j]+1);
+     printf("%d %d\n", head[brown_p][brown_j]+1, head[green_p][green_j]+1);
 
      while(c < lengthAdjList){
        /* STEP-A: ============probe brown for advancing ============*/
@@ -194,8 +194,6 @@ bool jump_brown,    jump_green;
        }
        else{
         /* we cannot jump by advancing */
-         //printf("dddd\n");
-         //continue;
        }
 
        if (lastIdx[brown_p] == numVertex[brown_p]-1)  c++;
@@ -203,8 +201,11 @@ bool jump_brown,    jump_green;
  
 
      } // while
-   break;
+
+     break;
+
    } // if
+
  } // for
 
   return 0;
