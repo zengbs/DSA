@@ -70,7 +70,7 @@ bool jump_brown,    jump_green;
        brown_j = 0;
        green_j = 0;
 
-      printf("%d %d\n", head[brown_p][brown_j], head[green_p][green_j]);
+      printf("%d %d\n", head[brown_p][brown_j]+1, head[green_p][green_j]+1);
 
      while(c < lengthAdjList){
        /* STEP-A: ============probe brown for advancing ============*/
@@ -113,6 +113,7 @@ bool jump_brown,    jump_green;
 
          green_p_jump_probing    = head[brown_p_advance_probing][brown_j_advance_probing];
          green_j_jump_probing    = lastIdx[green_p_jump_probing];
+
 
          if ( head[green_p_jump_probing][green_j_jump_probing] == brown_p_advance_probing )  jump_green = true;
          else                                                                                jump_green = false;
@@ -167,7 +168,7 @@ bool jump_brown,    jump_green;
          green_p = green_p_jump_probing;
          green_j = green_j_jump_probing;
 
-         printf("%d %d\n", head[brown_p][brown_j], head[green_p][green_j]);
+         printf("%d %d\n", head[brown_p][brown_j]+1, head[green_p][green_j]+1);
 
        }
 
@@ -189,21 +190,20 @@ bool jump_brown,    jump_green;
          green_p = green_p_advance_probing;
          green_j = green_j_advance_probing;
 
-         printf("%d %d\n", head[brown_p][brown_j], head[green_p][green_j]);
+         printf("%d %d\n", head[brown_p][brown_j]+1, head[green_p][green_j]+1);
        }
        else{
-#        ifdef VERBOSE1
-         printf("We cannot advance/jump brown/green!\n");
-#        endif
-         exit(0);
+        /* we cannot jump by advancing */
+         //printf("dddd\n");
+         //continue;
        }
-    
+
        if (lastIdx[brown_p] == numVertex[brown_p]-1)  c++;
        if (lastIdx[green_p] == numVertex[green_p]-1)  c++;
  
 
      } // while
-    break;
+   break;
    } // if
  } // for
 
