@@ -31,6 +31,7 @@ int main(){
   int  *numVertex  = (int* )malloc((size_t)(lengthAdjList)*sizeof(int ));
   int  *lastIdx    = (int* )malloc((size_t)(lengthAdjList)*sizeof(int ));
 
+
   /*============== STEP-1: input ============== */
   for (int i=0;i<lengthAdjList;i++){
 
@@ -71,7 +72,7 @@ bool jump_brown,    jump_green;
 
       printf("%d %d\n", head[brown_p][brown_j], head[green_p][green_j]);
 
-     while(c<10){
+     while(c < lengthAdjList){
        /* ============probe brown for advancing ============*/
        
 #      ifdef VERBOSE1
@@ -196,8 +197,10 @@ bool jump_brown,    jump_green;
 #        endif
          exit(0);
        }
-     
-       c++;
+    
+       if (lastIdx[brown_p] == numVertex[brown_p]-1)  c++;
+       if (lastIdx[green_p] == numVertex[green_p]-1)  c++;
+ 
 
      } // while
     break;
