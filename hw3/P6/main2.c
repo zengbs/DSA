@@ -6,7 +6,8 @@
 #include<stdint.h>
 #include<limits.h>
 
-//#define VERBOSE
+#define VERBOSE1
+//#define VERBOSE2
 
 void checkPtr(void *ptr, int line)
 {    
@@ -48,7 +49,6 @@ int main(){
 
   /*============== STEP-2:  ============== */
 
-int  brown,  green;
 int  brown_p, brown_j, brown_p_advance_probing, brown_p_jump_probing, brown_j_advance_probing, brown_j_jump_probing;
 int  green_p, green_j, green_p_advance_probing, green_p_jump_probing, green_j_advance_probing, green_j_jump_probing;
   
@@ -66,10 +66,6 @@ bool jump_brown,    jump_green;
      brown_j = 0;
      green_j = 0;
 
-     brown = head[brown_p][brown_j];
-     green = head[green_p][green_j];
-
-     printf("brown=%d, green=%d\n", brown, green);
 
      /* ============probe brown for advancing ============*/
      
@@ -83,8 +79,10 @@ bool jump_brown,    jump_green;
        advance_brown = false;
      }
 
+#    ifdef VERBOSE2
      printf("brown_p_advance_probing=%d, brown_j_advance_probing=%d\n", brown_p_advance_probing, brown_j_advance_probing);
      printf("advance_brown=%d\n", advance_brown);
+#    endif
 
      /* ============probe green for advancing ============*/
      if (green_j+1 < numVertex[green_p]){
@@ -96,8 +94,10 @@ bool jump_brown,    jump_green;
        advance_green = false;
      }
 
+#    ifdef VERBOSE2
      printf("green_p_advance_probing=%d, green_j_advance_probing=%d\n", green_p_advance_probing, green_j_advance_probing);
      printf("advance_green=%d\n", advance_green);
+#    endif
 
      /* ============ probe green for jumping ============*/
      if (advance_brown){
@@ -111,8 +111,10 @@ bool jump_brown,    jump_green;
        if (jump_green) advance_brown = true;
        else            advance_brown = false;
 
+#      ifdef VERBOSE2
        printf("green_p_jump_probing=%d, green_j_jump_probing=%d\n", green_p_jump_probing, green_j_jump_probing);
        printf("jump_green=%d, advance_brown=%d\n", jump_green, advance_brown);
+#      endif
 
      }
 
@@ -128,28 +130,23 @@ bool jump_brown,    jump_green;
        if (jump_brown) advance_green = true;
        else            advance_green = false;
 
+#      ifdef VERBOSE2
        printf("brown_p_jump_probing=%d, brown_j_jump_probing=%d\n", brown_p_jump_probing, brown_j_jump_probing);
        printf("jump_brown=%d, advance_green=%d\n", jump_brown, advance_green);
+#      endif
 
      }
 
-     exit(0);
 
-#    ifdef VERBOSE
-     if (!advance_brown && !jump_green){
-       printf("We cannot advance brown and jump green!\n");
-       exit(0);
-     }
-
-     if (!advance_green && !jump_brown){
-       printf("We cannot advance brown and jump green!\n");
-       exit(0);
-     }
-#    endif
 
 
      /* jump green and advance brown */
-     if ( jump_green && advance_brown){
+     if ( jump_green == advance_brown){
+
+#      ifdef VERBOSE1
+       printf("advance brown (%d,%d)->(%d,%d)\n", brown_p, brown_j, brown_p_advance_probing, brown_j_advance_probing);
+       printf("jump green    (%d,%d)->(%d,%d)\n", green_p, green_j, green_p_jump_probing,    green_j_jump_probing);
+#      endif
 
        brown_p = brown_p_advance_probing;
        brown_j = brown_j_advance_probing;
@@ -160,7 +157,12 @@ bool jump_brown,    jump_green;
      }
 
      /* jump brown and advance green */
-     else if ( jump_brown && advance_green){
+     else if ( jump_brown == advance_green){
+
+#      ifdef VERBOSE1
+       printf("jump brown    (%d,%d)->(%d,%d)\n" , brown_p, brown_j, brown_p_jump_probing,    brown_j_jump_probing);
+       printf("advance green (%d,%d)->(%d,%d)\n" , green_p, green_j, green_p_advance_probing, green_j_advance_probing);
+#      endif
 
        brown_p = brown_p_jump_probing;
        brown_j = brown_j_jump_probing;
@@ -170,10 +172,12 @@ bool jump_brown,    jump_green;
 
      }
      else{
-       printf("error!\n");
+#      ifdef VERBOSE1
+       printf("We cannot advance/jump brown/green!\n");
+#      endif
        exit(0);
      }
-
+   exit(0);
    }
  }
 
