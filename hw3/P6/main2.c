@@ -6,7 +6,7 @@
 #include<stdint.h>
 #include<limits.h>
 
-#define VERBOSE1
+//#define VERBOSE1
 //#define VERBOSE2
 
 void checkPtr(void *ptr, int line)
@@ -69,8 +69,9 @@ bool jump_brown,    jump_green;
        brown_j = 0;
        green_j = 0;
 
+      printf("%d %d\n", head[brown_p][brown_j], head[green_p][green_j]);
 
-     while(c<3){
+     while(c<10){
        /* ============probe brown for advancing ============*/
        
 #      ifdef VERBOSE1
@@ -155,6 +156,7 @@ bool jump_brown,    jump_green;
          printf("jump green    (%d,%d)->(%d,%d)\n", green_p, green_j, green_p_jump_probing,    green_j_jump_probing);
 #        endif
 
+
          lastIdx[brown_p]++;
          lastIdx[green_p]++;
 
@@ -164,6 +166,7 @@ bool jump_brown,    jump_green;
          green_p = green_p_jump_probing;
          green_j = green_j_jump_probing;
 
+         printf("%d %d\n", head[brown_p][brown_j], head[green_p][green_j]);
 
        }
 
@@ -175,6 +178,7 @@ bool jump_brown,    jump_green;
          printf("advance green (%d,%d)->(%d,%d)\n" , green_p, green_j, green_p_advance_probing, green_j_advance_probing);
 #        endif
 
+
          lastIdx[brown_p]++;
          lastIdx[green_p]++;
 
@@ -183,6 +187,8 @@ bool jump_brown,    jump_green;
 
          green_p = green_p_advance_probing;
          green_j = green_j_advance_probing;
+
+         printf("%d %d\n", head[brown_p][brown_j], head[green_p][green_j]);
        }
        else{
 #        ifdef VERBOSE1
