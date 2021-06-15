@@ -73,10 +73,24 @@ int main(){
   green_p = head[brown_p][brown_j];
 
   int c = 0;
-  
+ 
+  bool Case1;  
+  bool Case2;
+  bool Case3;
+  bool Case4;
+  bool Case5;
+  bool Case6;
+
   while(c < lengthAdjList ){
 
     while( horizontalExtend_green || horizontalExtend_brown ){
+
+      Case1 = false;
+      Case2 = false;
+      Case3 = false;
+      Case4 = false;
+      Case5 = false;
+      Case6 = false;
 
 #     ifdef VERBOSE2
       printf("======================= Start to horizontally sweep with brown (%d,%d) and green (%d,%d): ========================\n\n",
@@ -164,6 +178,9 @@ int main(){
       /* jump green and advance brown */
       if ( jump_green && advance_brown){
 
+        green_p = head[brown_p][brown_j];
+        green_j = lastIdx[head[brown_p][brown_j]];
+
 #       ifdef VERBOSE1
         printf("############# CASE-1: advance brown and jump green ###############\n");
         printf("advance brown (%d,%d)->(%d,%d)\n", brown_p, brown_j, brown_p_advance_probing, brown_j_advance_probing);
@@ -192,6 +209,7 @@ int main(){
         horizontalExtend_brown = true;
         horizontalExtend_green = false;
         verticalExtend         = false;        
+        Case1 = true;
       }
 
       /* jump brown and advance green */
@@ -225,6 +243,7 @@ int main(){
         horizontalExtend_brown = false;
         horizontalExtend_green = true;
         verticalExtend         = false;        
+        Case2 = true;
       }
       else if ((!jump_brown && advance_green) && !(!jump_green && advance_brown)){
         printf("############# CASE-3:  ###############\n");
@@ -233,6 +252,7 @@ int main(){
         verticalExtend         = true;
 
         brown_p++;
+        Case3 = true;
       }
       else if ((!jump_green && advance_brown) && !(!jump_brown && advance_green)){
         printf("############# CASE-4: ###############\n");
@@ -241,6 +261,7 @@ int main(){
         verticalExtend         = true;
 
         brown_p++;
+        Case4 = true;
       }
 
       else if ((!jump_green && advance_brown) && (!jump_brown && advance_green)){
@@ -250,6 +271,7 @@ int main(){
         verticalExtend         = true;
 
         //brown_p++;
+        Case5 = true;
       }
 
       /* Both brown and green are at the end  */
@@ -260,6 +282,7 @@ int main(){
         verticalExtend         = true;
 
        // brown_p++;
+        Case6 = true;
       }
 
  
@@ -273,18 +296,24 @@ int main(){
 
     
 
-    if (  horizontalExtend_brown && !horizontalExtend_green){
+    if ( Case1 ){
         printf("CASE-1: advance brown and jump green ###############\n");
         printf("%d %d\n", head[brown_p][brown_j]+1, head[green_p][green_j]+1);
     }
 
-    if ( !horizontalExtend_brown &&  horizontalExtend_green){
+    if ( Case2 ){
         printf("CASE-2: advance green and jump brown ###############\n");
         printf("%d %d\n", head[brown_p][brown_j]+1, head[green_p][green_j]+1);
     }
 
-    if (!horizontalExtend_brown && !horizontalExtend_green){
+    if ( Case5 ){
       printf("CASE-5: both brown and green cannot jump ###############\n");
+      horizontalExtend_green = true;
+      horizontalExtend_brown = true;
+      brown_p++;
+    }
+
+    if ( Case6 ){
       printf("CASE-6: ###############\n");
 
       printf("%d %d\n", head[brown_p][brown_j]+1, head[green_p][green_j]+1);
