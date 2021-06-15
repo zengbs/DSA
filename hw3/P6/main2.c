@@ -72,7 +72,7 @@ int main(){
   
   while(c < lengthAdjList ){
 #   ifdef VERBOSE2
-    printf("======================= Start to vertically sweep: ========================\n");
+    printf("======================= Start to vertically sweep with brown (%d,%d) and green (%d,%d): ========================\n\n", brown_p, brown_j, green_p, green_j);
 #   endif
 
     if ( head[head[brown_p][brown_j]][brown_j] == brown_p ){
@@ -128,7 +128,7 @@ int main(){
     while( horizontalExtend ){
 
 #     ifdef VERBOSE2
-      printf("======================= Start to horizontally sweep: ========================\n");
+      printf("======================= Start to vertically sweep with brown (%d,%d) and green (%d,%d): ========================\n\n", brown_p, brown_j, green_p, green_j);
 #     endif
 
       if (brown_j+1 < numVertex[brown_p]){
