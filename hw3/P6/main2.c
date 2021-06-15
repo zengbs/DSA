@@ -95,7 +95,6 @@ int main(){
 
       green_p = head[brown_p][brown_j];
 
-      
 
       printf("%d %d\n", head[brown_p][brown_j]+1, head[green_p][green_j]+1);
     }
@@ -139,6 +138,11 @@ int main(){
 
 #     ifdef VERBOSE2
       printf("======================= Start to horizontally sweep with brown (%d,%d) and green (%d,%d): ========================\n\n", brown_p, brown_j, green_p, green_j);
+ 
+      for (int i=0;i<lengthAdjList;i++){
+        printf("lastIdx[%d]=%d\n", i, lastIdx[i]);
+      }
+
 #     endif
 
       if (brown_j+1 < numVertex[brown_p]){
@@ -151,8 +155,9 @@ int main(){
       }
 
 #     ifdef VERBOSE2
-      printf("advance_brown=%d\n", advance_brown);
-      printf("new brown (%d,%d) if advance\n\n", brown_p_advance_probing, brown_j_advance_probing);
+      if (advance_brown){
+        printf("new brown (%d,%d) if advance\n\n", brown_p_advance_probing, brown_j_advance_probing);
+      }
 #     endif
 
       /* STEP-B: ============probe green for advancing ============*/
@@ -166,8 +171,9 @@ int main(){
       }
 
 #     ifdef VERBOSE2
-      printf("advance_green=%d\n", advance_green);
-      printf("new green (%d,%d) if advance\n\n", green_p_advance_probing, green_j_advance_probing);
+      if (advance_green){
+        printf("new green (%d,%d) if advance\n\n", green_p_advance_probing, green_j_advance_probing);
+      }
 #     endif
 
       /* ============ probe green for jumping ============*/
