@@ -94,17 +94,6 @@ int main(){
       verticalExtend   = true;
     }
 
-//    if ( head[head[green_p_down_probing][green_j]][green_j] == green_p_down_probing ){
-//      horizontalExtend = true;
-//      verticalExtend   = false;
-//      green_p = green_p_down_probing;
-//      printf("%d %d\n", head[green_p][green_j]+1, head[brown_p][brown_j]+1);
-//    }
-//    else{
-//      horizontalExtend = false;
-//      verticalExtend   = true;
-//    }
-
 
     if (brown_p + 1 < lengthAdjList){
       down_brown = true;
