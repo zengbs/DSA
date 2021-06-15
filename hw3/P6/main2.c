@@ -6,8 +6,8 @@
 #include<stdint.h>
 #include<limits.h>
 
-//#define VERBOSE1
-//#define VERBOSE2
+#define VERBOSE1
+#define VERBOSE2
 
 void checkPtr(void *ptr, int line)
 {    
@@ -71,7 +71,9 @@ int main(){
   int c = 0;
   
   while(c < lengthAdjList ){
-
+#   ifdef VERBOSE2
+    printf("======================= Start to vertically sweep: ========================\n");
+#   endif
 
     if ( head[head[brown_p][brown_j]][brown_j] == brown_p ){
       horizontalExtend = true;
@@ -124,6 +126,10 @@ int main(){
  
 
     while( horizontalExtend ){
+
+#     ifdef VERBOSE2
+      printf("======================= Start to horizontally sweep: ========================\n");
+#     endif
 
       if (brown_j+1 < numVertex[brown_p]){
         brown_p_advance_probing = brown_p;
