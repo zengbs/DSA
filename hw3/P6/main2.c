@@ -128,7 +128,7 @@ int main(){
     while( horizontalExtend ){
 
 #     ifdef VERBOSE2
-      printf("======================= Start to vertically sweep with brown (%d,%d) and green (%d,%d): ========================\n\n", brown_p, brown_j, green_p, green_j);
+      printf("======================= Start to horizontally sweep with brown (%d,%d) and green (%d,%d): ========================\n\n", brown_p, brown_j, green_p, green_j);
 #     endif
 
       if (brown_j+1 < numVertex[brown_p]){
