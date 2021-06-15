@@ -36,16 +36,12 @@ int main(){
 
     scanf("%d", &numVertex[i]);
  
-    printf("numVertex[%d]=%d\n", i, numVertex[i]);
 
     head[i] = (int*)malloc((size_t)(numVertex[i])*sizeof(int));
 
-    printf("hi\n");
 
     for (int j=0;j<numVertex[i];j++){
-      printf("i=%d, j=%d\n", i, j);
       scanf("%d", &head[i][j]);
-      printf("hello\n");
       head[i][j]--;
     }
 
