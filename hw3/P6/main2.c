@@ -76,76 +76,13 @@ int main(){
   int c = 0;
   
   while(c < lengthAdjList ){
-#   ifdef VERBOSE2
-    printf("======================= Start to vertically sweep with brown (%d,%d) and green (%d,%d): ========================\n\n",
-            brown_p, brown_j, green_p, green_j);
-#   endif
 
-
-    if ( head[head[brown_p_down_probing][brown_j]][brown_j] == brown_p_down_probing ){
-
-      //if (!horizontalExtend_brown && !horizontalExtend_green){
-
-      //  lastIdx[brown_p]++;
-      //  lastIdx[green_p]++;
-
-      //  if (lastIdx[brown_p] == numVertex[brown_p]-1)  c++;
-      //  if (lastIdx[green_p] == numVertex[green_p]-1)  c++;
- 
-      //}
-
-      horizontalExtend_green = true;
-      horizontalExtend_brown = true;
-      verticalExtend         = false;
-
-      brown_p = brown_p_down_probing;
-
-      green_p = head[brown_p][brown_j];
-
-
-      printf("%d %d\n", head[brown_p][brown_j]+1, head[green_p][green_j]+1);
-    }
-    else{
-      horizontalExtend_green = false;
-      horizontalExtend_brown = false;
-      verticalExtend         = true;
-    }
-
-
-    if (brown_p + 1 < lengthAdjList){
-      down_brown = true;
-    }
-    else{
-      down_brown = false;
-    }
-     
-    if (green_p + 1 < lengthAdjList){
-      down_green = true;
-    }
-    else{
-      down_green = false;
-    }
-
-
-    if ( down_brown && verticalExtend ){
-        brown_p_down_probing++;
-    }
- 
-    if ( down_green && verticalExtend ){
-        green_p_down_probing++;
-    }
-
-
-    if ( !down_green && !down_brown){
-      verticalExtend   = false;
-    }
-
- 
 
     while( horizontalExtend_green || horizontalExtend_brown ){
 
 #     ifdef VERBOSE2
-      printf("======================= Start to horizontally sweep with brown (%d,%d) and green (%d,%d): ========================\n\n", brown_p, brown_j, green_p, green_j);
+      printf("======================= Start to horizontally sweep with brown (%d,%d) and green (%d,%d): ========================\n\n",
+               brown_p, brown_j, green_p, green_j);
  
       for (int i=0;i<lengthAdjList;i++){
         printf("lastIdx[%d]=%d\n", i, lastIdx[i]);
@@ -242,13 +179,14 @@ int main(){
         lastIdx[brown_p]++;
         lastIdx[green_p]++;
 
+        printf("%d %d\n", head[brown_p][brown_j]+1, head[green_p][green_j]+1);
+
         brown_p = brown_p_advance_probing;
         brown_j = brown_j_advance_probing;
 
         green_p = green_p_jump_probing;
         green_j = green_j_jump_probing;
 
-        printf("%d %d\n", head[brown_p][brown_j]+1, head[green_p][green_j]+1);
 
         if (lastIdx[brown_p] == numVertex[brown_p]-1)  c++;
         if (lastIdx[green_p] == numVertex[green_p]-1)  c++;
@@ -274,13 +212,14 @@ int main(){
         lastIdx[brown_p]++;
         lastIdx[green_p]++;
 
+        printf("%d %d\n", head[brown_p][brown_j]+1, head[green_p][green_j]+1);
+
         brown_p = brown_p_jump_probing;
         brown_j = brown_j_jump_probing;
 
         green_p = green_p_advance_probing;
         green_j = green_j_advance_probing;
 
-        printf("%d %d\n", head[brown_p][brown_j]+1, head[green_p][green_j]+1);
 
         if (lastIdx[brown_p] == numVertex[brown_p]-1)  c++;
         if (lastIdx[green_p] == numVertex[green_p]-1)  c++;
@@ -289,28 +228,30 @@ int main(){
         horizontalExtend_green = true;
         verticalExtend         = false;        
       }
-      //else if ((!jump_brown && advance_green) && !(!jump_green && advance_brown)){
-      //  printf("############# CASE-3:  ###############\n");
-      //  horizontalExtend_brown = false;
-      //  horizontalExtend_green = false;
-      //  verticalExtend         = true;
+      else if ((!jump_brown && advance_green) && !(!jump_green && advance_brown)){
+        printf("############# CASE-3:  ###############\n");
+        horizontalExtend_brown = false;
+        horizontalExtend_green = false;
+        verticalExtend         = true;
 
-      //  brown_p_down_probing = brown_p + 1;
-      //}
-      //else if ((!jump_green && advance_brown) && !(!jump_brown && advance_green)){
-      //  printf("############# CASE-4: ###############\n");
-      //  horizontalExtend_brown = false;
-      //  horizontalExtend_green = false;
-      //  verticalExtend         = true;
+        brown_p++;
+      }
+      else if ((!jump_green && advance_brown) && !(!jump_brown && advance_green)){
+        printf("############# CASE-4: ###############\n");
+        horizontalExtend_brown = false;
+        horizontalExtend_green = false;
+        verticalExtend         = true;
 
-      //  brown_p_down_probing = brown_p + 1;
-      //}
+        brown_p++;
+      }
 
       else if ((!jump_green && advance_brown) && (!jump_brown && advance_green)){
         printf("############# CASE-5: both brown and green cannot jump ###############\n");
         horizontalExtend_brown = false;
         horizontalExtend_green = false;
         verticalExtend         = true;
+
+        brown_p++;
       }
 
       /* Both brown and green are at the end  */
@@ -320,23 +261,37 @@ int main(){
         horizontalExtend_green = false;
         verticalExtend         = true;
 
-        brown_p_down_probing = brown_p + 1;
+       // brown_p++;
       }
 
-//      lastIdx[brown_p]++;
-//      lastIdx[green_p]++;
-//
-//      if (lastIdx[brown_p] == numVertex[brown_p]-1)  c++;
-//      if (lastIdx[green_p] == numVertex[green_p]-1)  c++;
  
     } // while
 
- //   lastIdx[brown_p]++;
- //   lastIdx[green_p]++;
+    printf("======================= Stop horizontally sweep with brown (%d,%d) and green (%d,%d): ========================\n\n", brown_p, brown_j, green_p, green_j);
+    
 
- //   if (lastIdx[brown_p] == numVertex[brown_p]-1)  c++;
- //   if (lastIdx[green_p] == numVertex[green_p]-1)  c++;
+    if (  horizontalExtend_brown && !horizontalExtend_green){
+        printf("CASE-1: advance brown and jump green ###############\n");
+        printf("%d %d\n", head[brown_p][brown_j]+1, head[green_p][green_j]+1);
+    }
+
+    if ( !horizontalExtend_brown &&  horizontalExtend_green){
+        printf("CASE-2: advance green and jump brown ###############\n");
+        printf("%d %d\n", head[brown_p][brown_j]+1, head[green_p][green_j]+1);
+    }
+
+    if (!horizontalExtend_brown && !horizontalExtend_green){
+      printf("CASE-5: both brown and green cannot jump ###############\n");
+      printf("CASE-6: ###############\n");
+
+      printf("%d %d\n", head[brown_p][brown_j]+1, head[green_p][green_j]+1);
+      lastIdx[brown_p]++;
+      lastIdx[green_p]++;
+
+      if (lastIdx[brown_p] == numVertex[brown_p]-1)  c++;
+      if (lastIdx[green_p] == numVertex[green_p]-1)  c++;
  
+    }
 
  } // while
 
