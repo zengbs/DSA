@@ -324,19 +324,30 @@ int main(){
         printf("%d %d\n", head[brown_p][brown_j]+1, head[green_p][green_j]+1);
     }
 
+    if (Case3) {
+     printf("Case3!\n");
+     exit(0);
+    }
+
+    if (Case4) {
+     printf("Case4!\n");
+     exit(0);
+    }
+
     if ( Case5 ){
       printf("CASE-5: both brown and green cannot jump but brown and green are legal ###############\n");
       printf("%d %d\n", head[brown_p][brown_j]+1, head[green_p][green_j]+1);
       horizontalExtend_green = true;
       horizontalExtend_brown = true;
-      brown_p++;
-      green_p++;
 
       lastIdx[brown_p]++;
       lastIdx[green_p]++;
 
       if (lastIdx[brown_p] == numVertex[brown_p]-1)  c++;
       if (lastIdx[green_p] == numVertex[green_p]-1)  c++;
+
+      brown_p++;
+      green_p++;
     }
 
     if ( Case6 ){
@@ -358,6 +369,8 @@ int main(){
       if (lastIdx[brown_p] == numVertex[brown_p]-1)  c++;
       if (lastIdx[green_p] == numVertex[green_p]-1)  c++;
  
+      brown_p++;
+      
     }
 
  } // while
