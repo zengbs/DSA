@@ -15,4 +15,4 @@ gcc main2.c -g -Wall  -o a.out
 #echo "============================="
 #./a.out < input3
 #echo "============================="
-./a.out < input4
+#./a.out < input4
