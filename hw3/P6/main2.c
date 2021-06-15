@@ -50,8 +50,8 @@ int main(){
 
   /*============== STEP-2:  ============== */
 
-  int  brown_p, brown_j, brown_p_advance_probing, brown_p_jump_probing, brown_j_advance_probing, brown_j_jump_probing;
-  int  green_p, green_j, green_p_advance_probing, green_p_jump_probing, green_j_advance_probing, green_j_jump_probing;
+  int  brown_p, brown_j, brown_p_advance_probing, brown_p_jump_probing, brown_j_advance_probing, brown_j_jump_probing, brown_p_down_probing;
+  int  green_p, green_j, green_p_advance_probing, green_p_jump_probing, green_j_advance_probing, green_j_jump_probing, green_p_down_probing;
   
   bool advance_brown = false;
   bool advance_green = false;
@@ -65,6 +65,10 @@ int main(){
   brown_j = 0;
   green_j = 0;
 
+  brown_p_down_probing = 0;
+  green_p_down_probing = 0;
+
+
   brown_p = 0;
   green_p = head[brown_p][brown_j];
 
@@ -72,18 +76,34 @@ int main(){
   
   while(c < lengthAdjList ){
 #   ifdef VERBOSE2
-    printf("======================= Start to vertically sweep with brown (%d,%d) and green (%d,%d): ========================\n\n", brown_p, brown_j, green_p, green_j);
+    printf("======================= Start to vertically sweep with brown (%d,%d) and green (%d,%d): ========================\n\n",
+            brown_p, brown_j, green_p, green_j);
 #   endif
 
-    if ( head[head[brown_p][brown_j]][brown_j] == brown_p ){
+
+    if ( head[head[brown_p_down_probing][brown_j]][brown_j] == brown_p_down_probing ){
       horizontalExtend = true;
       verticalExtend   = false;
+      green_p = head[brown_p_down_probing][brown_j];
+      brown_p = brown_p_down_probing;
+
       printf("%d %d\n", head[brown_p][brown_j]+1, head[green_p][green_j]+1);
     }
     else{
       horizontalExtend = false;
       verticalExtend   = true;
     }
+
+//    if ( head[head[green_p_down_probing][green_j]][green_j] == green_p_down_probing ){
+//      horizontalExtend = true;
+//      verticalExtend   = false;
+//      green_p = green_p_down_probing;
+//      printf("%d %d\n", head[green_p][green_j]+1, head[brown_p][brown_j]+1);
+//    }
+//    else{
+//      horizontalExtend = false;
+//      verticalExtend   = true;
+//    }
 
 
     if (brown_p + 1 < lengthAdjList){
@@ -100,17 +120,13 @@ int main(){
       down_green = false;
     }
 
-#   ifdef VERBOSE2     
-    printf("brown:(%d,%d)\n", brown_p, brown_j);
-    printf("green:(%d,%d)\n", green_p, green_j);
-#   endif
 
     if ( down_brown && verticalExtend ){
-      brown_p++;
+        brown_p_down_probing++;
     }
  
     if ( down_green && verticalExtend ){
-      green_p++; 
+        green_p_down_probing++;
     }
 
 
@@ -118,11 +134,6 @@ int main(){
       verticalExtend   = false;
     }
 
-    //lastIdx[brown_p]++;
-    //lastIdx[green_p]++;
-
-    //if (lastIdx[brown_p] == numVertex[brown_p]-1)  c++;
-    //if (lastIdx[green_p] == numVertex[green_p]-1)  c++;
  
 
     while( horizontalExtend ){
@@ -262,16 +273,16 @@ int main(){
         horizontalExtend = false;
         verticalExtend   = true;
 
-        brown_p++;
-        green_p++;
+        //brown_p++;
+        //green_p++;
       }
       else if (!jump_green && advance_brown){
         printf("############# CASE-4: ###############\n");
         horizontalExtend = false;
         verticalExtend   = true;
 
-        brown_p++;
-        green_p++;
+        //brown_p++;
+        //green_p++;
       }
 
       /* Both brown and green are at the end  */
@@ -280,8 +291,8 @@ int main(){
         horizontalExtend = false;
         verticalExtend   = true;
 
-        brown_p++;
-        green_p++;
+        //brown_p++;
+        //green_p++;
       }
 
 //      lastIdx[brown_p]++;
