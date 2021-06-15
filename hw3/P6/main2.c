@@ -84,8 +84,18 @@ int main(){
     if ( head[head[brown_p_down_probing][brown_j]][brown_j] == brown_p_down_probing ){
       horizontalExtend = true;
       verticalExtend   = false;
-      green_p = head[brown_p_down_probing][brown_j];
+
+    //  lastIdx[brown_p]++;
+    //  lastIdx[green_p]++;
+
+    //  if (lastIdx[brown_p] == numVertex[brown_p]-1)  c++;
+    //  if (lastIdx[green_p] == numVertex[green_p]-1)  c++;
+
       brown_p = brown_p_down_probing;
+
+      green_p = head[brown_p][brown_j];
+
+      
 
       printf("%d %d\n", head[brown_p][brown_j]+1, head[green_p][green_j]+1);
     }
@@ -262,16 +272,14 @@ int main(){
         horizontalExtend = false;
         verticalExtend   = true;
 
-        //brown_p++;
-        //green_p++;
+        brown_p_down_probing = brown_p + 1;
       }
       else if (!jump_green && advance_brown){
         printf("############# CASE-4: ###############\n");
         horizontalExtend = false;
         verticalExtend   = true;
 
-        //brown_p++;
-        //green_p++;
+        brown_p_down_probing = brown_p + 1;
       }
 
       /* Both brown and green are at the end  */
@@ -280,8 +288,7 @@ int main(){
         horizontalExtend = false;
         verticalExtend   = true;
 
-        //brown_p++;
-        //green_p++;
+        brown_p_down_probing = brown_p + 1;
       }
 
 //      lastIdx[brown_p]++;
