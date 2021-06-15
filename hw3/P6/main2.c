@@ -31,23 +31,26 @@ int main(){
   int  *numVertex  = (int* )malloc((size_t)(lengthAdjList)*sizeof(int ));
   int  *lastIdx    = (int* )malloc((size_t)(lengthAdjList)*sizeof(int ));
 
-
   /*============== STEP-1: input ============== */
   for (int i=0;i<lengthAdjList;i++){
 
     scanf("%d", &numVertex[i]);
  
-    head[i] = (int*)malloc((size_t)(&numVertex[i])*sizeof(int));
+    printf("numVertex[%d]=%d\n", i, numVertex[i]);
 
+    head[i] = (int*)malloc((size_t)(numVertex[i])*sizeof(int));
+
+    printf("hi\n");
 
     for (int j=0;j<numVertex[i];j++){
+      printf("i=%d, j=%d\n", i, j);
       scanf("%d", &head[i][j]);
+      printf("hello\n");
       head[i][j]--;
     }
 
     lastIdx[i] = 0;
   }
-
   /*============== STEP-2:  ============== */
 
   int  brown_p, brown_j, brown_p_advance_probing, brown_p_jump_probing, brown_j_advance_probing, brown_j_jump_probing, brown_p_down_probing;
@@ -76,7 +79,6 @@ int main(){
   int c = 0;
   
   while(c < lengthAdjList ){
-
 
     while( horizontalExtend_green || horizontalExtend_brown ){
 
@@ -251,7 +253,7 @@ int main(){
         horizontalExtend_green = false;
         verticalExtend         = true;
 
-        brown_p++;
+        //brown_p++;
       }
 
       /* Both brown and green are at the end  */
@@ -268,6 +270,11 @@ int main(){
     } // while
 
     printf("======================= Stop horizontally sweep with brown (%d,%d) and green (%d,%d): ========================\n\n", brown_p, brown_j, green_p, green_j);
+
+    for (int i=0;i<lengthAdjList;i++){
+      printf("lastIdx[%d]=%d\n", i, lastIdx[i]);
+    }
+
     
 
     if (  horizontalExtend_brown && !horizontalExtend_green){
