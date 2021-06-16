@@ -83,6 +83,8 @@ int main(){
   bool Case7;
 
   while(c < lengthAdjList ){
+   printf("======================= Start vertically sweep with brown (%d,%d) and green (%d,%d): ========================\n\n",
+           brown_p, brown_j, green_p, green_j);
 
     while( horizontalExtend_green || horizontalExtend_brown ){
 
@@ -95,7 +97,7 @@ int main(){
       Case7 = false;
 
 #     ifdef VERBOSE2
-      printf("======================= Start to horizontally sweep with brown (%d,%d) and green (%d,%d): ========================\n\n",
+      printf("======================= Start horizontally sweep with brown (%d,%d) and green (%d,%d): ========================\n\n",
                brown_p, brown_j, green_p, green_j);
  
       for (int i=0;i<lengthAdjList;i++){
@@ -256,7 +258,6 @@ int main(){
         horizontalExtend_green = false;
         verticalExtend         = true;
 
-        brown_p++;
         Case3 = true;
       }
       else if ((!jump_green && advance_brown) && !(!jump_brown && advance_green)){
@@ -265,7 +266,6 @@ int main(){
         horizontalExtend_green = false;
         verticalExtend         = true;
 
-        brown_p++;
         Case4 = true;
       }
 
@@ -277,7 +277,6 @@ int main(){
           horizontalExtend_green = false;
           verticalExtend         = true;
 
-          //brown_p++;
           Case5 = true;
         }
         else{
@@ -286,7 +285,6 @@ int main(){
           horizontalExtend_green = false;
           verticalExtend         = true;
 
-          //brown_p++;
           Case6 = true;
 
         }
@@ -294,12 +292,11 @@ int main(){
 
       /* Both brown and green are at the end  */
       else{
-        printf("############# CASE-7: ###############\n");
+        printf("############# CASE-7: Both brown and green are at the end ###############\n");
         horizontalExtend_brown = false;
         horizontalExtend_green = false;
         verticalExtend         = true;
 
-       // brown_p++;
         Case7 = true;
       }
 
@@ -308,9 +305,6 @@ int main(){
 
     printf("======================= Stop horizontally sweep with brown (%d,%d) and green (%d,%d): ========================\n\n", brown_p, brown_j, green_p, green_j);
 
-    for (int i=0;i<lengthAdjList;i++){
-      printf("lastIdx[%d]=%d\n", i, lastIdx[i]);
-    }
 
     
 
@@ -360,7 +354,7 @@ int main(){
     }
 
     if ( Case7 ){
-      printf("CASE-7: ###############\n");
+      printf("CASE-7: Both brown and green are at the end ###############\n");
 
       printf("%d %d\n", head[brown_p][brown_j]+1, head[green_p][green_j]+1);
       lastIdx[brown_p]++;
@@ -370,9 +364,16 @@ int main(){
       if (lastIdx[green_p] == numVertex[green_p]-1)  c++;
  
       brown_p++;
-      
+
+      //green_p = head[brown_p][brown_j];
+      //green_j = lastIdx[green_p];      
     }
 
+    for (int i=0;i<lengthAdjList;i++){
+      printf("lastIdx[%d]=%d\n", i, lastIdx[i]);
+    }
+
+    printf("======================= Stop vertically sweep with brown (%d,%d) and green (%d,%d): ========================\n\n", brown_p, brown_j, green_p, green_j);
  } // while
 
   return 0;
