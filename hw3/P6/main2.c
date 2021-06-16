@@ -6,8 +6,8 @@
 #include<stdint.h>
 #include<limits.h>
 
-#define VERBOSE1
-#define VERBOSE2
+//#define VERBOSE1
+//#define VERBOSE2
 
 void checkPtr(void *ptr, int line)
 {    
@@ -50,24 +50,19 @@ int main(){
   }
   /*============== STEP-2:  ============== */
 
-  int  brown_p, brown_j, brown_p_advance_probing, brown_p_jump_probing, brown_j_advance_probing, brown_j_jump_probing, brown_p_down_probing;
-  int  green_p, green_j, green_p_advance_probing, green_p_jump_probing, green_j_advance_probing, green_j_jump_probing, green_p_down_probing;
+  int  brown_p, brown_j, brown_p_advance_probing, brown_p_jump_probing, brown_j_advance_probing, brown_j_jump_probing;
+  int  green_p, green_j, green_p_advance_probing, green_p_jump_probing, green_j_advance_probing, green_j_jump_probing;
   
   bool advance_brown = false;
   bool advance_green = false;
   bool jump_brown = false;
   bool jump_green = false;
-  bool down_brown, down_green;
  
   bool horizontalExtend_brown = true;
   bool horizontalExtend_green = true;
-  bool verticalExtend         = true;
 
   brown_j = 0;
   green_j = 0;
-
-  brown_p_down_probing = 0;
-  green_p_down_probing = 0;
 
 
   brown_p = 0;
@@ -84,8 +79,10 @@ int main(){
   bool Case7;
 
   while(c < lengthAdjList ){
+#  ifdef VERBOSE2
    printf("======================= Start vertically sweep with brown (%d,%d) and green (%d,%d): ========================\n\n",
            brown_p, brown_j, green_p, green_j);
+#  endif
 
     while( horizontalExtend_green || horizontalExtend_brown ){
 
@@ -213,7 +210,6 @@ int main(){
 
         horizontalExtend_brown = true;
         horizontalExtend_green = false;
-        verticalExtend         = false;        
         Case1 = true;
       }
 
@@ -250,22 +246,23 @@ int main(){
 
         horizontalExtend_brown = false;
         horizontalExtend_green = true;
-        verticalExtend         = false;        
         Case2 = true;
       }
       else if ((!jump_brown && advance_green) && !(!jump_green && advance_brown)){
+#       ifdef VERBOSE2
         printf("############# CASE-3:  ###############\n");
+#       endif
         horizontalExtend_brown = false;
         horizontalExtend_green = false;
-        verticalExtend         = true;
 
         Case3 = true;
       }
       else if ((!jump_green && advance_brown) && !(!jump_brown && advance_green)){
+#       ifdef VERBOSE2
         printf("############# CASE-4: ###############\n");
+#       endif
         horizontalExtend_brown = false;
         horizontalExtend_green = false;
-        verticalExtend         = true;
 
         Case4 = true;
       }
@@ -273,18 +270,20 @@ int main(){
       else if ((!jump_green && advance_brown) && (!jump_brown && advance_green)){
 
         if (head[head[brown_p][brown_j]][brown_j] == brown_p){
+#         ifdef VERBOSE2
           printf("############# CASE-5: both brown and green cannot jump but brown and green are legal ###############\n");
+#         endif
           horizontalExtend_brown = false;
           horizontalExtend_green = false;
-          verticalExtend         = true;
 
           Case5 = true;
         }
         else{
+#         ifdef VERBOSE2
           printf("############# CASE-6: both brown and green cannot jump but brown and green are illegal ###############\n");
+#         endif
           horizontalExtend_brown = false;
           horizontalExtend_green = false;
-          verticalExtend         = true;
 
           Case6 = true;
 
@@ -293,10 +292,11 @@ int main(){
 
       /* Both brown and green are at the end  */
       else{
+#       ifdef VERBOSE2
         printf("############# CASE-7: Both brown and green are at the end ###############\n");
+#       endif
         horizontalExtend_brown = false;
         horizontalExtend_green = false;
-        verticalExtend         = true;
 
         Case7 = true;
       }
@@ -304,18 +304,24 @@ int main(){
  
     } // while
 
+#   ifdef VERBOSE2
     printf("======================= Stop horizontally sweep with brown (%d,%d) and green (%d,%d): ========================\n\n", brown_p, brown_j, green_p, green_j);
+#   endif
 
 
     
 
     if ( Case1 ){
+#       ifdef VERBOSE2
         printf("CASE-1: advance brown and jump green ###############\n");
+#     endif
         printf("%d %d\n", head[brown_p][brown_j]+1, head[green_p][green_j]+1);
     }
 
     if ( Case2 ){
+#       ifdef VERBOSE2
         printf("CASE-2: advance green and jump brown ###############\n");
+#     endif
         printf("%d %d\n", head[brown_p][brown_j]+1, head[green_p][green_j]+1);
     }
 
@@ -330,7 +336,9 @@ int main(){
     }
 
     if ( Case5 ){
+#       ifdef VERBOSE2
       printf("CASE-5: both brown and green cannot jump but brown and green are legal ###############\n");
+#     endif
       printf("%d %d\n", head[brown_p][brown_j]+1, head[green_p][green_j]+1);
       horizontalExtend_green = true;
       horizontalExtend_brown = true;
@@ -338,15 +346,17 @@ int main(){
       lastIdx[brown_p]++;
       lastIdx[green_p]++;
 
-      if (lastIdx[brown_p] == numVertex[brown_p]-1)  c++;
-      if (lastIdx[green_p] == numVertex[green_p]-1)  c++;
+      if (lastIdx[brown_p] == numVertex[brown_p])  c++;
+      if (lastIdx[green_p] == numVertex[green_p])  c++;
 
       brown_p++;
       green_p++;
     }
 
     if ( Case6 ){
+#     ifdef VERBOSE2
       printf("CASE-6: both brown and green cannot jump but brown and green are illegal ###############\n");
+#     endif
       horizontalExtend_green = true;
       horizontalExtend_brown = true;
  
@@ -355,15 +365,16 @@ int main(){
     }
 
     if ( Case7 ){
+#     ifdef VERBOSE2
       printf("CASE-7: Both brown and green are at the end ###############\n");
-
+#     endif
       printf("%d %d\n", head[brown_p][brown_j]+1, head[green_p][green_j]+1);
  
       lastIdx[brown_p]++;
       lastIdx[green_p]++;
 
-      if (lastIdx[brown_p] == numVertex[brown_p]-1)  c++;
-      if (lastIdx[green_p] == numVertex[green_p]-1)  c++;
+      if (lastIdx[brown_p] == numVertex[brown_p])  c++;
+      if (lastIdx[green_p] == numVertex[green_p])  c++;
 
       if (brown_p+1<lengthAdjList){
 
@@ -373,16 +384,23 @@ int main(){
           green_p = head[brown_p][brown_j];
           green_j = lastIdx[green_p];
         }
+
+        printf("%d %d\n", head[brown_p][brown_j]+1, head[green_p][green_j]+1);
       }
+
 
     }
 
+#   ifdef VERBOSE2
     for (int i=0;i<lengthAdjList;i++){
       printf("lastIdx[%d]=%d\n", i, lastIdx[i]);
     }
+#   endif
    
+#   ifdef VERBOSE2
     printf("c=%d\n", c);
     printf("======================= Stop vertically sweep with brown (%d,%d) and green (%d,%d): ========================\n\n", brown_p, brown_j, green_p, green_j);
+#   endif
  } // while
 
   return 0;
