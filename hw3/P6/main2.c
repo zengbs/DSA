@@ -6,8 +6,8 @@
 #include<stdint.h>
 #include<limits.h>
 
-//#define VERBOSE1
-//#define VERBOSE2
+#define VERBOSE1
+#define VERBOSE2
 
 void checkPtr(void *ptr, int line)
 {    
