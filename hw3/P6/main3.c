@@ -54,7 +54,7 @@ int main(){
   int p1 = 0;
   int j1 = 0;
   int p2, j2;
-  int X1, X1Right;
+  int X1, X1Right, X2Right;
 
   while(  ){   
 
@@ -68,7 +68,9 @@ int main(){
       p2 = head[p1][j1];
       j2 = lastIdx[X1];
 
-      print("%d %d\n", X1, p1);
+      printf("%d %d\n", X1, p1);
+      lastIdx[X1]++;
+      lastIdx[p1]++;
 
       /* and check if (p1,j1+1) have pair or not */
       X1Right = head[p1][j1+1];
@@ -76,7 +78,9 @@ int main(){
       if ( head[X1Right][lastIdx[X1Right]] == X1Right ){
         /* if true, print (p1,j1+1) and its friend,  */
         
-        print("%d %d\n", X1Right, p1);
+        printf("%d %d\n", X1Right, p1);
+        lastIdx[X1Right]++;
+        lastIdx[p1]++;
 
         /* , and move ptr to (p1,j1+1) */
         p1 = p1;
@@ -90,6 +94,8 @@ int main(){
 
           /* if true, print (p2,j2+1) and its friend */
           printf("%d %d\n", X2Right, p2);
+          lastIdx[X2Right]++;
+          lastIdx[p2]++;
 
           /*  move ptr to (p2,j2+1) */
           p1 = p2;
