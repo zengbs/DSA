@@ -67,6 +67,8 @@ int main(){
 
   brown_p = 0;
   green_p = head[brown_p][brown_j];
+  //green_p = 0;
+
 
   int c = 0;
  
@@ -86,14 +88,6 @@ int main(){
 
     while( horizontalExtend_green || horizontalExtend_brown ){
 
-      Case1 = false;
-      Case2 = false;
-      Case3 = false;
-      Case4 = false;
-      Case5 = false;
-      Case6 = false;
-      Case7 = false;
-
 #     ifdef VERBOSE2
       printf("======================= Start horizontally sweep with brown (%d,%d) and green (%d,%d): ========================\n\n",
                brown_p, brown_j, green_p, green_j);
@@ -104,6 +98,7 @@ int main(){
 
 #     endif
 
+      /* check we can advance brown or not */
       if (brown_j+1 < numVertex[brown_p]){
         brown_p_advance_probing = brown_p;
         brown_j_advance_probing = brown_j+1;
@@ -137,7 +132,6 @@ int main(){
 
       /* ============ probe green for jumping ============*/
       if (advance_brown){
-
         green_p_jump_probing    = head[brown_p_advance_probing][brown_j_advance_probing];
         green_j_jump_probing    = lastIdx[green_p_jump_probing];
 
@@ -174,6 +168,14 @@ int main(){
 
       }
 
+
+      Case1 = false;
+      Case2 = false;
+      Case3 = false;
+      Case4 = false;
+      Case5 = false;
+      Case6 = false;
+      Case7 = false;
 
 
 
