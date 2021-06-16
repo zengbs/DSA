@@ -31,6 +31,7 @@ int main(){
   int  *numVertex  = (int* )malloc((size_t)(lengthAdjList)*sizeof(int ));
   int  *lastIdx    = (int* )malloc((size_t)(lengthAdjList)*sizeof(int ));
 
+
   /*============== STEP-1: input ============== */
   for (int i=0;i<lengthAdjList;i++){
 
@@ -357,22 +358,30 @@ int main(){
       printf("CASE-7: Both brown and green are at the end ###############\n");
 
       printf("%d %d\n", head[brown_p][brown_j]+1, head[green_p][green_j]+1);
+ 
       lastIdx[brown_p]++;
       lastIdx[green_p]++;
 
       if (lastIdx[brown_p] == numVertex[brown_p]-1)  c++;
       if (lastIdx[green_p] == numVertex[green_p]-1)  c++;
- 
-      brown_p++;
 
-      //green_p = head[brown_p][brown_j];
-      //green_j = lastIdx[green_p];      
+      if (brown_p+1<lengthAdjList){
+
+        brown_p++;
+
+        if ( head[head[brown_p][brown_j]][lastIdx[head[brown_p][brown_j]]] == brown_p ){
+          green_p = head[brown_p][brown_j];
+          green_j = lastIdx[green_p];
+        }
+      }
+
     }
 
     for (int i=0;i<lengthAdjList;i++){
       printf("lastIdx[%d]=%d\n", i, lastIdx[i]);
     }
-
+   
+    printf("c=%d\n", c);
     printf("======================= Stop vertically sweep with brown (%d,%d) and green (%d,%d): ========================\n\n", brown_p, brown_j, green_p, green_j);
  } // while
 
