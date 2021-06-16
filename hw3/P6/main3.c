@@ -51,42 +51,63 @@ int main(){
   /*============== STEP-2:  ============== */
 
 
+  int p1 = 0;
+  int j1 = 0;
+  int p2, j2;
+  int X1, X1Right;
+
   while(  ){   
 
-    value_X1 = head[p1][j1];
+    X1 = head[p1][j1];
 
 
     /* Put ptr at (p1,j1) and check ptr have pair (p2,j2) or not */
-    if ( head[value_X1][lastIdx[value_X1]] == value_X1 ){
+    if ( head[X1][lastIdx[X1]] == X1 ){
 
-      /* if true, print (p1,j1) and (p2,j2) */
-      print("%d %d\n", head[p1][j1], value_X1);
+      /* if true, print X1(p1,j1) and X2(p2,j2) */
+      p2 = head[p1][j1];
+      j2 = lastIdx[X1];
 
-      value_X1Right = head[p1][j1+1];
+      print("%d %d\n", X1, p1);
 
-      /* and check (p1,j1+1) have pair */
-      if ( head[value_X1Right][lastIdx[value_X1Right]] == value_X1Right ){
-        /* if true, move ptr to (p1,j1+1) */
+      /* and check if (p1,j1+1) have pair or not */
+      X1Right = head[p1][j1+1];
+
+      if ( head[X1Right][lastIdx[X1Right]] == X1Right ){
+        /* if true, print (p1,j1+1) and its friend,  */
         
+        print("%d %d\n", X1Right, p1);
 
+        /* , and move ptr to (p1,j1+1) */
+        p1 = p1;
+        j1 = j1+1; 
       }
       else{
         /* if false, check (p2,j2+1) have pair */
-        if (  ){
-          /* if true, move ptr to (p2,j2+1) */
+        X2Right = head[p2][j2+1];
+
+        if ( head[X2Right][lastIdx[X2Right]] == X2Right ){
+
+          /* if true, print (p2,j2+1) and its friend */
+          printf("%d %d\n", X2Right, p2);
+
+          /*  move ptr to (p2,j2+1) */
+          p1 = p2;
+          j1 = j2+1;
+
         }
         else{
           /* if false, move ptr to (p1+1,j1) */
-
+          p1 = p1+1;
+          j1 = j1;
         }
-
       }
     }
     else{
-       /* if false, move ptr to (p1+1,j1) */
-
+      /* if false, move ptr to (p1+1,j1) */
+      p1 = p1+1;
+      j1 = j1;
     }
-    
 
   }
 
