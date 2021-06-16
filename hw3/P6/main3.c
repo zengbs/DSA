@@ -61,7 +61,7 @@ int main(){
     X1 = head[p1][j1];
 
 
-    /* Put ptr at (p1,j1) and check ptr have pair (p2,j2) or not */
+    /* Put ptr at (p1,j1) and check if ptr has friend (p2,j2) or not */
     if ( head[X1][lastIdx[X1]] == X1 ){
 
       /* if true, print X1(p1,j1) and X2(p2,j2) */
@@ -72,7 +72,7 @@ int main(){
       lastIdx[X1]++;
       lastIdx[p1]++;
 
-      /* and check if (p1,j1+1) have pair or not */
+      /* check if (p1,j1+1) has friend or not */
       X1Right = head[p1][j1+1];
 
       if ( head[X1Right][lastIdx[X1Right]] == X1Right ){
@@ -82,12 +82,12 @@ int main(){
         lastIdx[X1Right]++;
         lastIdx[p1]++;
 
-        /* , and move ptr to (p1,j1+1) */
+        /* move ptr to (p1,j1+1) */
         p1 = p1;
         j1 = j1+1; 
       }
       else{
-        /* if false, check (p2,j2+1) have pair */
+        /* if false, check (p2,j2+1) has friend */
         X2Right = head[p2][j2+1];
 
         if ( head[X2Right][lastIdx[X2Right]] == X2Right ){
