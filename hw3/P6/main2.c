@@ -75,6 +75,30 @@ bool checkFriend( int **head, int *lastIdx, int p, int j, int *p2, int *j2, bool
         return true;
       }
     }
+    
+    if (p-1 >= 0 && j+1 < numVertex[p-1] && j+1 == lastIdx[p-1]){ 
+      X = head[p-1][j+1];
+      if (head[X][lastIdx[X]] == p-1){
+        printf("new friend(upper right) at (%d,%d)!\n", p-1,j+1);
+
+        *p2 = p-1;
+        *j2 = j+1;
+
+        return true;
+      }
+    }
+    
+    if (p+1 >= 0 && j+1 < numVertex[p+1] && j+1 == lastIdx[p+1]){ 
+      X = head[p+1][j+1];
+      if (head[X][lastIdx[X]] == p+1){
+        printf("new friend(lower right) at (%d,%d)!\n", p+1,j+1);
+
+        *p2 = p+1;
+        *j2 = j+1;
+
+        return true;
+      }
+    }
 
   }
 
