@@ -150,12 +150,13 @@ bool checkFriend( int **head, int *lastIdx, int p, int j, int *p2, int *j2, bool
 void getLargestPForNextRun(int *lastIdx, int *numVertex, int *lastP, int **head, int lengthAdjList)
 {
   for (int p=*lastP; p<lengthAdjList; p++){
+    if (numVertex[p] != 0){
+      int p2, j2;
 
-    int p2, j2;
-
-    if ( lastIdx[p] != numVertex[p]  && checkFriend( head, lastIdx, p, lastIdx[p], &p2, &j2, true, lengthAdjList, numVertex ) ){
-      *lastP = p;
-      break;
+      if ( lastIdx[p] != numVertex[p]  && checkFriend( head, lastIdx, p, lastIdx[p], &p2, &j2, true, lengthAdjList, numVertex ) ){
+        *lastP = p;
+        break;
+      }
     }
   }
 }
@@ -246,7 +247,6 @@ int main(){
       c=c+2;
 
       /* check if we loop through all items in the table or not. */
-      printf("DoubleTotalEdge=%d\n", DoubleTotalEdge);
       if (c == DoubleTotalEdge) break;
 
      
@@ -297,6 +297,7 @@ int main(){
             getLargestPForNextRun(lastIdx, numVertex, &lastP, head, lengthAdjList);
             /* move ptr to (lastP,lastIdx[lastP]) and continue */
             p1 = lastP;
+            printf("lastP=%d\n", lastP);
             j1 = lastIdx[lastP];
             continue;
           }
