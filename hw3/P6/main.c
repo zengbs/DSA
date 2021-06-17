@@ -26,118 +26,165 @@ int main(){
   
   scanf("%d", &lengthAdjList);
 
-  int **head    = (int**)malloc((size_t)(lengthAdjList)*sizeof(int*));
-  int  *numVex  = (int* )malloc((size_t)(lengthAdjList)*sizeof(int ));
-  int **Ptr     = (int**)malloc((size_t)(lengthAdjList)*sizeof(int*));
+  int **head       = (int**)malloc((size_t)(lengthAdjList)*sizeof(int*));
+  int  *numVertex  = (int* )malloc((size_t)(lengthAdjList)*sizeof(int ));
+  int  *lastIdx    = (int* )malloc((size_t)(lengthAdjList)*sizeof(int ));
+
+  int DoubleTotalEdge = 0;
 
   /*============== STEP-1: input ============== */
   for (int i=0;i<lengthAdjList;i++){
 
-    scanf("%d", &numVex[i]);
+    scanf("%d", &numVertex[i]);
  
-    head[i] = (int*)malloc((size_t)(&numVex[i])*sizeof(int));
+
+    head[i] = (int*)malloc((size_t)(numVertex[i])*sizeof(int));
 
 
-    for (int j=0;j<numVex[i];j++){
+    for (int j=0;j<numVertex[i];j++){
       scanf("%d", &head[i][j]);
       head[i][j]--;
     }
 
-    Ptr[i] = &head[i][0];
+    lastIdx[i] = 0;
+
+    DoubleTotalEdge += numVertex[i];
   }
-
   /*============== STEP-2:  ============== */
-  int j1 = 0;
-  int j2 = 0;
-
-  int p1, p2;
-
- for(int i=0;i<lengthAdjList;i++){
 
  
-      if ( *Ptr[*Ptr[i]] == i ){
+
+  int *ans  = malloc(DoubleTotalEdge*sizeof(int));
+  int ansIdx = 0;
+
+  int p1 = 0;
+  int j1 = 0;
+  int p2, j2;
+  int X1, X1Right, X2Right;
+  int c = 0;
+
+  bool insideBox = true;
 
 
-        p1 = i;
-        p2 = *Ptr[p1];
+  while( 1 ){   
 
-        j1++;
-        j2++;
+#   ifdef VERBOSE
+    printf("\n\n=============== (%d,%d) ===================\n", p1,j1); 
+    printf("=============== c=(%d) ===================\n", c); 
+    
+    for (int i=0;i<lengthAdjList;i++){
+      printf("lastIdx[%d]=%d\n", i, lastIdx[i]);
+    }
+#   endif
 
-        Ptr[p1] = &head[p1][j1];
-        Ptr[p2] = &head[p2][j2];
+    X1 = head[p1][j1];
+    
+    /* Put ptr at (p1,j1) and check if ptr has friend (p2,j2) or not */
+    if ( head[X1][lastIdx[X1]] == p1 ){
+#     ifdef VERBOSE
+      printf("CASE-1:\n");
+#     endif
+      /* if true, print X1(p1,j1) and X2(p2,j2) */
+      p2 = head[p1][j1];
+      j2 = lastIdx[X1];
 
+      //printf("%d %d\n", X1+1, p1+1);
+      ans[ansIdx++] = X1+1;
+      ans[ansIdx++] = p1+1;
+
+      lastIdx[X1]++;
+      lastIdx[p1]++;
+
+      if ( lastIdx[X1] == numVertex[X1] ) c++;
+      if ( lastIdx[p1] == numVertex[p1] ) c++;
+
+      if (c == lengthAdjList) break;
+
+      /* check if (p1,j1+1) has friend or not */
+      
+      if (j1+1 >= numVertex[p1]) insideBox = false;
+      else                       {X1Right = head[p1][j1+1];insideBox=true;}
+  
+
+      if ( insideBox && head[X1Right][lastIdx[X1Right]] == p1 ){
 #       ifdef VERBOSE
-        printf("advance p1 and p2...\n");
-        printf("p1=%d, p2=%d, j1=%d, j2=%d\n", p1, p2, j1, j2);
-        printf("\n");
+        printf("CASE-2: move ptr to (p1,j1+1)\n");
+#       endif
+        /* move ptr to (p1,j1+1) */
+        p1 = p1;
+        j1 = j1+1; 
+      }
+      else{
+#       ifdef VERBOSE
+        printf("CASE-3:\n");
 #       endif
 
-          int c=0;
 
-          while(c<4){
+        if (j2+1 >= numVertex[p2]) insideBox = false;
+        else                       {X2Right = head[p2][j2+1];insideBox = true;}
 
-          if ( *Ptr[*Ptr[p1]] == p1 ){
+        /* if false, check (p2,j2+1) has friend */
+        X2Right = head[p2][j2+1];
 
+        if ( insideBox && head[X2Right][lastIdx[X2Right]] == p2 ){
+#         ifdef VERBOSE
+          printf("CASE-4:\n");
+#         endif
+          /*  move ptr to (p2,j2+1) */
+          p1 = p2;
+          j1 = j2+1;
 
-            p2 = *Ptr[p1];
-            j2 = (int)(Ptr[p2] - head[p2]);
+        }
+        else{
+#         ifdef VERBOSE
+          printf("CASE-5: check if p1+1=(%d) is inside the box\n", p1+1);
+#         endif
 
-
-            Ptr[p2] = &head[p2][j2];
-
+          if ( p1+1 < lengthAdjList ){
 #           ifdef VERBOSE
-            printf("advance p2...\n");
-            printf("p1=%d, p2=%d, j1=%d, j2=%d\n", p1, p2, j1, j2);
-            printf("*Ptr[p2]=%d\n", *Ptr[p2]);
-            printf("\n");
+            printf("CASE-6: move ptr to (p1+1,j1)=(%d,%d)\n",p1+1,j1);
 #           endif
-
-            if (j2<=numVex[p2]-1) j2++;
-
-          }else if ( *Ptr[*Ptr[p2]] == p2 ){
-
-
-            p1 = *Ptr[p2];
-            j1 = (int)(Ptr[p1] - head[p1]);
-
-
-
-            Ptr[p1] = &head[p1][j1];
-
-#           ifdef VERBOSE
-            printf("advance p1...\n");
-            printf("p1=%d, p2=%d, j1=%d, j2=%d\n", p1, p2, j1, j2);
-            printf("*Ptr[p1]=%d\n", *Ptr[p1]);
-            printf("\n");
-#           endif
-
-            if (j1<=numVex[p1]-1) j1++;
-         
-          }else{
-            printf("error!");
-            exit(0);
+            p1 = p1+1;
+            j1 = j1;
           }
- c++;
-       }
+          else{
+#           ifdef VERBOSE
+            printf("CASE-7: move ptr to (p2,j2)=(%d,%d)\n",p2,j2);
+#           endif
+            p1 = p2+1;
+            j1 = j2;
+          }
 
-
-
+          if (p1 == lengthAdjList) break;
+        }
       }
+    }
+    else{
+#     ifdef VERBOSE
+      printf("CASE-8: move ptr to (p1+1,j1)\n");
+#     endif
+      /* if false, move ptr to (p1+1,j1) */
+      p1 = p1+1;
+      j1 = j1;
 
- }
+      if (p1 == lengthAdjList) break;
+    }
+  }
 
+  
+  if (c == lengthAdjList){
+    printf("Yes\n");
+    for (int Idx=0;Idx<DoubleTotalEdge;Idx++){
+      printf("%d ", ans[Idx]);
+      Idx++;
+      printf("%d\n",ans[Idx]);
+    }
+  }
+  else{
+    printf("No\n");
+  }
 
-
-//  /*============== STEP-999:  ============== */
-//  /* output */
-//  for (int i=0;i<lengthAdjList;i++){
-//    for (int j=0;j<numVex[i];j++){
-//      printf("%d ", head[i][j]+1);
-//    }
-//    printf("\n");
-//  }
-//  printf("\n");
 
   return 0;
 }
+
