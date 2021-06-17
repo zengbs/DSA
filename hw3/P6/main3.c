@@ -30,6 +30,7 @@ int main(){
   int  *numVertex  = (int* )malloc((size_t)(lengthAdjList)*sizeof(int ));
   int  *lastIdx    = (int* )malloc((size_t)(lengthAdjList)*sizeof(int ));
 
+  int DoubleTotalEdge = 0;
 
   /*============== STEP-1: input ============== */
   for (int i=0;i<lengthAdjList;i++){
@@ -46,9 +47,15 @@ int main(){
     }
 
     lastIdx[i] = 0;
+
+    DoubleTotalEdge += numVertex[i];
   }
   /*============== STEP-2:  ============== */
 
+ 
+
+  int *ans  = malloc(DoubleTotalEdge*sizeof(int));
+  int ansIdx = 0;
 
   int p1 = 0;
   int j1 = 0;
@@ -83,7 +90,10 @@ int main(){
       j2 = lastIdx[X1];
 
       if (Print){
-       printf("%d %d\n", X1+1, p1+1);
+       //printf("%d %d\n", X1+1, p1+1);
+       ans[ansIdx++] = X1+1;
+       ans[ansIdx++] = p1+1;
+
        lastIdx[X1]++;
        lastIdx[p1]++;
 
@@ -167,6 +177,19 @@ int main(){
 
       if (p1 == lengthAdjList) break;
     }
+  }
+
+  
+  if (c == lengthAdjList){
+    printf("Yes\n");
+    for (int Idx=0;Idx<DoubleTotalEdge;Idx++){
+      printf("%d ", ans[Idx]);
+      Idx++;
+      printf("%d\n",ans[Idx]);
+    }
+  }
+  else{
+    printf("No\n");
   }
 
 
