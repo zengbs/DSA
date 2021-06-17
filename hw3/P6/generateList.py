@@ -3,6 +3,7 @@ from random import randrange
 import numpy as np
 
 
+# Step1: generate edge list
 
 numberVetexDouble = 10
 
@@ -24,8 +25,7 @@ for p in pair1:
     pair2.append(p)
     c=c+1
 
-###################################
-
+# Step2: compute adj list
 
 File2 = open("adjList", 'w')
 
@@ -38,11 +38,12 @@ for p in pair2:
   adjLst[p[0]].append(p[1]+1)
   adjLst[p[1]].append(p[0]+1)
 
+# Step3: output adj list
 
 for lst in adjLst:
   print(len(lst), *lst, sep=' ', file=File2)
 
-####################################################33\
+# Step4: output edge list
 
 File1 = open("edgeList", 'w')
 print("Yes", file=File1)
