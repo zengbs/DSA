@@ -42,8 +42,9 @@ bool checkFriend( int **head, int *lastIdx, int p, int j, int *p2, int *j2, bool
       X = head[p+1][j];
       if (head[X][lastIdx[X]] == p+1){
 
+#       ifdef VERBOSE
         printf("new friend(lower) at (%d,%d)!\n", p+1,j);
-
+#       endif
         *p2 = p+1;
         *j2 = j;
 
@@ -55,7 +56,9 @@ bool checkFriend( int **head, int *lastIdx, int p, int j, int *p2, int *j2, bool
       X = head[p][j+1];
       if (head[X][lastIdx[X]] == p){
 
+#       ifdef VERBOSE
         printf("new friend(right) at (%d,%d)!\n", p,j+1);
+#       endif
 
         *p2 = p;
         *j2 = j+1;
@@ -67,7 +70,9 @@ bool checkFriend( int **head, int *lastIdx, int p, int j, int *p2, int *j2, bool
     if (p-1 >= 0 && j < numVertex[p-1] && j == lastIdx[p-1]){ 
       X = head[p-1][j];
       if (head[X][lastIdx[X]] == p-1){
+#       ifdef VERBOSE
         printf("new friend(upper) at (%d,%d)!\n", p-1,j);
+#       endif
 
         *p2 = p-1;
         *j2 = j;
@@ -79,7 +84,9 @@ bool checkFriend( int **head, int *lastIdx, int p, int j, int *p2, int *j2, bool
     if (p-1 >= 0 && j+1 < numVertex[p-1] && j+1 == lastIdx[p-1]){ 
       X = head[p-1][j+1];
       if (head[X][lastIdx[X]] == p-1){
+#       ifdef VERBOSE
         printf("new friend(upper right) at (%d,%d)!\n", p-1,j+1);
+#       endif
 
         *p2 = p-1;
         *j2 = j+1;
@@ -91,10 +98,40 @@ bool checkFriend( int **head, int *lastIdx, int p, int j, int *p2, int *j2, bool
     if (p+1 >= 0 && j+1 < numVertex[p+1] && j+1 == lastIdx[p+1]){ 
       X = head[p+1][j+1];
       if (head[X][lastIdx[X]] == p+1){
+#       ifdef VERBOSE
         printf("new friend(lower right) at (%d,%d)!\n", p+1,j+1);
+#       endif
 
         *p2 = p+1;
         *j2 = j+1;
+
+        return true;
+      }
+    }
+
+    if (p-1 >= 0 && j-1 < numVertex[p-1] && j-1 == lastIdx[p-1]){ 
+      X = head[p-1][j-1];
+      if (head[X][lastIdx[X]] == p-1){
+#       ifdef VERBOSE
+        printf("new friend(upper left) at (%d,%d)!\n", p-1,j-1);
+#       endif
+
+        *p2 = p-1;
+        *j2 = j-1;
+
+        return true;
+      }
+    }
+    
+    if (p+1 >= 0 && j-1 < numVertex[p+1] && j-1 == lastIdx[p+1]){ 
+      X = head[p+1][j-1];
+      if (head[X][lastIdx[X]] == p+1){
+#       ifdef VERBOSE
+        printf("new friend(lower left) at (%d,%d)!\n", p+1,j-1);
+#       endif
+
+        *p2 = p+1;
+        *j2 = j-1;
 
         return true;
       }
@@ -108,6 +145,21 @@ bool checkFriend( int **head, int *lastIdx, int p, int j, int *p2, int *j2, bool
   return false;
 
 }
+
+
+void getLargestPForNextRun(int *lastIdx, int *numVertex, int *lastP, int **head, int lengthAdjList)
+{
+  for (int p=*lastP; p<lengthAdjList; p++){
+
+    int p2, j2;
+
+    if ( lastIdx[p] != numVertex[p]  && checkFriend( head, lastIdx, p, lastIdx[p], &p2, &j2, true, lengthAdjList, numVertex ) ){
+      *lastP = p;
+      break;
+    }
+  }
+}
+
 
 int main(){
 
@@ -125,22 +177,22 @@ int main(){
   int DoubleTotalEdge = 0;
 
   /*============== STEP-1: input ============== */
-  for (int i=0;i<lengthAdjList;i++){
+  for (int p=0;p<lengthAdjList;p++){
 
-    scanf("%d", &numVertex[i]);
+    scanf("%d", &numVertex[p]);
  
 
-    head[i] = (int*)malloc((size_t)(numVertex[i])*sizeof(int));
+    head[p] = (int*)malloc((size_t)(numVertex[p])*sizeof(int));
 
 
-    for (int j=0;j<numVertex[i];j++){
-      scanf("%d", &head[i][j]);
-      head[i][j]--;
+    for (int j=0;j<numVertex[p];j++){
+      scanf("%d", &head[p][j]);
+      head[p][j]--;
     }
 
-    lastIdx[i] = 0;
+    lastIdx[p] = 0;
 
-    DoubleTotalEdge += numVertex[i];
+    DoubleTotalEdge += numVertex[p];
   }
   /*============== STEP-2:  ============== */
 
@@ -155,7 +207,7 @@ int main(){
   int pf, jf;
   int c = 0;
 
- 
+  int lastP = 0; 
 
   while( 1 ){   
 
@@ -164,8 +216,8 @@ int main(){
     printf("=============== (p2,j2)=(%d,%d) ===================\n", p2,j2); 
     printf("c=(%d)\n", c); 
     
-    for (int i=0;i<lengthAdjList;i++){
-      printf("lastIdx[%d]=%d\n", i, lastIdx[i]);
+    for (int p=0;p<lengthAdjList;p++){
+      printf("lastIdx[%d]=%d\n", p, lastIdx[p]);
     }
 #   endif
 
@@ -179,7 +231,9 @@ int main(){
 #     endif
  
       /* print (p1,j1) and (p2,j2) */
+#     ifdef VERBOSE
       printf("%d %d\n", head[p1][j1]+1, head[p2][j2]+1);
+#     endif
       ans[ansIdx++] = head[p1][j1]+1;
       ans[ansIdx++] = head[p2][j2]+1;
 
@@ -187,11 +241,13 @@ int main(){
       lastIdx[p1]++;
       lastIdx[p2]++;
 
-      if ( lastIdx[p1] == numVertex[p1] ) c++;
-      if ( lastIdx[p2] == numVertex[p2] ) c++;
+      //if ( lastIdx[p1] == numVertex[p1] ) c++;
+      //if ( lastIdx[p2] == numVertex[p2] ) c++;
+      c=c+2;
 
       /* check if we loop through all items in the table or not. */
-      if (c == lengthAdjList) break;
+      printf("DoubleTotalEdge=%d\n", DoubleTotalEdge);
+      if (c == DoubleTotalEdge) break;
 
      
       /* check if (p1±1,j1±1) has a friend or not. */
@@ -227,13 +283,22 @@ int main(){
 #         endif
 
           /* check if we loop through all items in the table or not. */
-          if (c == lengthAdjList){
+          if (c == DoubleTotalEdge){
+#           ifdef VERBOSE
+            printf("CASE-5a\n");
+#           endif
             //printf("Yes\n");
             break;
           }
           else{
-            //printf("No\n");
-            break;
+#           ifdef VERBOSE
+            printf("CASE-5b\n");
+#           endif
+            getLargestPForNextRun(lastIdx, numVertex, &lastP, head, lengthAdjList);
+            /* move ptr to (lastP,lastIdx[lastP]) and continue */
+            p1 = lastP;
+            j1 = lastIdx[lastP];
+            continue;
           }
         }
 
@@ -259,7 +324,7 @@ int main(){
  
   /* output results */
  
-  if (c == lengthAdjList){
+  if (c == DoubleTotalEdge){
     printf("Yes\n");
     for (int Idx=0;Idx<DoubleTotalEdge;Idx++){
       printf("%d ", ans[Idx]);
