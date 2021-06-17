@@ -17,8 +17,65 @@ void checkPtr(void *ptr, int line)
 }
 
 
-bool checkFriend( int p, int j, int *pf, int *jf ){
+/* check if (p,j) has a friend or not */
+bool checkFriend( int **head, int *lastIdx, int p, int j, int *pf, int *jf, bool checkSelf, int lengthAdjList, int *numVertex ){
 
+  int X;
+
+  if (checkSelf){
+
+    X = head[p][j];
+    if (head[X][lastIdx[X]] == p){
+
+      *pf = X;
+      *jf = lastIdx[X];
+
+      return true;
+    }
+
+  }
+  else{
+
+    if (p+1 < lengthAdjList){
+
+      X = head[p+1][j];
+      if (head[X][lastIdx[X]] == p+1){
+
+        *pf = X;
+        *jf = lastIdx[X];
+
+        return true;
+      }
+    }
+     
+    if (j+1 < numVertex[p]){
+      X = head[p][j+1];
+      if (head[X][lastIdx[X]] == p){
+
+        *pf = X;
+        *jf = lastIdx[X];
+
+        return true;
+      }
+    }
+    
+    if (p-1 >= 0){ 
+      X = head[p-1][j];
+      if (head[X][lastIdx[X]] == p-1){
+
+        *pf = X;
+        *jf = lastIdx[X];
+
+        return true;
+      }
+    }
+
+  }
+
+  *pf = NULL;
+  *jf = NULL;
+
+  return false;
 
 }
 
