@@ -11,7 +11,7 @@ gcc main3.c -g -Wall  -o a.out
 
 #./a.out < input1
 #echo "============================="
-#./a.out < input2
+./a.out < input2
 #echo "============================="
 #./a.out < input3
 #echo "============================="

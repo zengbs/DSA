@@ -6,8 +6,7 @@
 #include<stdint.h>
 #include<limits.h>
 
-#define VERBOSE1
-#define VERBOSE2
+//#define VERBOSE
 
 void checkPtr(void *ptr, int line)
 {    
@@ -55,66 +54,119 @@ int main(){
   int j1 = 0;
   int p2, j2;
   int X1, X1Right, X2Right;
+  int c = 0;
 
-  while(  ){   
+  bool insideBox = true;
+
+  bool Print = true;
+
+  while( 1 ){   
+
+#   ifdef VERBOSE
+    printf("\n\n=============== (%d,%d) ===================\n", p1,j1); 
+    printf("=============== c=(%d) ===================\n", c); 
+    
+    for (int i=0;i<lengthAdjList;i++){
+      printf("lastIdx[%d]=%d\n", i, lastIdx[i]);
+    }
+#   endif
 
     X1 = head[p1][j1];
-
-
+    
     /* Put ptr at (p1,j1) and check if ptr has friend (p2,j2) or not */
-    if ( head[X1][lastIdx[X1]] == X1 ){
-
+    if ( head[X1][lastIdx[X1]] == p1 ){
+#     ifdef VERBOSE
+      printf("CASE-1:\n");
+#     endif
       /* if true, print X1(p1,j1) and X2(p2,j2) */
       p2 = head[p1][j1];
       j2 = lastIdx[X1];
 
-      printf("%d %d\n", X1, p1);
-      lastIdx[X1]++;
-      lastIdx[p1]++;
+      if (Print){
+       printf("%d %d\n", X1+1, p1+1);
+       lastIdx[X1]++;
+       lastIdx[p1]++;
+
+       if ( lastIdx[X1] == numVertex[X1] ) c++;
+       if ( lastIdx[p1] == numVertex[p1] ) c++;
+      }
+
+      if (c == lengthAdjList) break;
 
       /* check if (p1,j1+1) has friend or not */
-      X1Right = head[p1][j1+1];
+      
+      if (j1+1 >= numVertex[p1]) insideBox = false;
+      else                       {X1Right = head[p1][j1+1];insideBox=true;}
+  
 
-      if ( head[X1Right][lastIdx[X1Right]] == X1Right ){
-        /* if true, print (p1,j1+1) and its friend,  */
-        
-        printf("%d %d\n", X1Right, p1);
-        lastIdx[X1Right]++;
-        lastIdx[p1]++;
-
+      if ( insideBox && head[X1Right][lastIdx[X1Right]] == p1 ){
+#       ifdef VERBOSE
+        printf("CASE-2: move ptr to (p1,j1+1)\n");
+#       endif
         /* move ptr to (p1,j1+1) */
         p1 = p1;
         j1 = j1+1; 
+        Print = true;
       }
       else{
+#       ifdef VERBOSE
+        printf("CASE-3:\n");
+#       endif
+
+
+        if (j2+1 >= numVertex[p2]) insideBox = false;
+        else                       {X2Right = head[p2][j2+1];insideBox = true;}
+
         /* if false, check (p2,j2+1) has friend */
         X2Right = head[p2][j2+1];
 
-        if ( head[X2Right][lastIdx[X2Right]] == X2Right ){
-
-          /* if true, print (p2,j2+1) and its friend */
-          printf("%d %d\n", X2Right, p2);
-          lastIdx[X2Right]++;
-          lastIdx[p2]++;
-
+        if ( insideBox && head[X2Right][lastIdx[X2Right]] == p2 ){
+#         ifdef VERBOSE
+          printf("CASE-4:\n");
+#         endif
           /*  move ptr to (p2,j2+1) */
           p1 = p2;
           j1 = j2+1;
+          Print = true;
 
         }
         else{
-          /* if false, move ptr to (p1+1,j1) */
-          p1 = p1+1;
-          j1 = j1;
+#         ifdef VERBOSE
+          printf("CASE-5: check if p1+1=(%d) is inside the box\n", p1+1);
+#         endif
+
+          if ( p1+1 < lengthAdjList ){
+#           ifdef VERBOSE
+            printf("CASE-6: move ptr to (p1+1,j1)=(%d,%d)\n",p1+1,j1);
+#           endif
+            p1 = p1+1;
+            j1 = j1;
+            Print = true;
+          }
+          else{
+#           ifdef VERBOSE
+            printf("CASE-7: move ptr to (p2,j2)=(%d,%d)\n",p2,j2);
+#           endif
+            p1 = p2;
+            j1 = j2;
+            Print = false;
+          }
+
+          if (p1 == lengthAdjList) break;
         }
       }
     }
     else{
+#     ifdef VERBOSE
+      printf("CASE-8: move ptr to (p1+1,j1)\n");
+#     endif
       /* if false, move ptr to (p1+1,j1) */
       p1 = p1+1;
       j1 = j1;
-    }
+      Print = true;
 
+      if (p1 == lengthAdjList) break;
+    }
   }
 
 
