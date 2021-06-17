@@ -65,6 +65,7 @@ int main(){
 
   bool insideBox = true;
 
+  int whileCounter = 0;
 
   while( 1 ){   
 
@@ -155,7 +156,7 @@ int main(){
             j1 = j2;
           }
 
-          if (p1 == lengthAdjList) break;
+          if (p1 == lengthAdjList) continue;
         }
       }
     }
@@ -167,8 +168,9 @@ int main(){
       p1 = p1+1;
       j1 = j1;
 
-      if (p1 == lengthAdjList) break;
+      if (p1 == lengthAdjList) continue;
     }
+
   }
 
   
