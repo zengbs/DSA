@@ -26,7 +26,7 @@ bool checkFriend( int **head, int *lastIdx, int p, int j, int *p2, int *j2, bool
   if (checkSelf){
 
     X = head[p][j];
-    if (head[X][lastIdx[X]] == p){
+    if (numVertex[p] != 0 && head[X][lastIdx[X]] == p){
 
       *p2 = X;
       *j2 = lastIdx[X];
@@ -37,7 +37,7 @@ bool checkFriend( int **head, int *lastIdx, int p, int j, int *p2, int *j2, bool
   }
   else{
 
-    if (p+1 < lengthAdjList && j < numVertex[p+1] && j == lastIdx[p+1] ){
+    if (numVertex[p+1] != 0 && p+1 < lengthAdjList && j < numVertex[p+1] && j == lastIdx[p+1] ){
 
       X = head[p+1][j];
       if (head[X][lastIdx[X]] == p+1){
@@ -52,7 +52,7 @@ bool checkFriend( int **head, int *lastIdx, int p, int j, int *p2, int *j2, bool
       }
     }
      
-    if (j+1 < numVertex[p]){
+    if (numVertex[p] != 0 && j+1 < numVertex[p]){
       X = head[p][j+1];
       if (head[X][lastIdx[X]] == p){
 
@@ -67,7 +67,7 @@ bool checkFriend( int **head, int *lastIdx, int p, int j, int *p2, int *j2, bool
       }
     }
     
-    if (p-1 >= 0 && j < numVertex[p-1] && j == lastIdx[p-1]){ 
+    if (numVertex[p-1] != 0 && p-1 >= 0 && j < numVertex[p-1] && j == lastIdx[p-1]){ 
       X = head[p-1][j];
       if (head[X][lastIdx[X]] == p-1){
 #       ifdef VERBOSE
@@ -81,7 +81,7 @@ bool checkFriend( int **head, int *lastIdx, int p, int j, int *p2, int *j2, bool
       }
     }
     
-    if (p-1 >= 0 && j+1 < numVertex[p-1] && j+1 == lastIdx[p-1]){ 
+    if (numVertex[p-1] != 0 && p-1 >= 0 && j+1 < numVertex[p-1] && j+1 == lastIdx[p-1]){ 
       X = head[p-1][j+1];
       if (head[X][lastIdx[X]] == p-1){
 #       ifdef VERBOSE
@@ -95,7 +95,7 @@ bool checkFriend( int **head, int *lastIdx, int p, int j, int *p2, int *j2, bool
       }
     }
     
-    if (p+1 >= 0 && j+1 < numVertex[p+1] && j+1 == lastIdx[p+1]){ 
+    if (numVertex[p+1] != 0 && p+1 >= 0 && j+1 < numVertex[p+1] && j+1 == lastIdx[p+1]){ 
       X = head[p+1][j+1];
       if (head[X][lastIdx[X]] == p+1){
 #       ifdef VERBOSE
@@ -109,7 +109,7 @@ bool checkFriend( int **head, int *lastIdx, int p, int j, int *p2, int *j2, bool
       }
     }
 
-    if (p-1 >= 0 && j-1 < numVertex[p-1] && j-1 == lastIdx[p-1]){ 
+    if (numVertex[p-1] != 0 && p-1 >= 0 && j-1 < numVertex[p-1] && j-1 == lastIdx[p-1]){ 
       X = head[p-1][j-1];
       if (head[X][lastIdx[X]] == p-1){
 #       ifdef VERBOSE
@@ -123,7 +123,7 @@ bool checkFriend( int **head, int *lastIdx, int p, int j, int *p2, int *j2, bool
       }
     }
     
-    if (p+1 >= 0 && j-1 < numVertex[p+1] && j-1 == lastIdx[p+1]){ 
+    if (numVertex[p+1] != 0 && p+1 >= 0 && j-1 < numVertex[p+1] && j-1 == lastIdx[p+1]){ 
       X = head[p+1][j-1];
       if (head[X][lastIdx[X]] == p+1){
 #       ifdef VERBOSE
