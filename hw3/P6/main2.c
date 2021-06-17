@@ -151,7 +151,10 @@ int main(){
 #     endif
  
       /* print (p1,j1) and (p2,j2) */
-      printf("%d %d\n", head[p1][j1]+1, head[p2][j2]+1);
+      //printf("%d %d\n", head[p1][j1]+1, head[p2][j2]+1);
+      ans[ansIdx++] = head[p1][j1]+1;
+      ans[ansIdx++] = head[p2][j2]+1;
+
 
       lastIdx[p1]++;
       lastIdx[p2]++;
@@ -196,7 +199,14 @@ int main(){
 #         endif
 
           /* check if we loop through all items in the table or not. */
-          if (c == lengthAdjList) break;
+          if (c == lengthAdjList){
+            //printf("Yes\n");
+            break;
+          }
+          else{
+            //printf("No\n");
+            break;
+          }
         }
 
       }
@@ -219,19 +229,19 @@ int main(){
   }
 
  
-  ///* output results */
+  /* output results */
  
-  //if (c == lengthAdjList){
-  //  printf("Yes\n");
-  //  for (int Idx=0;Idx<DoubleTotalEdge;Idx++){
-  //    printf("%d ", ans[Idx]);
-  //    Idx++;
-  //    printf("%d\n",ans[Idx]);
-  //  }
-  //}
-  //else{
-  //  printf("No\n");
-  //}
+  if (c == lengthAdjList){
+    printf("Yes\n");
+    for (int Idx=0;Idx<DoubleTotalEdge;Idx++){
+      printf("%d ", ans[Idx]);
+      Idx++;
+      printf("%d\n",ans[Idx]);
+    }
+  }
+  else{
+    printf("No\n");
+  }
 
 
   return 0;
