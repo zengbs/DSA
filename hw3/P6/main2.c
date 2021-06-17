@@ -6,7 +6,7 @@
 #include<stdint.h>
 #include<limits.h>
 
-//#define VERBOSE
+#define VERBOSE
 
 
 void checkPtr(void *ptr, int line)
@@ -37,10 +37,12 @@ bool checkFriend( int **head, int *lastIdx, int p, int j, int *p2, int *j2, bool
   }
   else{
 
-    if (p+1 < lengthAdjList && j < numVertex[p+1] && j < lastIdx[p+1]+1 ){
+    if (p+1 < lengthAdjList && j < numVertex[p+1] && j == lastIdx[p+1] ){
 
       X = head[p+1][j];
       if (head[X][lastIdx[X]] == p+1){
+
+        printf("new friend(lower) at (%d,%d)!\n", p+1,j);
 
         *p2 = p+1;
         *j2 = j;
@@ -53,6 +55,8 @@ bool checkFriend( int **head, int *lastIdx, int p, int j, int *p2, int *j2, bool
       X = head[p][j+1];
       if (head[X][lastIdx[X]] == p){
 
+        printf("new friend(right) at (%d,%d)!\n", p,j+1);
+
         *p2 = p;
         *j2 = j+1;
 
@@ -60,10 +64,10 @@ bool checkFriend( int **head, int *lastIdx, int p, int j, int *p2, int *j2, bool
       }
     }
     
-    //printf("p-1=%d, numVertex[p-1]=%d, lastIdx[p-1]=%d\n", p-1, numVertex[p-1], lastIdx[p-1]);
-    if (p-1 >= 0 && j < numVertex[p-1] && j < lastIdx[p-1]+1){ 
+    if (p-1 >= 0 && j < numVertex[p-1] && j == lastIdx[p-1]){ 
       X = head[p-1][j];
       if (head[X][lastIdx[X]] == p-1){
+        printf("new friend(upper) at (%d,%d)!\n", p-1,j);
 
         *p2 = p-1;
         *j2 = j;
@@ -132,7 +136,9 @@ int main(){
   while( 1 ){   
 
 #   ifdef VERBOSE
-    printf("\n\n=============== c=(%d) ===================\n", c); 
+    printf("\n\n=============== (p1,j1)=(%d,%d) ===================\n", p1,j1); 
+    printf("=============== (p2,j2)=(%d,%d) ===================\n", p2,j2); 
+    printf("c=(%d)\n", c); 
     
     for (int i=0;i<lengthAdjList;i++){
       printf("lastIdx[%d]=%d\n", i, lastIdx[i]);
@@ -145,13 +151,11 @@ int main(){
     /* Put the ptr at (p1,j1) and check if (p1,j1) has a friend, say (p2,j2), or not. */
     if (checkFriend( head, lastIdx, p1, j1, &p2, &j2, true, lengthAdjList, numVertex )){
 #     ifdef VERBOSE
-    printf("=============== (p1,j1)=(%d,%d) ===================\n", p1,j1); 
-    printf("=============== (p2,j2)=(%d,%d) ===================\n", p2,j2); 
       printf("CASE-1\n");
 #     endif
  
       /* print (p1,j1) and (p2,j2) */
-      //printf("%d %d\n", head[p1][j1]+1, head[p2][j2]+1);
+      printf("%d %d\n", head[p1][j1]+1, head[p2][j2]+1);
       ans[ansIdx++] = head[p1][j1]+1;
       ans[ansIdx++] = head[p2][j2]+1;
 

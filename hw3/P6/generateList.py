@@ -5,7 +5,7 @@ import numpy as np
 
 # Step1: generate edge list
 
-numberVetexDouble = 10
+numberVetexDouble = 5
 
 # first create an array of all possible pair1 from (0,0) to (9,19)
 pair1 = np.dstack(np.meshgrid(np.arange(numberVetexDouble), np.arange(numberVetexDouble))).reshape(-1,2)
@@ -27,7 +27,7 @@ for p in pair1:
 
 # Step2: compute adj list
 
-File2 = open("adjList", 'w')
+File2 = open("adjList1", 'w')
 
 print(numberVetexDouble, file=File2)
 
@@ -45,7 +45,7 @@ for lst in adjLst:
 
 # Step4: output edge list
 
-File1 = open("edgeList", 'w')
+File1 = open("edgeList1", 'w')
 print("Yes", file=File1)
 for p in pair2:
     print(p[0]+1, p[1]+1, file=File1)
