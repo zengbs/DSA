@@ -12,6 +12,7 @@
 //#define VERBOSE
 #define MAX_STRING_SIZE 100000
 #define ALPHEBET_SIZE       58
+#define METHOD 2
 
 
 void checkPtr(void *ptr, int line)
@@ -22,15 +23,8 @@ void checkPtr(void *ptr, int line)
   }  
 }
 
-void printString(char String[])
-{
-  for(int s=0; String[s] != '\0';s++){
-    if (String[s] != '=') printf("%c", String[s]);
-  }
-  printf("\n");
-}
 
-void printString2(char String[], int Split[])
+void printString(char String[])
 {
   for(int s=0; String[s] != '\0';s++){
 
@@ -48,7 +42,10 @@ void printString2(char String[], int Split[])
 }
 
 
+int lastIdxInPowerArray;
+
 int main(){
+
 
   if (UCHAR_MAX < 255){
     printf("CHAR_MAX=%d!\n", CHAR_MAX);
@@ -61,6 +58,15 @@ int main(){
   char  *String  = (char* )calloc((size_t)(MAX_STRING_SIZE),sizeof(char));
   int   *Split   = (int*  )calloc((size_t)(MAX_STRING_SIZE),sizeof(int));
   char  *Pattern = (char* )calloc((size_t)(MAX_STRING_SIZE),sizeof(char));
+
+
+
+  unsigned int hashUpperBound = ((unsigned int)INT_MAX+1)/128;
+
+  unsigned int *PowerArray = (unsigned int *)calloc((size_t)(MAX_STRING_SIZE/2+1),sizeof(unsigned int));
+  lastIdxInPowerArray = 0;
+  PowerArray[lastIdxInPowerArray] = 1;
+
  
   unsigned char  *String2 = (unsigned char* )calloc((size_t)(MAX_STRING_SIZE),sizeof(unsigned char));
 
@@ -165,7 +171,7 @@ int main(){
 
        if (*ptr != '='){
          String2[lengthString2] = *ptr;
-         String2[lengthString2]-= (int)'A';
+         String2[lengthString2]-= ((int)'A'-1);
          String [lengthString2] = *ptr;
          lengthString2++;
        }
@@ -179,10 +185,11 @@ int main(){
 
      /*==================== split string by dividers ===============*/
 
-     int hashUpperBound = INT_MAX - (int)'z' - 100;
 
-     int leftSum  = -(int)'A';
-     int rightSum = -(int)'A';
+
+     unsigned int leftSum ;
+     unsigned int rightSum;
+
      int middleIdxInString;
 
      if ((lengthString2-1)%2==0) middleIdxInString = (lengthString2-1)/2;
@@ -193,16 +200,71 @@ int main(){
 
      int lengthSplit = 0;
 
+     bool GotIt = true;
+
+     int leftIdx = 0;
+
+     int PowerIdx; 
+
      for( int i=0; i<middleIdxInString; i++ ){
 
-       leftSum  += (int)String2[i];
-       rightSum += (int)String2[lengthString2-i-1];
+       if (GotIt){
 
-       if (leftSum  > hashUpperBound) leftSum  = leftSum  % hashUpperBound;
-       if (rightSum > hashUpperBound) rightSum = rightSum % hashUpperBound;
+#        ifdef VERBOSE
+         printf("Start to compute checksum!\n");
+#        endif
+
+         leftSum  = (unsigned int)String2[leftIdx];
+         rightSum = (unsigned int)String2[lengthString2-i-1];
+
+         GotIt = false;
+         PowerIdx = 0;
+#        ifdef VERBOSE
+         printf("%d, %d\n", leftIdx, lengthString2-i-1);
+         printf("leftSum=%u, rightSum=%u\n", leftSum, rightSum);
+#        endif
+       }
+       else{
+#        ifdef VERBOSE
+         printf("Computing checksum...\n");
+#        endif
+         leftIdx++;
+         PowerIdx++; 
+
+         for(int idx=lastIdxInPowerArray+1; lastIdxInPowerArray<PowerIdx; idx++){
+           PowerArray[idx] = (unsigned int)ALPHEBET_SIZE * PowerArray[idx-1];
+           PowerArray[idx] = PowerArray[idx] % hashUpperBound;
+           lastIdxInPowerArray++;
+         }
+
+#        if ( METHOD == 1 )
+         leftSum  = leftSum  + String2[leftIdx]*PowerArray[PowerIdx];
+         rightSum = rightSum * (unsigned int)ALPHEBET_SIZE + (unsigned int)String2[lengthString2-i-1];
+
+         leftSum  = leftSum  % hashUpperBound;
+         rightSum = rightSum % hashUpperBound;
+#        else
+         leftSum  += (unsigned int)String2[i];
+         rightSum += (unsigned int)String2[lengthString2-i-1];
+   
+         if (leftSum  > hashUpperBound) leftSum  = leftSum  % hashUpperBound;
+         if (rightSum > hashUpperBound) rightSum = rightSum % hashUpperBound;
+#        endif
+
+#        ifdef VERBOSE
+         printf("%d, %d\n", leftIdx, lengthString2-i-1);
+         printf("leftSum=%u, rightSum=%u\n", leftSum, rightSum);
+#        endif
+       }
+
 
        if (leftSum == rightSum){
-         bool GotIt = true;
+
+#        ifdef VERBOSE
+         printf("Checking match...\n");
+#        endif
+
+         GotIt = true;
 
          /* check the char in the left and right sub-string one-by-one */
          for ( int j=Split[idxForSplitArray];j<=i;j++ ){
@@ -213,22 +275,27 @@ int main(){
            else                       shift = middleIdxInString-i+middleIdxInString+j-Split[idxForSplitArray];
 
            GotIt &= String2[j] == String2[shift];
+
+           if (!GotIt) break;
          }
 
          if (GotIt){
+#          ifdef VERBOSE
+           printf("Got it!\n");
+#          endif
+
+           leftIdx=i+1;
            idxForSplitArray++;
            Split[idxForSplitArray]=i+1;
            lengthSplit++;
            String[i+1] += 100;
            if (i+1 != lengthString2-i-1) String[lengthString2-i-1] += 100;
-           leftSum  = -(int)'A';
-           rightSum = -(int)'A';
          }
-
        }
+
      }
 
-     printString2(String, Split);
+     printString(String);
   
     t++;
   }
