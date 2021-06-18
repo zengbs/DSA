@@ -2,8 +2,8 @@
 
 i=0
 
-while [ 1 ]
-do
+#while [ 1 ]
+#do
   python generateList.py
   
   ./a.out < adjList1 > edgeList2
@@ -20,11 +20,11 @@ do
       break
   fi
   ((i++))
-done
-
-echo "====== the correct edge list: ==============="
-cat edgeList1
-echo "========the correct adj list ============="
-cat adjList1
-echo "======= the edge list (a.out): =============="
-cat edgeList2
+#done
+#
+#echo "====== the correct edge list: ==============="
+#cat edgeList1
+#echo "========the correct adj list ============="
+#cat adjList1
+#echo "======= the edge list (a.out): =============="
+#cat edgeList2

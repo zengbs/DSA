@@ -155,30 +155,37 @@ void getPForNextRun(int *lastIdx, int *numVertex, int *lastP, int **head, int le
   int p;
 
   for (p=*lastP; p<lengthAdjList; p++){
-    if (numVertex[p] != 0){
+
+      if (numVertex[p] == 0) continue;
+
+      if ( lastIdx[p] == numVertex[p] ) continue;
+
       int p2, j2;
 
-      if ( lastIdx[p] != numVertex[p]  && checkFriend( head, lastIdx, p, lastIdx[p], &p2, &j2, true, lengthAdjList, numVertex ) ){
+      if ( checkFriend( head, lastIdx, p, lastIdx[p], &p2, &j2, true, lengthAdjList, numVertex ) ){
         *lastP = p;
         advanceP = true;
         break;
       }
 
-    }
   }
 
 
   if (!advanceP && p == lengthAdjList){
-    for (int p=0; p<lengthAdjList; p++){
-      if (numVertex[p] != 0){
-        int p2, j2;
 
-        if ( lastIdx[p] != numVertex[p]  && checkFriend( head, lastIdx, p, lastIdx[p], &p2, &j2, true, lengthAdjList, numVertex ) ){
-          *lastP = p;
-          break;
-        }
+    for (int p=0; p<*lastP; p++){
 
+      if (numVertex[p] == 0) continue;
+
+      if ( lastIdx[p] == numVertex[p] ) continue;
+
+      int p2, j2;
+
+      if ( checkFriend( head, lastIdx, p, lastIdx[p], &p2, &j2, true, lengthAdjList, numVertex ) ){
+        *lastP = p;
+        break;
       }
+
     }
   }
 
