@@ -5,14 +5,14 @@ export LD_LIBRARY_PATH=/software/gcc/9.3.0/lib64:$LD_LIBRARY_PATH
 
 
 rm a.out
-gcc main2.c -g -Wall  -o a.out
+gcc main.c -g -Wall  -o a.out
 
 #./a.out < adjList1
 
-#./a.out < input1
-#echo "============================="
-#./a.out < input2
-#echo "============================="
-#./a.out < input3
-#echo "============================="
-#./a.out < input4
+./a.out < input1
+echo "============================="
+./a.out < input2
+echo "============================="
+./a.out < input3
+echo "============================="
+./a.out < input4
