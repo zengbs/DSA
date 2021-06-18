@@ -35,24 +35,24 @@ bool checkFriend( int **head, int *lastIdx, int p, int j, int *p2, int *j2, bool
     }
 
   }
-  else{
-
-    if (numVertex[p+1] != 0 && p+1 < lengthAdjList && j < numVertex[p+1] && j == lastIdx[p+1] ){
-
-      X = head[p+1][j];
-      if (head[X][lastIdx[X]] == p+1){
-
-#       ifdef VERBOSE
-        printf("new friend(lower) at (%d,%d)!\n", p+1,j);
-#       endif
-        *p2 = p+1;
-        *j2 = j;
-
-        return true;
-      }
-    }
+//  else{
+//
+//    if (numVertex[p+1] != 0 && p+1 < lengthAdjList && j < numVertex[p+1] && j == lastIdx[p+1] ){
+//
+//      X = head[p+1][j];
+//      if (head[X][lastIdx[X]] == p+1){
+//
+//#       ifdef VERBOSE
+//        printf("new friend(lower) at (%d,%d)!\n", p+1,j);
+//#       endif
+//        *p2 = p+1;
+//        *j2 = j;
+//
+//        return true;
+//      }
+//    }
      
-    if (numVertex[p] != 0 && j+1 < numVertex[p]){
+    if (numVertex[p] != 0 && j+1 < numVertex[p] && j+1 == lastIdx[p]){
       X = head[p][j+1];
       if (head[X][lastIdx[X]] == p){
 
@@ -67,77 +67,77 @@ bool checkFriend( int **head, int *lastIdx, int p, int j, int *p2, int *j2, bool
       }
     }
     
-    if (numVertex[p-1] != 0 && p-1 >= 0 && j < numVertex[p-1] && j == lastIdx[p-1]){ 
-      X = head[p-1][j];
-      if (head[X][lastIdx[X]] == p-1){
-#       ifdef VERBOSE
-        printf("new friend(upper) at (%d,%d)!\n", p-1,j);
-#       endif
-
-        *p2 = p-1;
-        *j2 = j;
-
-        return true;
-      }
-    }
-    
-    if (numVertex[p-1] != 0 && p-1 >= 0 && j+1 < numVertex[p-1] && j+1 == lastIdx[p-1]){ 
-      X = head[p-1][j+1];
-      if (head[X][lastIdx[X]] == p-1){
-#       ifdef VERBOSE
-        printf("new friend(upper right) at (%d,%d)!\n", p-1,j+1);
-#       endif
-
-        *p2 = p-1;
-        *j2 = j+1;
-
-        return true;
-      }
-    }
-    
-    if (numVertex[p+1] != 0 && p+1 >= 0 && j+1 < numVertex[p+1] && j+1 == lastIdx[p+1]){ 
-      X = head[p+1][j+1];
-      if (head[X][lastIdx[X]] == p+1){
-#       ifdef VERBOSE
-        printf("new friend(lower right) at (%d,%d)!\n", p+1,j+1);
-#       endif
-
-        *p2 = p+1;
-        *j2 = j+1;
-
-        return true;
-      }
-    }
-
-    if (numVertex[p-1] != 0 && p-1 >= 0 && j-1 < numVertex[p-1] && j-1 == lastIdx[p-1]){ 
-      X = head[p-1][j-1];
-      if (head[X][lastIdx[X]] == p-1){
-#       ifdef VERBOSE
-        printf("new friend(upper left) at (%d,%d)!\n", p-1,j-1);
-#       endif
-
-        *p2 = p-1;
-        *j2 = j-1;
-
-        return true;
-      }
-    }
-    
-    if (numVertex[p+1] != 0 && p+1 >= 0 && j-1 < numVertex[p+1] && j-1 == lastIdx[p+1]){ 
-      X = head[p+1][j-1];
-      if (head[X][lastIdx[X]] == p+1){
-#       ifdef VERBOSE
-        printf("new friend(lower left) at (%d,%d)!\n", p+1,j-1);
-#       endif
-
-        *p2 = p+1;
-        *j2 = j-1;
-
-        return true;
-      }
-    }
-
-  }
+//    if (numVertex[p-1] != 0 && p-1 >= 0 && j < numVertex[p-1] && j == lastIdx[p-1]){ 
+//      X = head[p-1][j];
+//      if (head[X][lastIdx[X]] == p-1){
+//#       ifdef VERBOSE
+//        printf("new friend(upper) at (%d,%d)!\n", p-1,j);
+//#       endif
+//
+//        *p2 = p-1;
+//        *j2 = j;
+//
+//        return true;
+//      }
+//    }
+//    
+//    if (numVertex[p-1] != 0 && p-1 >= 0 && j+1 < numVertex[p-1] && j+1 == lastIdx[p-1]){ 
+//      X = head[p-1][j+1];
+//      if (head[X][lastIdx[X]] == p-1){
+//#       ifdef VERBOSE
+//        printf("new friend(upper right) at (%d,%d)!\n", p-1,j+1);
+//#       endif
+//
+//        *p2 = p-1;
+//        *j2 = j+1;
+//
+//        return true;
+//      }
+//    }
+//    
+//    if (numVertex[p+1] != 0 && p+1 >= 0 && j+1 < numVertex[p+1] && j+1 == lastIdx[p+1]){ 
+//      X = head[p+1][j+1];
+//      if (head[X][lastIdx[X]] == p+1){
+//#       ifdef VERBOSE
+//        printf("new friend(lower right) at (%d,%d)!\n", p+1,j+1);
+//#       endif
+//
+//        *p2 = p+1;
+//        *j2 = j+1;
+//
+//        return true;
+//      }
+//    }
+//
+//    if (numVertex[p-1] != 0 && p-1 >= 0 && j-1 < numVertex[p-1] && j-1 == lastIdx[p-1]){ 
+//      X = head[p-1][j-1];
+//      if (head[X][lastIdx[X]] == p-1){
+//#       ifdef VERBOSE
+//        printf("new friend(upper left) at (%d,%d)!\n", p-1,j-1);
+//#       endif
+//
+//        *p2 = p-1;
+//        *j2 = j-1;
+//
+//        return true;
+//      }
+//    }
+//    
+//    if (numVertex[p+1] != 0 && p+1 >= 0 && j-1 < numVertex[p+1] && j-1 == lastIdx[p+1]){ 
+//      X = head[p+1][j-1];
+//      if (head[X][lastIdx[X]] == p+1){
+//#       ifdef VERBOSE
+//        printf("new friend(lower left) at (%d,%d)!\n", p+1,j-1);
+//#       endif
+//
+//        *p2 = p+1;
+//        *j2 = j-1;
+//
+//        return true;
+//      }
+//    }
+//
+//  }
 
   p2 = NULL;
   j2 = NULL;
@@ -213,10 +213,7 @@ int main(){
   while( 1 ){   
 
 #   ifdef VERBOSE
-    printf("\n\n=============== (p1,j1)=(%d,%d) ===================\n", p1,j1); 
-    printf("=============== (p2,j2)=(%d,%d) ===================\n", p2,j2); 
-    printf("c=(%d)\n", c); 
-    
+    printf("\n\n====================================================\n");
     for (int p=0;p<lengthAdjList;p++){
       printf("lastIdx[%d]=%d\n", p, lastIdx[p]);
     }
@@ -228,6 +225,9 @@ int main(){
     /* Put the ptr at (p1,j1) and check if (p1,j1) has a friend, say (p2,j2), or not. */
     if (checkFriend( head, lastIdx, p1, j1, &p2, &j2, true, lengthAdjList, numVertex )){
 #     ifdef VERBOSE
+      printf("=============== (p1,j1)=(%d,%d) ===================\n", p1,j1); 
+      printf("=============== (p2,j2)=(%d,%d) ===================\n", p2,j2); 
+      printf("c=(%d)\n", c); 
       printf("CASE-1\n");
 #     endif
  
@@ -295,9 +295,11 @@ int main(){
             printf("CASE-5b\n");
 #           endif
             getLargestPForNextRun(lastIdx, numVertex, &lastP, head, lengthAdjList);
+#           ifdef VERBOSE
+            printf("lastP: %d -> %d\n", p1, lastP);
+#           endif     
             /* move ptr to (lastP,lastIdx[lastP]) and continue */
             p1 = lastP;
-            printf("lastP=%d\n", lastP);
             j1 = lastIdx[lastP];
             continue;
           }

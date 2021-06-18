@@ -1,5 +1,7 @@
 #!/bin/bash
 
+i=0
+
 while [ 1 ]
 do
   python generateList.py
@@ -12,12 +14,12 @@ do
   ans2=`md5sum adjList2|awk '{print $1}'`
 
   if [ "$ans1" == "$ans2" ]; then
-      echo "PASS!"
+      echo "PASS! ${i}"
   else
       echo "FAIL!"
       break
   fi
-
+  ((i++))
 done
 
 echo "====== the correct edge list: ==============="

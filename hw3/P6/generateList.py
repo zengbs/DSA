@@ -5,7 +5,7 @@ import numpy as np
 
 # Step1: generate edge list
 
-numberVetexDouble = 5
+numberVetexDouble = 6
 
 # first create an array of all possible pair1 from (0,0) to (9,19)
 pair1 = np.dstack(np.meshgrid(np.arange(numberVetexDouble), np.arange(numberVetexDouble))).reshape(-1,2)
