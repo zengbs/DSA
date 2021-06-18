@@ -277,8 +277,6 @@ int main(){
       lastIdx[p1]++;
       lastIdx[p2]++;
 
-      //if ( lastIdx[p1] == numVertex[p1] ) c++;
-      //if ( lastIdx[p2] == numVertex[p2] ) c++;
       c=c+2;
 
       /* check if we loop through all items in the table or not. */
@@ -371,17 +369,6 @@ int main(){
       prev_lastP = lastP;
       continue;
 
-//      /* check if p1+1 is inside the table */
-//      if ( checkFriend( head, lastIdx, p1, lastIdx[p1], &pf, &jf, true, lengthAdjList, numVertex ) ){
-//#       ifdef VERBOSE
-//        printf("CASE-7\n");
-//#       endif
-//        p1 = pf;
-//        j1 = jf;
-//        continue;
-//      }
-//      else{
-//      }
     }
   } // while()
 
