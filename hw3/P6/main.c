@@ -334,9 +334,9 @@ int main(){
 
             if (verticalArray_c+1<lengthAdjList && verticalArray[verticalArray_c+1] != -1&&j1!=0){
 #             ifdef VERBOSE
-              printf("Jump p1:%d->%d\n", p1, verticalArray[verticalArray_c]);
+              printf("Jump (p1,j1):(%d,%d)->(%d,%d)\n", p1, j1, verticalArray[verticalArray_c], lastIdx[verticalArray[verticalArray_c]]);
 #             endif
-              p1 = verticalArray[verticalArray_c+1];
+              p1 = verticalArray[verticalArray_c];
               verticalArray_c++;
             }
             else{
