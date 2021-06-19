@@ -6,7 +6,7 @@
 #include<stdint.h>
 #include<limits.h>
 
-//#define VERBOSE
+#define VERBOSE
 
 
 void checkPtr(void *ptr, int line)
@@ -360,6 +360,8 @@ int main(){
                 printf("CASE-5b: %d\n", __LINE__);
 #               endif
                 verticalArray_c++;
+                p1 = verticalArray[verticalArray_c];
+                j1 = lastIdx[p1];
                 continue; 
               }
             }
