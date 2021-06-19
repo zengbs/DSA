@@ -6,7 +6,7 @@
 #include<stdint.h>
 #include<limits.h>
 
-#define VERBOSE
+//#define VERBOSE
 
 
 void checkPtr(void *ptr, int line)
@@ -206,7 +206,7 @@ int main(){
 
   int **head       = (int**)malloc((size_t)(lengthAdjList)*sizeof(int*));
   int  *numVertex  = (int* )malloc((size_t)(lengthAdjList)*sizeof(int ));
-  int  *lastIdx    = (int* )malloc((size_t)(lengthAdjList)*sizeof(int ));
+  int  *lastIdx    = (int* )calloc((size_t)(lengthAdjList), sizeof(int ));
 
   int DoubleTotalEdge = 0;
 
@@ -224,7 +224,6 @@ int main(){
       head[p][j]--;
     }
 
-    lastIdx[p] = 0;
 
     DoubleTotalEdge += numVertex[p];
   }
@@ -262,9 +261,10 @@ int main(){
 
   verticalArray_c = 0;
 
-  int while_counter = 0;
+  int while_counter = -1;
 
-  while( 1 ){
+  while( while_counter < DoubleTotalEdge ){
+    while_counter++;
 
 #   ifdef VERBOSE
     printf("\n\n====================================================\n");
@@ -387,7 +387,6 @@ int main(){
 
       getPForNextRun(lastIdx, numVertex, &lastP, head, lengthAdjList);
       
-
       if (prevCASE == 7 && lastP == prev_lastP){
 #       ifdef VERBOSE
         printf("CASE-7=%d\n", __LINE__);
@@ -411,7 +410,6 @@ int main(){
 
     }
 
-    while_counter++;
   } // while()
 
  
