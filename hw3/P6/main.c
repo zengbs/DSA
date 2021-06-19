@@ -262,6 +262,8 @@ int main(){
 
   verticalArray_c = 0;
 
+  int while_counter = 0;
+
   while( 1 ){
 
 #   ifdef VERBOSE
@@ -277,7 +279,6 @@ int main(){
 #     ifdef VERBOSE
       printf("=============== (p1,j1)=(%d,%d) ===================\n", p1,j1); 
       printf("=============== (p2,j2)=(%d,%d) ===================\n", p2,j2); 
-      printf("c=(%d)\n", c); 
       printf("CASE-1=%d\n", __LINE__);
 #     endif
 
@@ -313,16 +314,11 @@ int main(){
         continue; 
       }
       else{
-#       ifdef VERBOSE
-        printf("CASE-3=%d\n", __LINE__);
-#       endif
-
-        prevCASE = 3;
 
         /* check if (p2±1,j2±1) has a friend or not. */
         if (checkFriend( head, lastIdx, p2, j2, &pf, &jf, false, lengthAdjList, numVertex )){
 #         ifdef VERBOSE
-          printf("CASE-4=%d\n", __LINE__);
+          printf("CASE-3=%d\n", __LINE__);
 #         endif
 
           prevCASE = 4;
@@ -333,52 +329,50 @@ int main(){
           continue;
         }
         else{
-#         ifdef VERBOSE
-          printf("CASE-5=%d\n", __LINE__);
-#         endif
-
-          prevCASE = 5;
 
           /* check if we loop through all items in the table or not. */
           if (c == DoubleTotalEdge){
 #           ifdef VERBOSE
-            printf("CASE-5a=%d\n\n", __LINE__);
+            printf("CASE-4=%d\n\n", __LINE__);
+            printf("break!\n");
 #           endif
             break;
           }
           else{
 #           ifdef VERBOSE
-            printf("CASE-5b: %d\n", __LINE__);
+            printf("CASE-5: %d\n", __LINE__);
 #           endif     
 
             if (verticalArray_c+1<lengthAdjList && verticalArray[verticalArray_c+1] != -1&&j1!=0){
-#             ifdef VERBOSE
-              printf("Jump (p1,j1):(%d,%d)->(%d,%d)\n", p1, j1, verticalArray[verticalArray_c], lastIdx[verticalArray[verticalArray_c]]);
-#             endif
 
               if (lastIdx[verticalArray[verticalArray_c]] < numVertex[verticalArray[verticalArray_c]]){
+#               ifdef VERBOSE
+                printf("CASE-5a: %d\n", __LINE__);
+                printf("Jump (p1,j1):(%d,%d)->(%d,%d)\n", p1, j1, verticalArray[verticalArray_c], lastIdx[verticalArray[verticalArray_c]]);
+#               endif
                 p1 = verticalArray[verticalArray_c];
                 j1 = lastIdx[p1];
                 verticalArray_c++;
-#               ifdef VERBOSE
-                printf("hi\n");
-#               endif
+                continue; 
               }
               else{
 #               ifdef VERBOSE
-                printf("hello\n");
+                printf("CASE-5b: %d\n", __LINE__);
 #               endif
                 verticalArray_c++;
                 continue; 
               }
             }
             else{
-              getPForNextRun(lastIdx, numVertex, &lastP, head, lengthAdjList);
 #             ifdef VERBOSE
-              printf("Loop through vertical array to find p1!\n");
+              printf("CASE-6: %d\n", __LINE__);
+              printf("Loop through vertical array to find p1! (p1,j1):(%d,%d)->(%d,%d)\n", p1,j1,lastP, lastIdx[lastP]);
 #             endif
+              getPForNextRun(lastIdx, numVertex, &lastP, head, lengthAdjList);
+
               p1 = lastP;
               j1 = lastIdx[p1];
+              continue; 
             }
 
             prev_lastP = p1;
@@ -390,33 +384,34 @@ int main(){
       }
     }
     else{
-#     ifdef VERBOSE
-      printf("CASE-6=%d\n", __LINE__);
-#     endif
 
       getPForNextRun(lastIdx, numVertex, &lastP, head, lengthAdjList);
       
 
-      if (prevCASE == 6 && lastP == prev_lastP){
+      if (prevCASE == 7 && lastP == prev_lastP){
 #       ifdef VERBOSE
+        printf("CASE-7=%d\n", __LINE__);
         printf("Loop through vertical array to find p1 and break!\n");
 #       endif     
         break;
       }
 
 #     ifdef VERBOSE
-      printf("Loop through vertical array to find p1!\n");
+      printf("CASE-8=%d\n", __LINE__);
+      printf("Loop through vertical array to find p1! (p1,j1):(%d,%d)->(%d,%d)\n", p1,j1,lastP, lastIdx[lastP]);
 #     endif     
 
  
       p1 = lastP;
       j1 = lastIdx[lastP];
     
-      prevCASE = 6;
+      prevCASE = 7;
       prev_lastP = lastP;
       continue;
 
     }
+
+    while_counter++;
   } // while()
 
  
