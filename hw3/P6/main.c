@@ -6,7 +6,7 @@
 #include<stdint.h>
 #include<limits.h>
 
-#define VERBOSE
+//#define VERBOSE
 
 
 void checkPtr(void *ptr, int line)
@@ -356,13 +356,22 @@ int main(){
                 continue; 
               }
               else{
+                verticalArray_c++;
 #               ifdef VERBOSE
                 printf("CASE-5b: %d\n", __LINE__);
 #               endif
-                verticalArray_c++;
-                p1 = verticalArray[verticalArray_c];
-                j1 = lastIdx[p1];
-                continue; 
+                if (lastIdx[verticalArray[verticalArray_c]] < numVertex[verticalArray[verticalArray_c]]){
+                  p1 = verticalArray[verticalArray_c];
+                  j1 = lastIdx[p1];
+                  verticalArray_c++;
+                  continue; 
+                }
+                else{
+                   getPForNextRun(lastIdx, numVertex, &lastP, head, lengthAdjList);
+                   p1 = lastP;
+                   j1 = lastIdx[lastP];
+                   continue; 
+                }
               }
             }
             else{
@@ -405,9 +414,9 @@ int main(){
  
       p1 = lastP;
       j1 = lastIdx[lastP];
+      prev_lastP = lastP;
     
       prevCASE = 7;
-      prev_lastP = lastP;
       continue;
 
     }
