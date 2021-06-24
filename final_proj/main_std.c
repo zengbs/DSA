@@ -1,12 +1,12 @@
 #include "api.h"
-#define MAX 302843
+#define MAX 302483
 
 
 typedef struct
 {
-	int token_num; //多少token
-	bool table[MAX]; // 用index代表token的hash值 true代表有 for fast access
-	int token_list[100256]; //存token的hash值
+	int token_num;
+	bool table[MAX];
+	int token_list[100256];
 } hashtable;
 
 
@@ -22,21 +22,21 @@ int AtoI(char x)
 		return -1;
 }
 
-//unsigned long hash(char *input, int N)
-//{
-//	unsigned long sum = 5381;
-//	for(int i=0; i < N; i++){
-//		int c = AtoI(input[i]);
-//		if(c < 0){
-//			printf("Something Wrong\n");
-//			return -1;
-//		}
-//		else{
-//			sum = ((sum << 5) + sum) + c;
-//		}
-//	}
-//	return sum&8191;
-//}
+unsigned long hash(char *input, int N)
+{
+	unsigned long sum = 5381;
+	for(int i=0; i < N; i++){
+		int c = AtoI(input[i]);
+		if(c < 0){
+			printf("Something Wrong\n");
+			return -1;
+		}
+		else{
+			sum = ((sum << 5) + sum) + c;
+		}
+	}
+	return sum&8191;
+}
 
 
 void parse_and_hash(char *full_input, hashtable *store);
@@ -60,13 +60,12 @@ int main(void) {
 	
 	for(int i = 0; i < n_queries; i++){
 		if(queries[i].type == expression_match && queries[i].reward > 1.25){
-			//expression_match_function(mails_table, queries[i].data.expression_match_data.expression, i, n_mails);
+			expression_match_function(mails_table, queries[i].data.expression_match_data.expression, i, n_mails);
 		    //api.answer(queries[i].id, NULL, 0);
 		}
-		else if(queries[i].type == find_similar){
+		else if(queries[i].type == find_similar && queries[i].data.find_similar_data.threshold > 0.2){
 				find_similar_function(mails_table, queries[i].data.find_similar_data.mid, n_mails, 
-				queries[i].data.find_similar_data.threshold, i);
-                //api.answer(queries[i].id, NULL, 0);
+					queries[i].data.find_similar_data.threshold, i);
 		}
 		else{
 			// Do something
@@ -92,32 +91,32 @@ int main(void) {
   	return 0;
 }
 
-//解析token並轉成hash值 存到hashtable裡
+
 void parse_and_hash(char *full_input, hashtable *store)
 {
-	unsigned long sum = 53; //random seed
-	bool start = false; //是否有在計算hash
+	unsigned long sum = 5381;
+	bool start = false;
 	int i = 0;
 	char a;
-	while(a = *full_input++){ //遇到\0停止
-		int c = AtoI(a); 
-		if(c < 0){ //遇到斷點 i.e 不是字母或數字
-			if(start){ //在計算hash的狀態 有的話才要「存」
+	while(a = *full_input++){
+		int c = AtoI(a);
+		if(c < 0){
+			if(start){
 				start = false;
 				if(!(store->table[sum%MAX]))
 				{
-					store->table[sum%MAX] = true; //存到table
-					store->token_list[store->token_num++] = sum%MAX; //存到table
+					store->table[sum%MAX] = true;
+					store->token_list[store->token_num++] = sum%MAX;
 				}
-				sum = 53; //歸零
+				sum = 5381;
 			}
 		}
 		else{
-			start = true; 
-			sum = ((sum << 5) + sum) + c; //累加
+			start = true;
+			sum = ((sum << 5) + sum) + c;
 		}
 	}
-	if(start){ //遇到\0後檢查最後一批hash是否要存入
+	if(start){
 		if(!(store->table[sum%MAX])){
 			store->table[sum%MAX] = true;
 			store->token_list[store->token_num++] = sum%MAX;
