@@ -8,7 +8,7 @@ typedef struct
     bool table[MAX];                                  // 用index代表token的hash值 true代表有 for fast access
     int  table_chain[MAX][CHAIN_LENGTH];              // the chains stroring the head index of token
     int  table_chain_token_length[MAX][CHAIN_LENGTH]; // the chains stroring the length of token
-    int  table_chain_max_idx[MAX];                    // the max index in the chain
+    int  table_chain_max_idx[MAX];                    // the max index of the chain
 
     // store the hash values obtained from given tokens.
     // find_similar_function()    : tokens are given by mails' content and subject
@@ -71,7 +71,7 @@ int main(void) {
   }
   else if(queries[i].type == find_similar){
     find_similar_function(mails_table, queries[i].data.find_similar_data.mid, n_mails, 
-    queries[i].data.find_similar_data.threshold, i);
+                          queries[i].data.find_similar_data.threshold, i);
                 //api.answer(queries[i].id, NULL, 0);
   }
   else{
@@ -123,7 +123,8 @@ bool stringCompare( int chain[], int max_idx_chain, char *full_input, int curren
 
     }
 
-    (i+1==token_length) ? return true : return false;
+    if(i+1==token_length)  return true;
+    else                   return false;
   }
 }
 
@@ -204,20 +205,26 @@ void find_similar_function(hashtable *mails_table, int mid, int n_mails, double 
  double token_mid_num = mails_table[mid].token_num;
 
  for(int i=0; i < n_mails; i++){
+
   double token_i_num = mails_table[i].token_num;
   double denominator = token_i_num + token_mid_num;
   double numerator = 0;
-  if(i == mid)
-   continue;
-  if(((token_i_num/token_mid_num) < threshold || ((token_mid_num/token_i_num) < threshold)))
-   continue;
+
+  if(i == mid)                                                                                 continue;
+  if(((token_i_num/token_mid_num) < threshold || ((token_mid_num/token_i_num) < threshold)))   continue;
+
   for(int j=0; j < token_mid_num; j++){
-   if(mails_table[i].table[mails_table[mid].token_list[j]])
-    numerator++;
+   if(mails_table[i].table[mails_table[mid].token_list[j]]){
+      if (stringCompare(mails_table[i].table_chain[j], mails_table[i].table_chain_max_idx[j], full_input,
+                        current_index_full_input, token_length, mails_table[i].table_chain_token_length[j]))
+         numerator++;
+   }
   }
-  if((numerator/(denominator-numerator)) >= threshold)
-   answer[answer_length++] = i;
+
+  if((numerator/(denominator-numerator)) >= threshold)       answer[answer_length++] = i;
+
  }
+
  api.answer(queries[query_i].id, answer, answer_length);
 
  /*
