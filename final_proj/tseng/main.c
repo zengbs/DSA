@@ -6,7 +6,7 @@ typedef struct
 {
     int  token_num;                                   // 多少token
     bool table[MAX];                                  // 用index代表token的hash值 true代表有 for fast access
-    int  table_chain[MAX][CHAIN_LENGTH];              // the chains stroring the head index of token
+    int *table_chain[MAX][CHAIN_LENGTH];              // the chains stroring the head pointer of token
     int  table_chain_token_length[MAX][CHAIN_LENGTH]; // the chains stroring the length of token
     int  table_chain_max_idx[MAX];                    // the max index of the chain
 
@@ -59,6 +59,7 @@ query *queries;
 int main(void) {
  api.init(&n_mails, &n_queries, &mails, &queries);
  hashtable *mails_table = calloc(n_mails, sizeof(hashtable));
+
  for(int i = 0; i < n_mails; i++){
   parse_and_hash(mails[i].subject, mails_table+i);
   parse_and_hash(mails[i].content, mails_table+i);
@@ -98,34 +99,14 @@ int main(void) {
    return 0;
 }
 
-bool stringCompare( int chain[], int max_idx_chain, char *full_input, int current_index_full_input,
-                    int token_length, int table_chain_token_length[] ) 
+bool stringCompare( char *str1, char *str2, int length_str1, int length_str2 )
 {
+  if ( length_str1 != length_str2 ) return false;
 
-  // loop through all indices smaller than `max_idx_chain` in chain
-  for( int idx_chain=0;idx_chain<max_idx_chain;idx_chain++ ){
+  for (int i=0;i<length_str1;i++)
+    if (*(str1+i) != *(str2+i)) return false;
 
-    int i = 0;
-
-    // the head char of the previous token at `idx_chain` in chain
-    char a = full_input[chain[idx_chain]];
-
-    // the head char of current token
-    char b = full_input[current_index_full_input];
-
-    // we compare the current token and the previous one in char-by-char manner
-    while( table_chain_token_length[idx_chain] == token_length && a == b && i+1<token_length ){
-
-      i++;
-
-      a = full_input[chain[idx_chain+i]];
-      b = full_input[current_index_full_input+i];
-
-    }
-
-    if(i+1==token_length)  return true;
-    else                   return false;
-  }
+  return true;
 }
 
 //解析token並轉成hash值 存到hashtable裡
@@ -155,9 +136,13 @@ void parse_and_hash(char *full_input, hashtable *store)
     // otherwise, we simply drop and exmine the next token
     if(store->table_chain_max_idx[sum%MAX] < CHAIN_LENGTH-1)
     {
+      int k = 0; 
+  
       // We do not store duplicate token into table[] and token_list[]
-      if (stringCompare(store->table_chain[sum%MAX], max_idx_chain, full_input,
-                        current_index_full_input,    token_length,  store->table_chain_token_length[sum%MAX]))
+      while (!stringCompare(full_inpt + current_index_full_input - token_length,
+                            store->table_chain[sum%MAX][k], 
+                            token_length,
+                            store->table_chain_token_length[sum%MAX][k] ))
       {
         // make the (sum%MAX)-th element to be true
         store->table[sum%MAX] = true;
@@ -165,10 +150,11 @@ void parse_and_hash(char *full_input, hashtable *store)
         // store hash values into token_list[]
         store->token_list[store->token_num++] = sum%MAX; 
 
-        // store the head index of token into table_chain[][]
+        // store the head pointer of token into table_chain[][]
         max_idx_chain                                           = store->table_chain_max_idx[sum%MAX];
-        store->table_chain[sum%MAX][++max_idx_chain]            = current_index_full_input - token_length;
+        store->table_chain[sum%MAX][++max_idx_chain]            = full_input + current_index_full_input - token_length;
         store->table_chain_token_length[sum%MAX][max_idx_chain] = token_length;
+        k++;
       }
     }
 
@@ -191,12 +177,17 @@ void parse_and_hash(char *full_input, hashtable *store)
    max_idx_chain = store->table_chain_max_idx[sum%MAX];
    store->table[sum%MAX] = true;
    store->token_list[store->token_num++] = sum%MAX;
-   store->table_chain[sum%MAX][++max_idx_chain] = current_index_full_input - token_length;
+   store->table_chain[sum%MAX][++max_idx_chain] = full_input + current_index_full_input - token_length;
   }
    
  }
 }
 
+// *mails_table   : the hash tables of all mails, including subjects and contents
+//  mid           : mail ID
+//  n_mails       : number of mails
+//  threshold     :
+//  query_i       : i-th query
 
 void find_similar_function(hashtable *mails_table, int mid, int n_mails, double threshold, int query_i)
 {
@@ -204,6 +195,7 @@ void find_similar_function(hashtable *mails_table, int mid, int n_mails, double 
  int answer_length = 0;
  double token_mid_num = mails_table[mid].token_num;
 
+ // Loop through all mails
  for(int i=0; i < n_mails; i++){
 
   double token_i_num = mails_table[i].token_num;
@@ -212,14 +204,23 @@ void find_similar_function(hashtable *mails_table, int mid, int n_mails, double 
 
   if(i == mid)                                                                                 continue;
   if(((token_i_num/token_mid_num) < threshold || ((token_mid_num/token_i_num) < threshold)))   continue;
-
+ 
+  // Loop through all tokens in a mail
   for(int j=0; j < token_mid_num; j++){
+
+   // If the hash value of target token is equal to that in hash table ...
    if(mails_table[i].table[mails_table[mid].token_list[j]]){
-      if (stringCompare(mails_table[i].table_chain[j], mails_table[i].table_chain_max_idx[j], full_input,
-                        current_index_full_input, token_length, mails_table[i].table_chain_token_length[j]))
+
+
+      // Loop through all pointers in chain to compare tokens in char-by-char manner
+      while (stringCompare(mails_table[  i].table_chain[mails_table[  i].token_list[j]][k],
+                           mails_table[mid].table_chain[mails_table[mid].token_list[j]][k],
+                           mails_table[  i].table_chain_token_length[mails_table[  i].token_list[j]],
+                           mails_table[mid].table_chain_token_length[mails_table[mid].token_list[j]]) )
+      {
          numerator++;
+      }
    }
-  }
 
   if((numerator/(denominator-numerator)) >= threshold)       answer[answer_length++] = i;
 
