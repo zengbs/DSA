@@ -4,11 +4,11 @@
 
 typedef struct
 {
-    int  token_num;                                   // 多少token
-    bool table[MAX];                                  // 用index代表token的hash值 true代表有 for fast access
-    int *table_chain[MAX][CHAIN_LENGTH];              // the chains stroring the head pointer of token
-    int  table_chain_token_length[MAX][CHAIN_LENGTH]; // the chains stroring the length of token
-    int  table_chain_max_idx[MAX];                    // the max index of the chain
+    int   token_num;                                   // 多少token
+    bool  table[MAX];                                  // 用index代表token的hash值 true代表有 for fast access
+    char *table_chain[MAX][CHAIN_LENGTH];              // the chains stroring the head pointer of token
+    int   table_chain_token_length[MAX][CHAIN_LENGTH]; // the chains stroring the length of token
+    int   table_chain_max_idx[MAX];                    // the max index of the chain
 
     // store the hash values obtained from given tokens.
     // find_similar_function()    : tokens are given by mails' content and subject
@@ -68,12 +68,10 @@ int main(void) {
  for(int i = 0; i < n_queries; i++){
   if(queries[i].type == expression_match && queries[i].reward > 1.25){
    //expression_match_function(mails_table, queries[i].data.expression_match_data.expression, i, n_mails);
-      //api.answer(queries[i].id, NULL, 0);
   }
   else if(queries[i].type == find_similar){
     find_similar_function(mails_table, queries[i].data.find_similar_data.mid, n_mails, 
                           queries[i].data.find_similar_data.threshold, i);
-                //api.answer(queries[i].id, NULL, 0);
   }
   else{
    // Do something
@@ -114,7 +112,6 @@ void parse_and_hash(char *full_input, hashtable *store)
 {
  unsigned long sum = 53; //random seed
  bool start = false; //是否有在計算hash
- int i = 0;
  char a;
  int current_index_full_input = 0;
  int token_length = 0;
@@ -139,10 +136,9 @@ void parse_and_hash(char *full_input, hashtable *store)
       int k = 0; 
   
       // We do not store duplicate token into table[] and token_list[]
-      while (!stringCompare(full_inpt + current_index_full_input - token_length,
-                            store->table_chain[sum%MAX][k], 
-                            token_length,
-                            store->table_chain_token_length[sum%MAX][k] ))
+      while (!stringCompare(full_input + current_index_full_input - token_length,
+                            store->table_chain[sum%MAX][k], token_length,
+                            store->table_chain_token_length[sum%MAX][k]) && k<store->table_chain_max_idx[sum%MAX])
       {
         // make the (sum%MAX)-th element to be true
         store->table[sum%MAX] = true;
@@ -155,6 +151,7 @@ void parse_and_hash(char *full_input, hashtable *store)
         store->table_chain[sum%MAX][++max_idx_chain]            = full_input + current_index_full_input - token_length;
         store->table_chain_token_length[sum%MAX][max_idx_chain] = token_length;
         k++;
+        printf("line: %d\n", __LINE__);
       }
     }
 
@@ -172,14 +169,25 @@ void parse_and_hash(char *full_input, hashtable *store)
   current_index_full_input++;
  }
 
- if(start){ //遇到\0後檢查最後一批hash是否要存入
-  if( store->table_chain_max_idx[sum%MAX] < CHAIN_LENGTH-1){
-   max_idx_chain = store->table_chain_max_idx[sum%MAX];
-   store->table[sum%MAX] = true;
-   store->token_list[store->token_num++] = sum%MAX;
-   store->table_chain[sum%MAX][++max_idx_chain] = full_input + current_index_full_input - token_length;
-  }
-   
+ if(start) //遇到\0後檢查最後一批hash是否要存入
+ { 
+   if( store->table_chain_max_idx[sum%MAX] < CHAIN_LENGTH-1)
+   {
+  
+     int k = 0;
+
+     while (!stringCompare(full_input + current_index_full_input - token_length,
+                           store->table_chain[sum%MAX][k], token_length,
+                           store->table_chain_token_length[sum%MAX][k]) && k<store->table_chain_max_idx[sum%MAX])
+     {
+        max_idx_chain = store->table_chain_max_idx[sum%MAX];
+        store->table[sum%MAX] = true;
+        store->token_list[store->token_num++] = sum%MAX;
+        store->table_chain[sum%MAX][++max_idx_chain] = full_input + current_index_full_input - token_length;
+        k++;
+        printf("line: %d\n", __LINE__);
+     }
+   }
  }
 }
 
@@ -209,16 +217,22 @@ void find_similar_function(hashtable *mails_table, int mid, int n_mails, double 
   for(int j=0; j < token_mid_num; j++){
 
    // If the hash value of target token is equal to that in hash table ...
-   if(mails_table[i].table[mails_table[mid].token_list[j]]){
+   if(mails_table[i].table[mails_table[mid].token_list[j]])
+   {
 
+      int k = 0;
 
       // Loop through all pointers in chain to compare tokens in char-by-char manner
       while (stringCompare(mails_table[  i].table_chain[mails_table[  i].token_list[j]][k],
                            mails_table[mid].table_chain[mails_table[mid].token_list[j]][k],
-                           mails_table[  i].table_chain_token_length[mails_table[  i].token_list[j]],
-                           mails_table[mid].table_chain_token_length[mails_table[mid].token_list[j]]) )
+                           mails_table[  i].table_chain_token_length[mails_table[  i].token_list[j]][k],
+                           mails_table[mid].table_chain_token_length[mails_table[mid].token_list[j]][k])
+             && k<mails_table[  i].table_chain_max_idx[mails_table[  i].token_list[j]]
+             && k<mails_table[mid].table_chain_max_idx[mails_table[mid].token_list[j]])
       {
          numerator++;
+         k++;
+         printf("line: %d\n", __LINE__);
       }
    }
 
@@ -233,6 +247,7 @@ void find_similar_function(hashtable *mails_table, int mid, int n_mails, double 
   printf("%d ", answer[i]);
  puts("");
  */
+ }
 }
 
 
@@ -352,10 +367,13 @@ void expression_match_function(hashtable *mails_table, char *expression, int que
 {
  int answer[n_mails];
  int answer_length = 0;
+
  for(int i=0; i < n_mails; i++)
  {
   if(expression_match_calculate(mails_table[i].table, expression))
    answer[answer_length++] = i;
  }
+
  api.answer(queries[query_i].id, answer, answer_length);
+
 }

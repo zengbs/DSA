@@ -1,1 +1,0 @@
-tseng/main.c
